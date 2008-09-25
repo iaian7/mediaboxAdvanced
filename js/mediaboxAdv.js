@@ -1,5 +1,5 @@
 /*!
-	Mediabox v0.8.6 - The ultimate extension of Mediabox into an all-media script
+	Mediabox v0.8.8 - The ultimate extension of Mediabox into an all-media script
 	(c) 2007-2007 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -124,6 +124,11 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 		options.overlayOpacity = 1;
 		overlay.className = 'mbOverlayFF';
 	}
+}
+// Fixes IE6 support for transparent PNG
+if (Browser.Engine.trident4) {
+	options.overlayOpacity = 1;
+	overlay.className = 'mbOverlayIE';
 }
 
 			images = _images;
@@ -477,9 +482,14 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 //					$$(image, bottom).setStyle("width", preload.width);
 //					$$(image, prevLink, nextLink).setStyle("height", preload.height);
 				} else if (mediaType == "obj") {
-					image.setStyles({backgroundImage: "none", display: ""});
-//					image.adopt(preload);
-					preload.inject(image);
+					if (Browser.Plugins.Flash.version<8) {
+						image.setStyles({backgroundImage: "none", display: ""});
+						image.set('html', '<div id="mbError"><b>Error</b><br/>Adobe Flash is either not installed or not up to date,<br/>please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.</div>');
+					} else {
+						image.setStyles({backgroundImage: "none", display: ""});
+						preload.inject(image);
+//						image.adopt(preload);
+					}
 				} else if (mediaType == "inline") {
 					image.setStyles({backgroundImage: "none", display: ""});
 //					image.grab(preload);
