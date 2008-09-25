@@ -1,5 +1,5 @@
 /*!
-	Mediabox v0.8.8 - The ultimate extension of Mediabox into an all-media script
+	Mediabox v0.8.9 - The ultimate extension of Mediabox into an all-media script
 	(c) 2007-2007 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -113,7 +113,7 @@ var Mediabox;
 
 			// The function is called for a single image, with URL and Title as first two arguments
 			if (typeof _images == "string") {
-				_images = [[_images,startImage]];
+				_images = [[_images,startImage,_options]];
 				startImage = 0;
 			}
 
@@ -156,7 +156,7 @@ if (Browser.Engine.trident4) {
 	Elements.implement({
 		/*
 			options:	Optional options object, see Mediabox.open()
-			linkMapper:	Optional function taking a link DOM element and an index as arguments and returning an array containing 2 elements:
+			linkMapper:	Optional function taking a link DOM element and an index as arguments and returning an array containing 3 elements:
 					the image URL and the image caption (may contain HTML)
 			linksFilter:	Optional function taking a link DOM element and an index as arguments and returning true if the element is part of
 					the image collection that will be shown on click, false if not. "this" refers to the element that was clicked.
@@ -222,8 +222,8 @@ if (Browser.Engine.trident4) {
 			case 78:	// 'n'
 				next();
 		}
-		// Prevent default keyboard action (like navigating inside the page)
-		return false;
+//		Prevent default keyboard action (like navigating inside the page)
+//		return false;
 	}
 
 	function previous() {
@@ -256,6 +256,7 @@ if (Browser.Engine.trident4) {
 			mediaWidth = WH[WHL-2]+"px";
 			mediaHeight = WH[WHL-1]+"px";
 			URL = images[imageIndex][0];
+			captionSplit = images[activeImage][1].split('::');
 // MEDIA TYPES
 // IMAGES
 			if (URL.match(/\.gif|\.jpg|\.png/i)) {
@@ -478,7 +479,7 @@ if (Browser.Engine.trident4) {
 				if (mediaType == "img"){
 					mediaWidth = preload.width;
 					mediaHeight = preload.height;
-					image.setStyles({backgroundImage: "url(" + images[activeImage][0] + ")", display: ""});
+					image.setStyles({backgroundImage: "url("+URL+")", display: ""});
 //					$$(image, bottom).setStyle("width", preload.width);
 //					$$(image, prevLink, nextLink).setStyle("height", preload.height);
 				} else if (mediaType == "obj") {
@@ -498,13 +499,11 @@ if (Browser.Engine.trident4) {
 					image.setStyles({backgroundImage: "none", display: ""});
 					preload.inject(image);
 				} else {
-					alert('this file type is not supported\n'+images[activeImage][0]+'\nplease visit iaian7.com/webcode/Mediabox for more information');
+					alert('this file type is not supported\n'+URL+'\nplease visit iaian7.com/webcode/Mediabox for more information');
 				}
 				$$(image, bottom).setStyle("width", mediaWidth);
 				image.setStyle("height", mediaHeight);
 //				$$(image, prevLink, nextLink).setStyle("height", mediaHeight);
-
-				captionSplit = images[activeImage][1].split('::');
 
 				title.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[0] : images[activeImage][1]);
 				caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
@@ -514,13 +513,7 @@ if (Browser.Engine.trident4) {
 
 				if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.png/i))) preloadPrev.src = images[prevImage][0];
 				if ((nextImage >= 0) && (images[nextImage][0].match(/\.gif|\.jpg|\.png/i))) preloadNext.src = images[nextImage][0];
-//				if (prevImage >= 0) preloadPrev.src = images[prevImage][0];
-//				if (nextImage >= 0) preloadNext.src = images[nextImage][0];
 
-//				if (center.clientHeight != image.offsetHeight) {
-//					fx.resize.start({height: image.offsetHeight});
-//					break;
-//				}
 				state++;
 			case 3:
 				center.className = "";
