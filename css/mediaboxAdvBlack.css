@@ -1,0 +1,126 @@
+/* @override http://iaian7.com/files/mediabox/mediaboxAdvBlack.css */
+
+/* SLIMBOX */
+
+#mbOverlay {
+	position: absolute;
+	z-index: 9998;
+	left: 0;
+	width: 100%;
+	background-color: #000;
+	cursor: pointer;
+}
+
+#mbOverlay.mbOverlayFF {
+	background: transparent url(../images/80.png) repeat;
+}
+
+#mbOverlay.mbOverlayIE {
+	background: transparent url(../images/80.gif) repeat;
+}
+
+#mbCenter, #mbBottomContainer {
+	position: absolute;
+	z-index: 9999;
+	left: 50%;
+	overflow: hidden;
+	background-color: #000;
+}
+
+.mbLoading {
+	background: #000 url(../images/blackLoading.gif) no-repeat center;
+}
+
+#mbImage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	border: 10px solid #000;
+	background-repeat: no-repeat;
+/*	Sets the style for inline content, if no style is given	*/
+	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
+	line-height: 19px;
+	font-size: 12px;
+	color: #fff;
+	text-align: left;
+}
+
+/*	Sets the style for inline content, if no style is given	*/
+#mbImage a, #mbImage a:link, #mbImage a:visited {
+	color: #ddd;
+}
+
+/*	Sets the style for inline content, if no style is given	*/
+#mbImage a:hover, #mbImage a:active {
+	color: #fff;
+}
+
+#mbBottom {
+	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
+	line-height: 19px;
+	font-size: 12px;
+	color: #999;
+	text-align: left;
+	border: 10px solid #000;
+	border-top-style: none;
+}
+
+#mbTitle {
+	display: inline;
+	color: #fff;
+	font-weight: bold;
+	line-height: 20px;
+	font-size: 12px;
+}
+
+#mbNumber {
+	display: inline;
+	color: #999;
+	line-height: 14px;
+	font-size: 10px;
+}
+
+#mbCaption {
+	display: block;
+	color: #999;
+	line-height: 14px;
+	font-size: 10px;
+}
+
+#mbPrevLink, #mbNextLink, #mbCloseLink {
+	display: block;
+	float: right;
+	height: 20px;
+	width: 46px;
+	background: transparent url(../images/blackClose.gif) no-repeat center;
+	margin: 0;
+	outline: none;
+}
+
+#mbPrevLink {
+	width: 69px;
+	background: transparent url(../images/blackPrevious.gif) no-repeat center;
+}
+
+#mbNextLink {
+	width: 41px;
+	background: transparent url(../images/blackNext.gif) no-repeat center;
+}
+
+#mbCloseLink {
+	width: 46px;
+	background: transparent url(../images/blackClose.gif) no-repeat center;
+}
+
+#mbError {
+	position: relative;
+	top: 30%;
+	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
+	line-height: 19px;
+	font-size: 12px;
+	color: #fff;
+	text-align: center;
+	border: 10px solid #700;
+	padding: 20px 10px 30px;
+	margin: auto;
+}
