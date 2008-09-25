@@ -1,6 +1,7 @@
 /*!
-	Mediabox v0.80 - The ultimate extension of Mediabox into an all-media script
+	Mediabox v0.8.6 - The ultimate extension of Mediabox into an all-media script
 	(c) 2007-2007 John Einselen <http://iaian7.com>
+		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
 	(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
 	MIT-style license.
@@ -64,51 +65,49 @@ var Mediabox;
 	Mediabox = {
 		open: function(_images, startImage, _options) {
 			options = $extend({
-				loop: true,				// Allows to navigate between first and last images
+				loop: false,					// Allows to navigate between first and last images
 				overlayOpacity: 0.8,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
-				resizeDuration: 360,			// Duration of each of the box resize animations (in milliseconds)
+												// Remember that Firefox 2 and Camino on the Mac require a .png file set in the CSS
+				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				resizeTransition: false,		// Default transition in mootools
-				initialWidth: 360,			// Initial width of the box (in pixels)
-				initialHeight: 240,			// Initial height of the box (in pixels)
-				showCaption: true,
-				animateCaption: true,
-				showCounter: true,			// If true, a counter will only be shown if there is more than 1 image to display
-				counterText: '  ({x} of {y})',		// Translate or change as you wish
-		// Mediaplayer settings and options
+				initialWidth: 320,				// Initial width of the box (in pixels)
+				initialHeight: 180,				// Initial height of the box (in pixels)
+				showCaption: true,				// Display the title and caption, true / false
+				animateCaption: true,			// Animate the caption, true / false
+				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
+				counterText: '  ({x} of {y})',	// Translate or change as you wish
+		// Global media options
+			scriptaccess: 'true',		// Allow script access to flash files
+			fullscreen: 'true',			// Use fullscreen
+			fullscreenNum: '1',			// 1 = true
+			autoplay: 'true',			// Plays the video as soon as it's opened
+			autoplayNum: '1',			// 1 = true
+			bgcolor: '#000000',			// Background color, used for both flash and QT media
+		// Flash player settings and options
 			playerpath: 'http://iaian7.com/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
 			backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
 			frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
 			lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 			screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
-			controlbar: 'over',			// bottom, over, none
-			fullscreen: 'true',			// Use fullscreen
-			fullscreenNum: '1',			// 1 = true
-			autoplay: 'true',			// Plays the video as soon as it's opened
-			autoplayNum: '1',			// 1 = true
+			controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
 		// Quicktime options (QT plugin used for partial WMV support as well)
-//			autoplay: 'true',			// Automatically play movie, true / false
-			bgcolor: 'black',			// Background color, name / hex value
 			controller: 'true',			// Show controller, true / false
 		// Flickr options
-			fkBGcolor: '#000000',		// Background colour option
-			fkFullscreen: 'true',		// Enable fullscreen button
+			flInfo: 'true',				// Show title and info at video start
 		// Revver options
-			revverID: '187866',			// Revver affiliate ID
+			revverID: '187866',			// Revver affiliate ID, required for ad revinue sharing
 			revverFullscreen: 'true',	// Fullscreen option
-			revverBack: '#000000',		// Background colour
-			revverFront: '#ffffff',		// Foreground colour
-			revverGrad: '#000000',		// Gradation colour
+			revverBack: '000000',		// Background colour
+			revverFront: 'ffffff',		// Foreground colour
+			revverGrad: '000000',		// Gradation colour
 		// Youtube options
-			ytAutoplay: '1',			// Auto play, 0=false, 1=true
-		// Veoh options
-			vhAutoplay: '1',			// Enable autoplay, 0=false 1=true
-			vhFullscreen: 'true',		// Enable fullscreen
+			ytColor1: '000000',			// Outline colour
+			ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
 		// Vimeo options
-			vmFullscreen: '1',			// Fullscreen option, 0=false, 1=true
 			vmTitle: '1',				// Show video title
 			vmByline: '1',				// Show byline
 			vmPortrait: '1',			// Show author portrait
-			vmColor: '5ca0b5'			// Custom controller colours, hex value minus the #
+			vmColor: 'ffffff'			// Custom controller colours, hex value minus the # sign, defult is 5ca0b5
 
 			}, _options || {});
 
@@ -117,6 +116,15 @@ var Mediabox;
 				_images = [[_images,startImage]];
 				startImage = 0;
 			}
+
+// Fixes Firefox 2 and Camino 1.5 incompatibility with opacity + flash
+if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+	var ffversion=new Number(RegExp.$1); // capture x.x portion and store as a number
+	if (ffversion<3) {
+		options.overlayOpacity = 1;
+		overlay.className = 'mbOverlayFF';
+	}
+}
 
 			images = _images;
 			options.loop = options.loop && (images.length > 1);
@@ -254,22 +262,23 @@ var Mediabox;
 			} else if (URL.match(/\.flv|\.mp4/i)) {
 				mediaType = 'obj';
 //				preload = new Swiff(options.playerpath, {
-				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&controlbar='+options.controlbar+'&autostart='+options.autoplay, {
+				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-//					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true', flashvars: 'file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&controlbar='+options.controlbar+'&autostart='+options.autoplay);
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+//					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, flashvars: 'file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&controlbar='+options.controlbar+'&autostart='+options.autoplay);
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // MP3, AAC
 			} else if (URL.match(/\.mp3|\.aac/i)) {
 				mediaType = 'obj';
-				preload = new Swiff(''+options.playerpath+'?file='+URL+'&autostart='+options.autoplay+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor, {
+				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
+//				preload = new Swiff(''+options.playerpath+'?file='+URL+'&autostart='+options.autoplay+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // SWF
@@ -279,7 +288,7 @@ var Mediabox;
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // MOV
@@ -295,7 +304,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Flickr
@@ -308,7 +317,7 @@ var Mediabox;
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {flashvars: 'photo_id='+mediaId, wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {flashvars: 'photo_id='+mediaId+'&amp;show_info_box='+options.flInfo, wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Google Video
@@ -320,7 +329,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Metacafe
@@ -332,7 +341,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // MyspaceTV
@@ -344,7 +353,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Revver
@@ -352,11 +361,11 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
-				preload = new Swiff('http://flash.revver.com/player/1.0/player.swf?mediaId='+mediaId+'&affiliateId='+options.revverID+'&allowFullScreen='+options.revverFullscreen+'&backColor='+options.revverBack+'&frontColor='+options.revverFront+'&gradColor='+options.revverGrad+'&shareUrl=revver', {
+				preload = new Swiff('http://flash.revver.com/player/1.0/player.swf?mediaId='+mediaId+'&affiliateId='+options.revverID+'&allowFullScreen='+options.revverFullscreen+'&backColor=#'+options.revverBack+'&frontColor=#'+options.revverFront+'&gradColor=#'+options.revverGrad+'&shareUrl=revver', {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Seesmic
@@ -368,7 +377,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // YouTube
@@ -376,11 +385,11 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaSplit = URL.split('=');
 				mediaId = mediaSplit[1];
-				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum, {
+				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Veoh
@@ -392,7 +401,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Viddler
@@ -406,7 +415,7 @@ var Mediabox;
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Vimeo
@@ -414,11 +423,11 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[3];
-				preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=5ca0b5', {
+				preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: '#000000', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // 12seconds
@@ -430,7 +439,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {flashvars: 'vid='+mediaId+'', wmode: 'opaque', bgcolor: '#ffffff', allowscriptaccess: 'always', allowfullscreen: 'true'}
+					params: {flashvars: 'vid='+mediaId+'', wmode: 'opaque', bgcolor: '#ffffff', allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // CONTENT TYPES
@@ -445,11 +454,12 @@ var Mediabox;
 				mediaType = 'url';
 				mediaId = "mediaId_"+new Date().getTime();	// Safari will not update iframe content with a static id.
 				preload = new Element('iframe', {
-					'href': URL,
+//					'href': URL,
+					'src': URL,
 					'id': mediaId,
 					'width': mediaWidth,
 					'height': mediaHeight,
-					'src': URL,
+					'frameborder': 0
 					});
 				nextEffect();
 			}
