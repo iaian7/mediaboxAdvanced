@@ -19,7 +19,7 @@ var Mediabox;
 	overlay, center, image, bottomContainer, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	
 	// Mediabox specific vars
-	URL, WH, WHL, mediaSet, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox";
+	URL, WH, WHL, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox";
 
 	/*
 		Initialization
@@ -252,7 +252,6 @@ if (Browser.Engine.trident4) {
 // MEDIABOX FORMATING
 			WH = images[imageIndex][2].match(/[0-9]+/g);
 			WHL = WH.length;
-			mediaSet = WH[WHL-3];
 			mediaWidth = WH[WHL-2]+"px";
 			mediaHeight = WH[WHL-1]+"px";
 			URL = images[imageIndex][0];

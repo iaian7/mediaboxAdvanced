@@ -1,6 +1,4 @@
-/* @override http://iaian7.com/files/mediabox/mediaboxAdvBlack.css */
-
-/* SLIMBOX */
+/* mediaboxAdvanced - black theme */
 
 #mbOverlay {
 	position: absolute;
@@ -16,7 +14,7 @@
 }
 
 #mbOverlay.mbOverlayIE {
-	background: transparent url(../images/80.gif) repeat;
+	background: transparent url(../images/50.gif) repeat;
 }
 
 #mbCenter, #mbBottomContainer {
@@ -28,7 +26,7 @@
 }
 
 .mbLoading {
-	background: #000 url(../images/blackLoading.gif) no-repeat center;
+	background: #000 url(../images/BlackLoading.gif) no-repeat center;
 }
 
 #mbImage {
@@ -92,24 +90,24 @@
 	float: right;
 	height: 20px;
 	width: 46px;
-	background: transparent url(../images/blackClose.gif) no-repeat center;
+	background: transparent url(../images/BlackClose.gif) no-repeat center;
 	margin: 0;
 	outline: none;
 }
 
 #mbPrevLink {
 	width: 69px;
-	background: transparent url(../images/blackPrevious.gif) no-repeat center;
+	background: transparent url(../images/BlackPrevious.gif) no-repeat center;
 }
 
 #mbNextLink {
 	width: 41px;
-	background: transparent url(../images/blackNext.gif) no-repeat center;
+	background: transparent url(../images/BlackNext.gif) no-repeat center;
 }
 
 #mbCloseLink {
 	width: 46px;
-	background: transparent url(../images/blackClose.gif) no-repeat center;
+	background: transparent url(../images/BlackClose.gif) no-repeat center;
 }
 
 #mbError {
