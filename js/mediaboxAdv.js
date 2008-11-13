@@ -1,5 +1,5 @@
 /*!
-	Mediabox v0.8.9 - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.2 - The ultimate extension of Mediabox into an all-media script
 	(c) 2007-2007 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -63,6 +63,11 @@ var Mediabox;
 	*/
 
 	Mediabox = {
+		// Thanks to Yosha on the google group for fixing the close function API!
+		close: function(){ 
+			close(); 
+		}, 
+
 		open: function(_images, startImage, _options) {
 			options = $extend({
 				loop: false,					// Allows to navigate between first and last images
@@ -70,8 +75,8 @@ var Mediabox;
 												// Remember that Firefox 2 and Camino on the Mac require a .png file set in the CSS
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				resizeTransition: false,		// Default transition in mootools
-				initialWidth: 320,				// Initial width of the box (in pixels)
-				initialHeight: 180,				// Initial height of the box (in pixels)
+				initialWidth: 360,				// Initial width of the box (in pixels)
+				initialHeight: 240,				// Initial height of the box (in pixels)
 				showCaption: true,				// Display the title and caption, true / false
 				animateCaption: true,			// Animate the caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
@@ -251,9 +256,14 @@ if (Browser.Engine.trident4) {
 
 // MEDIABOX FORMATING
 			WH = images[imageIndex][2].match(/[0-9]+/g);
-			WHL = WH.length;
-			mediaWidth = WH[WHL-2]+"px";
-			mediaHeight = WH[WHL-1]+"px";
+			if (WH) {
+				WHL = WH.length;
+				mediaWidth = WH[WHL-2]+"px";
+				mediaHeight = WH[WHL-1]+"px";
+			} else {
+				mediaWidth=options.initialWidth;
+				mediaHeight=options.initialHeight;
+			}
 			URL = images[imageIndex][0];
 			captionSplit = images[activeImage][1].split('::');
 // MEDIA TYPES
@@ -556,6 +566,9 @@ if (Browser.Engine.trident4) {
 
 // AUTOLOAD CODE BLOCK
 Mediabox.scanPage = function() {
+//	$$('#mb_').each(function(hide) {
+//		hide.set('display', 'none');
+//	});
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
 	});
