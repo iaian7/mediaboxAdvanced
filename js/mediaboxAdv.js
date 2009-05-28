@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v0.9.7 - The ultimate extension of Mediabox into an all-media script
-	updated 2009.01.24
+	mediaboxAdvanced v0.9.8 - The ultimate extension of Mediabox into an all-media script
+	updated 2009.01.30
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -24,7 +24,7 @@ var Mediabox;
 	*/
 
 	window.addEvent("domready", function() {
-		// Append the Mediabox HTML code at the bottom of the document
+		// Create and append the Mediabox HTML code at the bottom of the document
 		$(document.body).adopt(
 			$$([
 				overlay = new Element("div", {id: "mbOverlay"}).addEvent("click", close),
@@ -80,13 +80,18 @@ var Mediabox;
 			autoplay: 'true',			// Plays the video as soon as it's opened
 			autoplayNum: '1',			// 1 = true
 			bgcolor: '#000000',			// Background color, used for both flash and QT media
-		// Flash player settings and options
+		// JW Media Player settings and options
 			playerpath: '../js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
 			backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
 			frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
 			lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 			screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 			controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
+		// NonverBlaster
+			useNB: false,				// use NonverBlaster in place of the JW Media Player for .flv and .mp4 files
+			NBpath: '../js/NonverBlaster.swf',	// Path to NonverBlaster.swf
+			controllerColor: '0x777777',	// set the controlbar colour
+			showTimecode: 'false',		// turn timecode display off or on
 		// Quicktime options
 			controller: 'true',			// Show controller, true / false
 		// Flickr options
@@ -111,20 +116,23 @@ var Mediabox;
 
 			}, _options || {});
 
-			// The function is called for a single image, with URL and Title as first two arguments
-			if (typeof _images == "string") {
+			if (typeof _images == "string") {	// The function is called for a single image, with URL and Title as first two arguments
 				_images = [[_images,startImage,_options]];
 				startImage = 0;
 			}
 
-// Fixes Firefox 2 and Camino 1.5 incompatibility with opacity + flash
-if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
-	var ffversion=new Number(RegExp.$1); // capture x.x portion and store as a number
-	if (ffversion<3) {
-		options.overlayOpacity = 1;
-		overlay.className = 'mbOverlayFF';
-	}
+// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
+if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
+	options.overlayOpacity = 1;
+	overlay.className = 'mbOverlayFF';
 }
+
+// Bypasses IE6 transparency errors via CSS (modify to use PNG instead of GIF if you have a transparent PNG fix applied to your site)
+if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
+	options.overlayOpacity = 1;
+	overlay.className = 'mbOverlayIE';
+}
+
 			images = _images;
 			options.loop = options.loop && (images.length > 1);
 			position();
@@ -140,8 +148,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 
 	Element.implement({
 		mediabox: function(_options, linkMapper) {
-			// The processing of a single element is similar to the processing of a collection with a single element
-			$$(this).mediabox(_options, linkMapper);
+			$$(this).mediabox(_options, linkMapper);	// The processing of a single element is similar to the processing of a collection with a single element
 
 			return this;
 		}
@@ -215,6 +222,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 			case 78:	// 'n'
 				next();
 		}
+//		return false;	// Prevent default keyboard action
 	}
 
 	function previous() {
@@ -240,11 +248,12 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 			center.className = "mbLoading";
 
 // MEDIABOX FORMATING
-			WH = images[imageIndex][2].split(/[ \[\]]/);
+			WH = images[imageIndex][2].split(/[\[\]]/);
+			WH = WH[1].split(' ');
 			WHL = WH.length;
-			if (WHL>3) {
-				mediaWidth = (WH[WHL-3].match("%")) ? (window.getWidth()*("0."+(WH[WHL-3].replace("%", ""))))+"px" : WH[WHL-3]+"px";
-				mediaHeight = (WH[WHL-2].match("%")) ? (window.getHeight()*("0."+(WH[WHL-2].replace("%", ""))))+"px" : WH[WHL-2]+"px";
+			if (WHL>1) {
+				mediaWidth = (WH[WHL-2].match("%")) ? (window.getWidth()*("0."+(WH[WHL-2].replace("%", ""))))+"px" : WH[WHL-2]+"px";
+				mediaHeight = (WH[WHL-1].match("%")) ? (window.getHeight()*("0."+(WH[WHL-1].replace("%", ""))))+"px" : WH[WHL-1]+"px";
 			} else {
 				mediaWidth = "";
 				mediaHeight = "";
@@ -263,12 +272,21 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.initialWidth;
 				mediaHeight = mediaHeight || options.initialHeight;
+				if (options.useNB) {
+				preload = new Swiff(''+options.NBpath+'?videoURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop=true&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=false', {
+					id: 'MediaboxSWF',
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				} else {
 				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
+				}
 				nextEffect();
 // MP3, AAC
 			} else if (URL.match(/\.mp3|\.aac/i)) {
@@ -294,6 +312,11 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
+// MOV
+//			} else if (URL.match(/\.mov/i)) {
+//				mediaType = 'obj';
+//				nextEffect();
+// SOCIAL SITES
 // DailyMotion
 			} else if (URL.match(/dailymotion\.com/i)) {
 				mediaType = 'obj';
@@ -377,6 +400,20 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
+// Rutube
+			} else if (URL.match(/rutube\.ru/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "470px";
+				mediaHeight = mediaHeight || "353px";
+				mediaSplit = URL.split('=');
+				mediaId = mediaSplit[1];
+				preload = new Swiff('http://video.rutube.ru/'+mediaId, {
+					movie: 'http://video.rutube.ru/'+mediaId,
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				nextEffect();
 // Seesmic
 			} else if (URL.match(/seesmic\.com/i)) {
 				mediaType = 'obj';
@@ -401,7 +438,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				preload = new Swiff('http://www.tudou.com/v/'+mediaId, {
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // YouKu
@@ -414,7 +451,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				preload = new Swiff('http://player.youku.com/player.php/sid/'+mediaId+'=/v.swf', {
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // YouTube
@@ -497,7 +534,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {flashvars: 'vid='+mediaId+'', wmode: 'opaque', bgcolor: '#ffffff', allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {flashvars: 'vid='+mediaId+'', wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // CONTENT TYPES
