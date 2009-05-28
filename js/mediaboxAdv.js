@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v0.9.9e - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.9f - The ultimate extension of Mediabox into an all-media script
 	updated 2009.03.28
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -352,6 +352,22 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
+// Facebook
+			} else if (URL.match(/facebook\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "320px";
+				mediaHeight = mediaHeight || "240px";
+				mediaSplit = URL.split('v=');
+				mediaSplit = mediaSplit[1].split('&');
+				mediaId = mediaSplit[0];
+				preload = new Swiff('http://www.facebook.com/v/'+mediaId, {
+					movie: 'http://www.facebook.com/v/'+mediaId,
+					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
 // Flickr
 			} else if (URL.match(/flickr\.com/i)) {
 				mediaType = 'obj';
