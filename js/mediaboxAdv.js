@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v0.9.9 - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.9b - The ultimate extension of Mediabox into an all-media script
 	updated 2009.01.30
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -95,8 +95,6 @@ var Mediabox;
 				NBpath: '../js/NonverBlaster.swf',	// Path to NonverBlaster.swf
 				controllerColor: '0x777777',	// set the controlbar colour
 				showTimecode: 'false',		// turn timecode display off or on
-//			Quicktime options
-				controller: 'true',			// Show controller, true / false
 //			Flickr options
 				flInfo: 'true',				// Show title and info at video start
 //			Revver options
@@ -108,7 +106,7 @@ var Mediabox;
 //			Youtube options
 				ytColor1: '000000',			// Outline colour
 				ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
-				ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
+				ytQuality: '&ap=%2526fmt%3D18',	// Default quality setting - leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
 //			Vimeo options
 				vdPlayer: 'false',			// Use simple (smaller) player (22px less)
 //			Vimeo options
@@ -123,16 +121,9 @@ var Mediabox;
 				startImage = 0;
 			}
 
-// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 	options.overlayOpacity = 1;
 	overlay.className = 'mbOverlayFF';
-}
-
-// Bypasses IE6 transparency errors via CSS (modify to use PNG instead of GIF if you have a transparent PNG fix applied to your site)
-if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
-	options.overlayOpacity = 1;
-	overlay.className = 'mbOverlayIE';
 }
 
 			images = _images;
@@ -326,6 +317,18 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 					});
 				nextEffect();
 // SOCIAL SITES
+// Blip.tv
+			} else if (URL.match(/blip\.tv/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "640px";
+				mediaHeight = mediaHeight || "390px";
+				preload = new Swiff(URL, {
+					src: URL,
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				nextEffect();
 // DailyMotion
 			} else if (URL.match(/dailymotion\.com/i)) {
 				mediaType = 'obj';
@@ -645,7 +648,6 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 
 // AUTOLOAD CODE BLOCK
 Mediabox.scanPage = function() {
-//	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
 	});
