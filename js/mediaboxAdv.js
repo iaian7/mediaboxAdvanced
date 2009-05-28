@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v0.9.5 - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.7 - The ultimate extension of Mediabox into an all-media script
 	updated 2009.01.24
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -81,7 +81,7 @@ var Mediabox;
 			autoplayNum: '1',			// 1 = true
 			bgcolor: '#000000',			// Background color, used for both flash and QT media
 		// Flash player settings and options
-			playerpath: 'http://iaian7.com/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
+			playerpath: '../js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
 			backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
 			frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
 			lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
@@ -125,13 +125,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 		overlay.className = 'mbOverlayFF';
 	}
 }
-
-// Fixes IE6 support for transparent PNG
-//if (Browser.Engine.trident4) {
-//	options.overlayOpacity = 1;
-//	overlay.className = 'mbOverlayIE';
-//}
-
 			images = _images;
 			options.loop = options.loop && (images.length > 1);
 			position();
@@ -222,7 +215,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 			case 78:	// 'n'
 				next();
 		}
-//		return false;	// Prevent default keyboard action
 	}
 
 	function previous() {
@@ -248,14 +240,14 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 			center.className = "mbLoading";
 
 // MEDIABOX FORMATING
-			WH = images[imageIndex][2].match(/[0-9]+/g);
-			if (WH) {
-				WHL = WH.length;
-				mediaWidth = WH[WHL-2]+"px";
-				mediaHeight = WH[WHL-1]+"px";
+			WH = images[imageIndex][2].split(/[ \[\]]/);
+			WHL = WH.length;
+			if (WHL>3) {
+				mediaWidth = (WH[WHL-3].match("%")) ? (window.getWidth()*("0."+(WH[WHL-3].replace("%", ""))))+"px" : WH[WHL-3]+"px";
+				mediaHeight = (WH[WHL-2].match("%")) ? (window.getHeight()*("0."+(WH[WHL-2].replace("%", ""))))+"px" : WH[WHL-2]+"px";
 			} else {
-				mediaWidth=options.initialWidth;
-				mediaHeight=options.initialHeight;
+				mediaWidth = "";
+				mediaHeight = "";
 			}
 			URL = images[imageIndex][0];
 			captionSplit = images[activeImage][1].split('::');
@@ -269,7 +261,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i)) {
 				mediaType = 'obj';
-//				preload = new Swiff(options.playerpath, {
+				mediaWidth = mediaWidth || options.initialWidth;
+				mediaHeight = mediaHeight || options.initialHeight;
 				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
@@ -280,8 +273,9 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // MP3, AAC
 			} else if (URL.match(/\.mp3|\.aac/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || options.initialWidth;
+				mediaHeight = mediaHeight || options.initialHeight;
 				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
-//				preload = new Swiff(''+options.playerpath+'?file='+URL+'&autostart='+options.autoplay+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
@@ -291,6 +285,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // SWF
 			} else if (URL.match(/\.swf/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || options.initialWidth;
+				mediaHeight = mediaHeight || options.initialHeight;
 				preload = new Swiff(URL, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
@@ -298,10 +294,11 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
-// SOCIAL SITES
 // DailyMotion
 			} else if (URL.match(/dailymotion\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "480px";
+				mediaHeight = mediaHeight || "381px";
 				preload = new Swiff(URL, {
 					id: mediaId,
 					width: mediaWidth,
@@ -312,6 +309,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Flickr
 			} else if (URL.match(/flickr\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "500px";
+				mediaHeight = mediaHeight || "375px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[5];
 				preload = new Swiff('http://www.flickr.com/apps/video/stewart.swf', {
@@ -325,6 +324,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Google Video
 			} else if (URL.match(/google\.com\/videoplay/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "400px";
+				mediaHeight = mediaHeight || "326px";
 				mediaSplit = URL.split('=');
 				mediaId = mediaSplit[1];
 				preload = new Swiff('http://video.google.com/googleplayer.swf?docId='+mediaId+'&autoplay='+options.autoplayNum, {
@@ -337,6 +338,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Metacafe
 			} else if (URL.match(/metacafe\.com\/watch/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "400px";
+				mediaHeight = mediaHeight || "345px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
 				preload = new Swiff('http://www.metacafe.com/fplayer/'+mediaId+'/.swf', {
@@ -349,6 +352,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // MyspaceTV
 			} else if (URL.match(/myspacetv\.com|vids\.myspace\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "425px";
+				mediaHeight = mediaHeight || "360px";
 				mediaSplit = URL.split('=');
 				mediaId = mediaSplit[2];
 				preload = new Swiff('http://lads.myspace.com/videos/vplayer.swf?m='+mediaId+'&v=2&type=video', {
@@ -361,6 +366,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Revver
 			} else if (URL.match(/revver\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "480px";
+				mediaHeight = mediaHeight || "392px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
 				preload = new Swiff('http://flash.revver.com/player/1.0/player.swf?mediaId='+mediaId+'&affiliateId='+options.revverID+'&allowFullScreen='+options.revverFullscreen+'&backColor=#'+options.revverBack+'&frontColor=#'+options.revverFront+'&gradColor=#'+options.revverGrad+'&shareUrl=revver', {
@@ -373,6 +380,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Seesmic
 			} else if (URL.match(/seesmic\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "435px";
+				mediaHeight = mediaHeight || "355px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[5];
 				preload = new Swiff('http://seesmic.com/Standalone.swf?video='+mediaId, {
@@ -385,6 +394,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Tudou
 			} else if (URL.match(/tudou\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "400px";
+				mediaHeight = mediaHeight || "340px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[5];
 				preload = new Swiff('http://www.tudou.com/v/'+mediaId, {
@@ -396,6 +407,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // YouKu
 			} else if (URL.match(/youku\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "480px";
+				mediaHeight = mediaHeight || "400px";
 				mediaSplit = URL.split('id_');
 				mediaId = mediaSplit[1];
 				preload = new Swiff('http://player.youku.com/player.php/sid/'+mediaId+'=/v.swf', {
@@ -411,10 +424,16 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				mediaId = mediaSplit[1];
 				if (mediaId.match(/fmt=18/i)) {
 					mediaFmt = '&ap=%2526fmt%3D18';
+					mediaWidth = mediaWidth || "560px";
+					mediaHeight = mediaHeight || "345px";
 				} else if (mediaId.match(/fmt=22/i)) {
 					mediaFmt = '&ap=%2526fmt%3D22';
+					mediaWidth = mediaWidth || "640px";
+					mediaHeight = mediaHeight || "385px";
 				} else {
 					mediaFmt = options.ytQuality;
+					mediaWidth = mediaWidth || "480px";
+					mediaHeight = mediaHeight || "295px";
 				}
 				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
 					id: mediaId,
@@ -426,6 +445,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Veoh
 			} else if (URL.match(/veoh\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "410px";
+				mediaHeight = mediaHeight || "341px";
 				mediaSplit = URL.split('videos/');
 				mediaId = mediaSplit[1];
 				preload = new Swiff('http://www.veoh.com/videodetails2.swf?permalinkId='+mediaId+'&player=videodetailsembedded&videoAutoPlay='+options.AutoplayNum, {
@@ -438,6 +459,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Viddler
 			} else if (URL.match(/viddler\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "437px";
+				mediaHeight = mediaHeight || "370px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
 				preload = new Swiff(URL, {
@@ -452,6 +475,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // Vimeo
 			} else if (URL.match(/vimeo\.com/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "400px";
+				mediaHeight = mediaHeight || "225px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[3];
 				preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
@@ -464,6 +489,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // 12seconds
 			} else if (URL.match(/12seconds\.tv/i)) {
 				mediaType = 'obj';
+				mediaWidth = mediaWidth || "430px";
+				mediaHeight = mediaHeight || "360px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[5];
 				preload = new Swiff('http://embed.12seconds.tv/players/remotePlayer.swf', {
@@ -477,12 +504,16 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 // INLINE
 			} else if (URL.match(/\#mb_/i)) {
 				mediaType = 'inline';
+				mediaWidth = mediaWidth || options.initialWidth;
+				mediaHeight = mediaHeight || options.initialHeight;
 				URLsplit = URL.split('#');
 				preload = $(URLsplit[1]).get('html');
 				nextEffect();
 // HTML
 			} else {
 				mediaType = 'url';
+				mediaWidth = mediaWidth || options.initialWidth;
+				mediaHeight = mediaHeight || options.initialHeight;
 				mediaId = "mediaId_"+new Date().getTime();	// Safari will not update iframe content with a static id.
 				preload = new Element('iframe', {
 					'src': URL,
@@ -523,6 +554,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				}
 				$$(image, bottom).setStyle("width", mediaWidth);
 				image.setStyle("height", mediaHeight);
+
 				title.set('html', (options.showCaption) ? captionSplit[0] : "");
 				caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
 				number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, activeImage + 1).replace(/{y}/, images.length) : "");
