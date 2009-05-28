@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v0.9.9b - The ultimate extension of Mediabox into an all-media script
-	updated 2009.01.30
+	mediaboxAdvanced v0.9.9e - The ultimate extension of Mediabox into an all-media script
+	updated 2009.03.28
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -82,6 +82,7 @@ var Mediabox;
 				fullscreenNum: '1',			// 1 = true
 				autoplay: 'true',			// Plays the video as soon as it's opened
 				autoplayNum: '1',			// 1 = true
+				autoplayYes: 'yes',			// yes = true
 				bgcolor: '#000000',			// Background color, used for both flash and QT media
 //			JW Media Player settings and options
 				playerpath: '../js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
@@ -93,8 +94,11 @@ var Mediabox;
 //			NonverBlaster
 				useNB: true,				// use NonverBlaster in place of the JW Media Player for .flv and .mp4 files
 				NBpath: '../js/NonverBlaster.swf',	// Path to NonverBlaster.swf
+				NBloop: 'true',				// Loop video playback, true / false
 				controllerColor: '0x777777',	// set the controlbar colour
 				showTimecode: 'false',		// turn timecode display off or on
+//			Quicktime options
+				controller: 'true',			// Show controller, true / false
 //			Flickr options
 				flInfo: 'true',				// Show title and info at video start
 //			Revver options
@@ -106,7 +110,7 @@ var Mediabox;
 //			Youtube options
 				ytColor1: '000000',			// Outline colour
 				ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
-				ytQuality: '&ap=%2526fmt%3D18',	// Default quality setting - leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
+				ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
 //			Vimeo options
 				vdPlayer: 'false',			// Use simple (smaller) player (22px less)
 //			Vimeo options
@@ -121,6 +125,7 @@ var Mediabox;
 				startImage = 0;
 			}
 
+// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 	options.overlayOpacity = 1;
 	overlay.className = 'mbOverlayFF';
@@ -198,6 +203,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 	}
 
 	function setup(open) {
+		// Hides on-page objects and embeds while the overlay is open to counteract Firefox stupidity
 		["object", window.ie ? "select" : "embed"].forEach(function(tag) {
 			Array.forEach(document.getElementsByTagName(tag), function(el) {
 				if (open) el._mediabox = el.style.visibility;
@@ -264,6 +270,11 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 			}
 			URL = images[imageIndex][0];
 			captionSplit = images[activeImage][1].split('::');
+// Quietube support
+			if (URL.match(/quietube\.com/i)) {
+				mediaSplit = URL.split('v.php/');
+				URL = mediaSplit[1];
+			}
 // MEDIA TYPES
 // IMAGES
 			if (URL.match(/\.gif|\.jpg|\.png/i)) {
@@ -277,7 +288,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaWidth = mediaWidth || options.initialWidth;
 				mediaHeight = mediaHeight || options.initialHeight;
 				if (options.useNB) {
-				preload = new Swiff(''+options.NBpath+'?videoURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop=true&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=false', {
+				preload = new Swiff(''+options.NBpath+'?videoURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=false', {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
@@ -370,6 +381,20 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
+// Megavideo - Thanks to Robert Jandreu for suggesting this code!
+			} else if (URL.match(/megavideo\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "640px";
+				mediaHeight = mediaHeight || "360px";
+				mediaSplit = URL.split('=');
+				mediaId = mediaSplit[1];
+				preload = new Swiff('http://wwwstatic.megavideo.com/mv_player.swf?v='+mediaId, {
+					id: mediaId,
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				nextEffect();
 // Metacafe
 			} else if (URL.match(/metacafe\.com\/watch/i)) {
 				mediaType = 'obj';
@@ -377,7 +402,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaHeight = mediaHeight || "345px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
-				preload = new Swiff('http://www.metacafe.com/fplayer/'+mediaId+'/.swf', {
+				preload = new Swiff('http://www.metacafe.com/fplayer/'+mediaId+'/.swf?playerVars=autoPlay='+options.autoplayYes, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -391,7 +416,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaHeight = mediaHeight || "360px";
 				mediaSplit = URL.split('=');
 				mediaId = mediaSplit[2];
-				preload = new Swiff('http://lads.myspace.com/videos/vplayer.swf?m='+mediaId+'&v=2&type=video', {
+				preload = new Swiff('http://lads.myspace.com/videos/vplayer.swf?m='+mediaId+'&v=2&a='+options.autoplayNum+'&type=video', {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -405,7 +430,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaHeight = mediaHeight || "392px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
-				preload = new Swiff('http://flash.revver.com/player/1.0/player.swf?mediaId='+mediaId+'&affiliateId='+options.revverID+'&allowFullScreen='+options.revverFullscreen+'&backColor=#'+options.revverBack+'&frontColor=#'+options.revverFront+'&gradColor=#'+options.revverGrad+'&shareUrl=revver', {
+				preload = new Swiff('http://flash.revver.com/player/1.0/player.swf?mediaId='+mediaId+'&affiliateId='+options.revverID+'&allowFullScreen='+options.revverFullscreen+'&autoStart='+options.autoplay+'&backColor=#'+options.revverBack+'&frontColor=#'+options.revverFront+'&gradColor=#'+options.revverGrad+'&shareUrl=revver', {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -467,7 +492,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 					});
 				nextEffect();
 // YouTube
-			} else if (URL.match(/youtube\.com/i)) {
+			} else if (URL.match(/youtube\.com\/watch/i)) {
 				mediaType = 'obj';
 				mediaSplit = URL.split('v=');
 				mediaId = mediaSplit[1];
@@ -485,6 +510,20 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 					mediaHeight = mediaHeight || "295px";
 				}
 				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
+					id: mediaId,
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				nextEffect();
+// YouTube
+			} else if (URL.match(/youtube\.com\/view/i)) {
+				mediaType = 'obj';
+				mediaSplit = URL.split('p=');
+				mediaId = mediaSplit[1];
+				mediaWidth = mediaWidth || "480px";
+				mediaHeight = mediaHeight || "385px";
+				preload = new Swiff('http://www.youtube.com/p/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -528,7 +567,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaHeight = mediaHeight || "225px";
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[3];
-				preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
+				preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;autoplay='+options.autoplayNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -565,6 +604,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaHeight = mediaHeight || options.initialHeight;
 				mediaId = "mediaId_"+new Date().getTime();	// Safari will not update iframe content with a static id.
 				preload = new Element('iframe', {
+//					'href': URL,
 					'src': URL,
 					'id': mediaId,
 					'width': mediaWidth,
@@ -643,7 +683,6 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 		}
 		return false;
 	}
-
 })();
 
 // AUTOLOAD CODE BLOCK
