@@ -1,6 +1,7 @@
-/*!
-	mediaboxAdvanced v0.9.4 - The ultimate extension of Mediabox into an all-media script
-	(c) 2007-2007 John Einselen <http://iaian7.com>
+/*
+	mediaboxAdvanced v0.9.5 - The ultimate extension of Mediabox into an all-media script
+	updated 2009.01.24
+	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
 	(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -12,12 +13,9 @@ var Mediabox;
 (function() {
 
 	// Global variables, accessible to Mediabox only
-	var state = 0, options, images, activeImage, prevImage, nextImage, top, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
-	// State values: 0 (closed or closing), 1 (open and ready), 2+ (open and busy with animation)
-
+	var state = 0, options, images, activeImage, prevImage, nextImage, top, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),	// State values: 0 (closed or closing), 1 (open and ready), 2+ (open and busy with animation)
 	// DOM elements
 	overlay, center, image, bottomContainer, bottom, captionSplit, title, caption, prevLink, number, nextLink,
-	
 	// Mediabox specific vars
 	URL, WH, WHL, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
 
@@ -36,11 +34,6 @@ var Mediabox;
 		);
 
 		image = new Element("div", {id: "mbImage"}).injectInside(center);
-//		image = new Element("div", {id: "mbImage"}).injectInside(center).adopt(
-//			prevLink = new Element("a", {id: "mbPrevOverlay", href: "#"}).addEvent("click", previous),
-//			nextLink = new Element("a", {id: "mbNextOverlay", href: "#"}).addEvent("click", next)
-//		);
-
 		bottom = new Element("div", {id: "mbBottom"}).injectInside(bottomContainer).adopt(
 			new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
@@ -63,9 +56,8 @@ var Mediabox;
 	*/
 
 	Mediabox = {
-		// Thanks to Yosha on the google group for fixing the close function API!
 		close: function(){ 
-			close(); 
+			close();	// Thanks to Yosha on the google group for fixing the close function API!
 		}, 
 
 		open: function(_images, startImage, _options) {
@@ -95,7 +87,7 @@ var Mediabox;
 			lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 			screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 			controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
-		// Quicktime options (QT plugin used for partial WMV support as well)
+		// Quicktime options
 			controller: 'true',			// Show controller, true / false
 		// Flickr options
 			flInfo: 'true',				// Show title and info at video start
@@ -109,6 +101,8 @@ var Mediabox;
 			ytColor1: '000000',			// Outline colour
 			ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
 			ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
+		// Vimeo options
+			vdPlayer: 'false',			// Use simple (smaller) player (22px less)
 		// Vimeo options
 			vmTitle: '1',				// Show video title
 			vmByline: '1',				// Show byline
@@ -131,6 +125,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 		overlay.className = 'mbOverlayFF';
 	}
 }
+
 // Fixes IE6 support for transparent PNG
 //if (Browser.Engine.trident4) {
 //	options.overlayOpacity = 1;
@@ -189,7 +184,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 		}
 	});
 
-
 	/*
 		Internal functions
 	*/
@@ -228,8 +222,7 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 			case 78:	// 'n'
 				next();
 		}
-//		Prevent default keyboard action (like navigating inside the page)
-//		return false;
+//		return false;	// Prevent default keyboard action
 	}
 
 	function previous() {
@@ -244,7 +237,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 		if ((state == 1) && (imageIndex >= 0)) {
 			state = 2;
 			image.set('html', '');
-//			image.erase('html');
 			activeImage = imageIndex;
 			prevImage = ((activeImage || !options.loop) ? activeImage : images.length) - 1;
 			nextImage = activeImage + 1;
@@ -257,7 +249,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 
 // MEDIABOX FORMATING
 			WH = images[imageIndex][2].match(/[0-9]+/g);
-//			WH = images[imageIndex][2]..split(' ');
 			if (WH) {
 				WHL = WH.length;
 				mediaWidth = WH[WHL-2]+"px";
@@ -283,7 +274,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-//					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, flashvars: 'file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&controlbar='+options.controlbar+'&autostart='+options.autoplay);
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
@@ -308,11 +298,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
-// MOV
-//			} else if (URL.match(/\.mov/i)) {
-//				mediaType = 'obj';
-//				preload = '';
-//				nextEffect();
 // SOCIAL SITES
 // DailyMotion
 			} else if (URL.match(/dailymotion\.com/i)) {
@@ -456,12 +441,12 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
 				preload = new Swiff(URL, {
-					name: URL,
-					id: mediaId,
+					id: 'viddler_'+mediaId,
+					movie: URL,
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, id: 'viddler_'+mediaId, movie: URL}
 					});
 				nextEffect();
 // Vimeo
@@ -500,7 +485,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				mediaType = 'url';
 				mediaId = "mediaId_"+new Date().getTime();	// Safari will not update iframe content with a static id.
 				preload = new Element('iframe', {
-//					'href': URL,
 					'src': URL,
 					'id': mediaId,
 					'width': mediaWidth,
@@ -520,8 +504,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					mediaWidth = preload.width;
 					mediaHeight = preload.height;
 					image.setStyles({backgroundImage: "url("+URL+")", display: ""});
-//					$$(image, bottom).setStyle("width", preload.width);
-//					$$(image, prevLink, nextLink).setStyle("height", preload.height);
 				} else if (mediaType == "obj") {
 					if (Browser.Plugins.Flash.version<8) {
 						image.setStyles({backgroundImage: "none", display: ""});
@@ -529,11 +511,9 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 					} else {
 						image.setStyles({backgroundImage: "none", display: ""});
 						preload.inject(image);
-//						image.adopt(preload);
 					}
 				} else if (mediaType == "inline") {
 					image.setStyles({backgroundImage: "none", display: ""});
-//					image.grab(preload);
 					image.set('html', preload);
 				} else if (mediaType == "url") {
 					image.setStyles({backgroundImage: "none", display: ""});
@@ -543,12 +523,8 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				}
 				$$(image, bottom).setStyle("width", mediaWidth);
 				image.setStyle("height", mediaHeight);
-//				$$(image, prevLink, nextLink).setStyle("height", mediaHeight);
-
-				title.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[0] : images[activeImage][1]);
+				title.set('html', (options.showCaption) ? captionSplit[0] : "");
 				caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
-//				title.set('html', captionSplit[0]);
-//				caption.set('html', captionSplit[0] + "<br/>media type: " + mediaType + ", width: " + mediaWidth + ", height: " + mediaHeight);
 				number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, activeImage + 1).replace(/{y}/, images.length) : "");
 
 				if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.png/i))) preloadPrev.src = images[prevImage][0];
@@ -559,10 +535,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 				center.className = "";
 				fx.resize.start({height: image.offsetHeight, width: image.offsetWidth, marginLeft: -image.offsetWidth/2});
 				break;
-//				if (center.clientWidth != image.offsetWidth) {
-//					fx.resize.start({width: image.offsetWidth, marginLeft: -image.offsetWidth/2});
-//					break;
-//				}
 				state++;
 			case 4:
 				bottomContainer.setStyles({top: top + center.clientHeight, marginLeft: center.style.marginLeft, visibility: "hidden", display: ""});
@@ -584,7 +556,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 			state = 0;
 			preload.onload = $empty;
 			image.set('html', '');
-//			image.erase('html');
 			for (var f in fx) fx[f].cancel();
 			$$(center, bottomContainer).setStyle("display", "none");
 			fx.overlay.chain(setup).start(0);
@@ -597,9 +568,6 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 
 // AUTOLOAD CODE BLOCK
 Mediabox.scanPage = function() {
-//	$$('#mb_').each(function(hide) {
-//		hide.set('display', 'none');
-//	});
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
 	});
@@ -607,7 +575,6 @@ Mediabox.scanPage = function() {
 		var rel0 = this.rel.replace(/[[]|]/gi," ");
 		var relsize = rel0.split(" ");
 		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
-//		return (this == el) || ((this.rel.length > 8) && (this.rel == el.rel));
 	});
 };
 window.addEvent("domready", Mediabox.scanPage);
