@@ -1,5 +1,5 @@
 /*!
-	mediaboxAdvanced v0.9.2 - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.4 - The ultimate extension of Mediabox into an all-media script
 	(c) 2007-2007 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -19,7 +19,7 @@ var Mediabox;
 	overlay, center, image, bottomContainer, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	
 	// Mediabox specific vars
-	URL, WH, WHL, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox";
+	URL, WH, WHL, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
 
 	/*
 		Initialization
@@ -71,7 +71,7 @@ var Mediabox;
 		open: function(_images, startImage, _options) {
 			options = $extend({
 				loop: false,					// Allows to navigate between first and last images
-				overlayOpacity: 0.8,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
+				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
 												// Remember that Firefox 2 and Camino on the Mac require a .png file set in the CSS
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				resizeTransition: false,		// Default transition in mootools
@@ -108,6 +108,7 @@ var Mediabox;
 		// Youtube options
 			ytColor1: '000000',			// Outline colour
 			ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
+			ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
 		// Vimeo options
 			vmTitle: '1',				// Show video title
 			vmByline: '1',				// Show byline
@@ -131,10 +132,10 @@ if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox/x.
 	}
 }
 // Fixes IE6 support for transparent PNG
-if (Browser.Engine.trident4) {
-	options.overlayOpacity = 1;
-	overlay.className = 'mbOverlayIE';
-}
+//if (Browser.Engine.trident4) {
+//	options.overlayOpacity = 1;
+//	overlay.className = 'mbOverlayIE';
+//}
 
 			images = _images;
 			options.loop = options.loop && (images.length > 1);
@@ -256,6 +257,7 @@ if (Browser.Engine.trident4) {
 
 // MEDIABOX FORMATING
 			WH = images[imageIndex][2].match(/[0-9]+/g);
+//			WH = images[imageIndex][2]..split(' ');
 			if (WH) {
 				WHL = WH.length;
 				mediaWidth = WH[WHL-2]+"px";
@@ -395,12 +397,41 @@ if (Browser.Engine.trident4) {
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
+// Tudou
+			} else if (URL.match(/tudou\.com/i)) {
+				mediaType = 'obj';
+				mediaSplit = URL.split('/');
+				mediaId = mediaSplit[5];
+				preload = new Swiff('http://www.tudou.com/v/'+mediaId, {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				nextEffect();
+// YouKu
+			} else if (URL.match(/youku\.com/i)) {
+				mediaType = 'obj';
+				mediaSplit = URL.split('id_');
+				mediaId = mediaSplit[1];
+				preload = new Swiff('http://player.youku.com/player.php/sid/'+mediaId+'=/v.swf', {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				nextEffect();
 // YouTube
 			} else if (URL.match(/youtube\.com/i)) {
 				mediaType = 'obj';
-				mediaSplit = URL.split('=');
+				mediaSplit = URL.split('v=');
 				mediaId = mediaSplit[1];
-				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
+				if (mediaId.match(/fmt=18/i)) {
+					mediaFmt = '&ap=%2526fmt%3D18';
+				} else if (mediaId.match(/fmt=22/i)) {
+					mediaFmt = '&ap=%2526fmt%3D22';
+				} else {
+					mediaFmt = options.ytQuality;
+				}
+				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -424,8 +455,8 @@ if (Browser.Engine.trident4) {
 				mediaType = 'obj';
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[4];
-				preload = new Swiff('http://www.viddler.com/player/e5398221/', {
-					name: 'viddler_'+mediaId+'_'+mediaSplit[6],
+				preload = new Swiff(URL, {
+					name: URL,
 					id: mediaId,
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
