@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v0.9.9f - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.9g - The ultimate extension of Mediabox into an all-media script
 	updated 2009.03.28
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -108,11 +108,15 @@ var Mediabox;
 				revverFront: 'ffffff',		// Foreground colour
 				revverGrad: '000000',		// Gradation colour
 //			Youtube options
+				ytBorder: '0',				// Outline 				(1=true, 0=false)
 				ytColor1: '000000',			// Outline colour
 				ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
-				ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
-//			Vimeo options
-				vdPlayer: 'false',			// Use simple (smaller) player (22px less)
+				ytQuality: '&ap=%2526fmt%3D18',	// Leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
+				ytRel: '0',					// Show related videos	(1=true, 0=false)
+				ytInfo: '1',				// Show video info		(1=true, 0=false)
+				ytSearch: '0',				// Show search field	(1=true, 0=false)
+//			Viddyou options
+				vuPlayer: 'basic',			// Use 'full' or 'basic' players
 //			Vimeo options
 				vmTitle: '1',				// Show video title
 				vmByline: '1',				// Show byline
@@ -525,7 +529,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 					mediaWidth = mediaWidth || "480px";
 					mediaHeight = mediaHeight || "295px";
 				}
-				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
+				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -539,7 +543,7 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 				mediaId = mediaSplit[1];
 				mediaWidth = mediaWidth || "480px";
 				mediaHeight = mediaHeight || "385px";
-				preload = new Swiff('http://www.youtube.com/p/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2, {
+				preload = new Swiff('http://www.youtube.com/p/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -574,6 +578,21 @@ if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, id: 'viddler_'+mediaId, movie: URL}
+					});
+				nextEffect();
+// Viddyou
+			} else if (URL.match(/viddyou\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "416px";
+				mediaHeight = mediaHeight || "312px";
+				mediaSplit = URL.split('=');
+				mediaId = mediaSplit[1];
+				preload = new Swiff('http://www.viddyou.com/get/v2_'+options.vuPlayer+'/'+mediaId+'.swf', {
+					id: mediaId,
+					movie: 'http://www.viddyou.com/get/v2_'+options.vuPlayer+'/'+mediaId+'.swf',
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
 // Vimeo
