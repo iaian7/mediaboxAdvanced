@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v0.9.8 - The ultimate extension of Mediabox into an all-media script
+	mediaboxAdvanced v0.9.9 - The ultimate extension of Mediabox into an all-media script
 	updated 2009.01.30
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -17,7 +17,7 @@ var Mediabox;
 	// DOM elements
 	overlay, center, image, bottomContainer, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
-	URL, WH, WHL, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
+	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
 
 	/*
 		Initialization
@@ -63,8 +63,11 @@ var Mediabox;
 		open: function(_images, startImage, _options) {
 			options = $extend({
 				loop: false,					// Allows to navigate between first and last images
+				stopKey: true,					// Prevents default keyboard action (such as up/down arrows), in lieu of the shortcuts
+													// Does not apply to iFrame content
+													// Does not affect mouse scrolling
 				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
-												// Remember that Firefox 2 and Camino on the Mac require a .png file set in the CSS
+													// Remember that Firefox 2 and Camino 1.6 on the Mac require a background .png set in the CSS
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				resizeTransition: false,		// Default transition in mootools
 				initialWidth: 360,				// Initial width of the box (in pixels)
@@ -73,47 +76,46 @@ var Mediabox;
 				animateCaption: true,			// Animate the caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
 				counterText: '  ({x} of {y})',	// Translate or change as you wish
-		// Global media options
-			scriptaccess: 'true',		// Allow script access to flash files
-			fullscreen: 'true',			// Use fullscreen
-			fullscreenNum: '1',			// 1 = true
-			autoplay: 'true',			// Plays the video as soon as it's opened
-			autoplayNum: '1',			// 1 = true
-			bgcolor: '#000000',			// Background color, used for both flash and QT media
-		// JW Media Player settings and options
-			playerpath: '../js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
-			backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
-			frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
-			lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
-			screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
-			controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
-		// NonverBlaster
-			useNB: false,				// use NonverBlaster in place of the JW Media Player for .flv and .mp4 files
-			NBpath: '../js/NonverBlaster.swf',	// Path to NonverBlaster.swf
-			controllerColor: '0x777777',	// set the controlbar colour
-			showTimecode: 'false',		// turn timecode display off or on
-		// Quicktime options
-			controller: 'true',			// Show controller, true / false
-		// Flickr options
-			flInfo: 'true',				// Show title and info at video start
-		// Revver options
-			revverID: '187866',			// Revver affiliate ID, required for ad revinue sharing
-			revverFullscreen: 'true',	// Fullscreen option
-			revverBack: '000000',		// Background colour
-			revverFront: 'ffffff',		// Foreground colour
-			revverGrad: '000000',		// Gradation colour
-		// Youtube options
-			ytColor1: '000000',			// Outline colour
-			ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
-			ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
-		// Vimeo options
-			vdPlayer: 'false',			// Use simple (smaller) player (22px less)
-		// Vimeo options
-			vmTitle: '1',				// Show video title
-			vmByline: '1',				// Show byline
-			vmPortrait: '1',			// Show author portrait
-			vmColor: 'ffffff'			// Custom controller colours, hex value minus the # sign, defult is 5ca0b5
-
+//			Global media options
+				scriptaccess: 'true',		// Allow script access to flash files
+				fullscreen: 'true',			// Use fullscreen
+				fullscreenNum: '1',			// 1 = true
+				autoplay: 'true',			// Plays the video as soon as it's opened
+				autoplayNum: '1',			// 1 = true
+				bgcolor: '#000000',			// Background color, used for both flash and QT media
+//			JW Media Player settings and options
+				playerpath: '../js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
+				backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
+				frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
+				lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
+				screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
+				controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
+//			NonverBlaster
+				useNB: true,				// use NonverBlaster in place of the JW Media Player for .flv and .mp4 files
+				NBpath: '../js/NonverBlaster.swf',	// Path to NonverBlaster.swf
+				controllerColor: '0x777777',	// set the controlbar colour
+				showTimecode: 'false',		// turn timecode display off or on
+//			Quicktime options
+				controller: 'true',			// Show controller, true / false
+//			Flickr options
+				flInfo: 'true',				// Show title and info at video start
+//			Revver options
+				revverID: '187866',			// Revver affiliate ID, required for ad revinue sharing
+				revverFullscreen: 'true',	// Fullscreen option
+				revverBack: '000000',		// Background colour
+				revverFront: 'ffffff',		// Foreground colour
+				revverGrad: '000000',		// Gradation colour
+//			Youtube options
+				ytColor1: '000000',			// Outline colour
+				ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
+				ytQuality: '&ap=%2526fmt%3D18',	// Empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
+//			Vimeo options
+				vdPlayer: 'false',			// Use simple (smaller) player (22px less)
+//			Vimeo options
+				vmTitle: '1',				// Show video title
+				vmByline: '1',				// Show byline
+				vmPortrait: '1',			// Show author portrait
+				vmColor: 'ffffff'			// Custom controller colours, hex value minus the # sign, defult is 5ca0b5
 			}, _options || {});
 
 			if (typeof _images == "string") {	// The function is called for a single image, with URL and Title as first two arguments
@@ -165,7 +167,9 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 		*/
 		mediabox: function(_options, linkMapper, linksFilter) {
 			linkMapper = linkMapper || function(el) {
-				return [el.href, el.title, el.rel];
+				elrel = el.rel.split(/[\[\]]/);
+				elrel = elrel[1];
+				return [el.href, el.title, elrel];
 			};
 
 			linksFilter = linksFilter || function() {
@@ -176,8 +180,18 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 
 			links.removeEvents("click").addEvent("click", function() {
 				// Build the list of images that will be displayed
-				var filteredLinks = links.filter(linksFilter, this);
-				return Mediabox.open(filteredLinks.map(linkMapper), filteredLinks.indexOf(this), _options);
+				var filteredArray = links.filter(linksFilter, this);
+				var filteredLinks = [];
+				var filteredHrefs = [];
+
+				filteredArray.each(function(item, index){
+					if(filteredHrefs.indexOf(item.toString()) < 0) {
+						filteredLinks.include(filteredArray[index]);
+						filteredHrefs.include(filteredArray[index].toString());
+					};
+				});
+
+				return Mediabox.open(filteredLinks.map(linkMapper), filteredHrefs.indexOf(this.toString()), _options);
 			});
 
 			return links;
@@ -222,7 +236,7 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 			case 78:	// 'n'
 				next();
 		}
-//		return false;	// Prevent default keyboard action
+		if (options.stopKey) { return false; };
 	}
 
 	function previous() {
@@ -248,8 +262,7 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 			center.className = "mbLoading";
 
 // MEDIABOX FORMATING
-			WH = images[imageIndex][2].split(/[\[\]]/);
-			WH = WH[1].split(' ');
+			WH = images[imageIndex][2].split(' ');
 			WHL = WH.length;
 			if (WHL>1) {
 				mediaWidth = (WH[WHL-2].match("%")) ? (window.getWidth()*("0."+(WH[WHL-2].replace("%", ""))))+"px" : WH[WHL-2]+"px";
@@ -312,10 +325,6 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				nextEffect();
-// MOV
-//			} else if (URL.match(/\.mov/i)) {
-//				mediaType = 'obj';
-//				nextEffect();
 // SOCIAL SITES
 // DailyMotion
 			} else if (URL.match(/dailymotion\.com/i)) {
@@ -629,7 +638,6 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 			$$(center, bottomContainer).setStyle("display", "none");
 			fx.overlay.chain(setup).start(0);
 		}
-
 		return false;
 	}
 
@@ -637,6 +645,7 @@ if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {
 
 // AUTOLOAD CODE BLOCK
 Mediabox.scanPage = function() {
+//	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
 	});
