@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.2.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.3.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2010.08.11
 	(c) 2007-2010 John Einselen <http://iaian7.com>
 		based on
@@ -31,7 +31,7 @@ var Mediabox;
 
 		image = new Element("div", {id: "mbImage"}).injectInside(center);
 		bottom = new Element("div", {id: "mbBottom"}).injectInside(center).adopt(
-			new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
+			closeLink = new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
 			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),
 			title = new Element("div", {id: "mbTitle"}),
@@ -55,6 +55,8 @@ var Mediabox;
 
 		open: function(_images, startImage, _options) {
 			options = $extend({
+				text: ['<b>«</b>','<b>»</b>','<b>×</b>'],	// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+//	sample alt-	text: ['<b>«</b> prev','<b>»</b> next','close <b>×</b>'],
 				loop: false,					// Allows to navigate between first and last images
 				keyboard: true,					// Enables keyboard control; escape key, left arrow, and right arrow
 				alpha: true,					// Adds 'x', 'c', 'p', and 'n' when keyboard control is also set to true
@@ -73,9 +75,10 @@ var Mediabox;
 				counterText: '({x} of {y})',	// Translate or change as you wish
 //			Image options
 				imgBackground: false,			// Embed images as CSS background (true) or <img> tag (false)
-												// ...a CSS background is naturally non-clickable, preventing downloads
-												// ...the IMG tag allows automatic scaling for smaller screens, minimal no-click code is included but does not work in Opera
-				imgPadding: 70,					// Clearance necessary for images larger than the window size (only used when imgBackground is false)
+												// CSS background is naturally non-clickable, preventing downloads
+												// IMG tag allows automatic scaling for smaller screens
+												// (all images have no-click code applied, albeit not Opera compatible. To remove, comment lines 212 and 822)
+				imgPadding: 100,				// Clearance necessary for images larger than the window size (only used when imgBackground is false)
 												// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
 //			Inline options
 //				overflow: 'auto',				// Sets CSS overflow of the overflow to allow for
@@ -131,6 +134,10 @@ var Mediabox;
 				vmPortrait: '1',			// Show author portrait
 				vmColor: 'ffffff'			// Custom controller colors, hex value minus the # sign, defult is 5ca0b5
 			}, _options || {});
+
+			prevLink.set('html', options.text[0]);
+			nextLink.set('html', options.text[1]);
+			closeLink.set('html', options.text[2]);
 
 			if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 				foxfix = true;
@@ -843,6 +850,7 @@ var Mediabox;
 			mediaHeight = options.defaultHeight;
 		}
 		image.setStyles({width: mediaWidth, height: mediaHeight});
+		caption.setStyles({width: mediaWidth});
 
 		title.set('html', (options.showCaption) ? captionSplit[0] : "");
 		caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
