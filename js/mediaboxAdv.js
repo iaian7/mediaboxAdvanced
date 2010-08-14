@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.1.7 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.1.8 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.10.30
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -90,8 +90,8 @@ var Mediabox;
 				autoplay: 'true',			// Plays the video as soon as it's opened
 				autoplayNum: '1',			// 1 = true
 				autoplayYes: 'yes',			// yes = true
-//				volume: '50',				// 0-100 (not currently implemented)
-				bgcolor: '#000000',			// Background color, used for both flash and QT media
+				volume: '50',				// 0-100 (not currently implemented), used for NB and QT
+				bgcolor: '#000000',			// Background color, used for flash and QT media
 				wmode: 'opaque',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
 //			JW Media Player settings and options
 				playerpath: '/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
@@ -389,6 +389,19 @@ var Mediabox;
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
+// Quicktime
+			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i) || mediaType == 'qt') {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
+				preload = new Quickie(URL, {
+					id: 'MediaboxQT',
+					width: mediaWidth,
+					height: mediaHeight,
+					container: 'qtmovie',
+					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, bgcolor: options.bgcolor}
 					});
 				startEffect();
 // SOCIAL SITES
@@ -820,12 +833,12 @@ var Mediabox;
 			mediaHeight = preload.height;
 			if (options.imgBackground) {
 				image.setStyles({backgroundImage: "url("+URL+")", display: ""});
-			} else {
-				if (mediaHeight >= winHeight-options.imgPadding) {
+			} else {	// Thanks to Dusan Medlin for fixing large 16x9 image errors in a 4x3 browser
+				if (mediaHeight >= winHeight-options.imgPadding && (mediaHeight / winHeight) >= (mediaWidth / winWidth)) {
 					mediaHeight = winHeight-options.imgPadding;
 					mediaWidth = preload.width = parseInt((mediaHeight/preload.height)*mediaWidth);
 					preload.height = mediaHeight;
-				} else if (mediaWidth >= winWidth-options.imgPadding) {
+				} else if (mediaWidth >= winWidth-options.imgPadding && (mediaHeight / winHeight) < (mediaWidth / winWidth)) {
 					mediaWidth = winWidth-options.imgPadding;
 					mediaHeight = preload.height = parseInt((mediaWidth/preload.width)*mediaHeight);
 					preload.width = mediaWidth;
