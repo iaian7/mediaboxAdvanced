@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.1.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2009.08.01
+	mediaboxAdvanced v1.1.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2009.08.08
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -66,12 +66,15 @@ var Mediabox;
 													// Does not affect mouse scrolling
 				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
 													// Remember that Firefox 2 and Camino 1.6 on the Mac require a background .png set in the CSS
+				resizeOpening: true,			// Determines if box opens small and grows (true) or start full size (false)
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
-				resizeTransition: false,		// Default transition in mootools
+				resizeTransition: false,		// Mootools transition effect (false leaves it at the default)
 				initialWidth: 320,				// Initial width of the box (in pixels)
 				initialHeight: 180,				// Initial height of the box (in pixels)
+				defaultWidth: 640,				// Default width of the box (in pixels) for undefined media (MP4, FLV, etc.)
+				defaultHeight: 360,				// Default height of the box (in pixels) for undefined media (MP4, FLV, etc.)
 				showCaption: true,				// Display the title and caption, true / false
-				animateCaption: true,			// Animate the caption, true / false
+//				animateCaption: true,			// Animate the caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
 				counterText: '({x} of {y})',	// Translate or change as you wish
 //			Global media options
@@ -318,8 +321,8 @@ var Mediabox;
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i) || mediaType == 'video') {
 				mediaType = 'obj';
-				mediaWidth = mediaWidth || '640px';
-				mediaHeight = mediaHeight || '360px';
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
 				if (options.useNB) {
 				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=true', {
 					id: 'MediaboxSWF',
@@ -339,7 +342,7 @@ var Mediabox;
 // MP3, AAC
 			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i) || mediaType == 'audio') {
 				mediaType = 'obj';
-				mediaWidth = mediaWidth || options.initialWidth;
+				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || "20px";
 				if (URL.match(/tweetmic\.com|tmic\.fm/i)) {
 					URL = URL.split('/');
@@ -365,8 +368,8 @@ var Mediabox;
 // SWF
 			} else if (URL.match(/\.swf/i) || mediaType == 'flash') {
 				mediaType = 'obj';
-				mediaWidth = mediaWidth || options.initialWidth;
-				mediaHeight = mediaHeight || options.initialHeight;
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
 				preload = new Swiff(URL, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
@@ -759,16 +762,16 @@ var Mediabox;
 // INLINE
 			} else if (URL.match(/\#mb_/i)) {
 				mediaType = 'inline';
-				mediaWidth = mediaWidth || options.initialWidth;
-				mediaHeight = mediaHeight || options.initialHeight;
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
 				URLsplit = URL.split('#');
 				preload = $(URLsplit[1]).get('html');
 				startEffect();
 // HTML
 			} else {
 				mediaType = 'url';
-				mediaWidth = mediaWidth || options.initialWidth;
-				mediaHeight = mediaHeight || options.initialHeight;
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
 				mediaId = "mediaId_"+new Date().getTime();	// Safari will not update iframe content with a static id.
 				preload = new Element('iframe', {
 					'src': URL,
@@ -793,8 +796,8 @@ var Mediabox;
 			if (Browser.Plugins.Flash.version<8) {
 				image.setStyles({backgroundImage: "none", display: ""});
 				image.set('html', '<div id="mbError"><b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.</div>');
-				mediaWidth = options.initialWidth;
-				mediaHeight = options.initialHeight;
+				mediaWidth = options.DefaultWidth;
+				mediaHeight = options.DefaultHeight;
 			} else {
 				image.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(image);
@@ -808,8 +811,8 @@ var Mediabox;
 		} else {
 			image.setStyles({backgroundImage: "none", display: ""});
 			image.set('html', '<div id="mbError"><b>Error</b><br/>This file type is not supported, please visit <a href="iaian7.com/webcode/mediaboxAdvanced" title="mediaboxAdvanced" target="_new">iaian7.com</a> or contact the website author for more information.</div>');
-			mediaWidth = options.initialWidth;
-			mediaHeight = options.initialHeight;
+			mediaWidth = options.defaultWidth;
+			mediaHeight = options.defaultHeight;
 //			alert('this file type is not supported\n'+URL+'\nplease visit iaian7.com/webcode/mediaboxAdvanced for more information');
 		}
 		image.setStyles({width: mediaWidth, height: mediaHeight});
@@ -823,7 +826,8 @@ var Mediabox;
 
 		mediaWidth = image.offsetWidth;
 		mediaHeight = image.offsetHeight+bottom.offsetHeight;
-		fx.resize.start({height: mediaHeight, width: mediaWidth, marginTop: -(mediaHeight/2), marginLeft: -mediaWidth/2});
+		if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: -(mediaHeight/2), marginLeft: -mediaWidth/2});
+		} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: -(mediaHeight/2), marginLeft: -mediaWidth/2}); imageAnimate(); }
 	}
 
 	function imageAnimate() {
