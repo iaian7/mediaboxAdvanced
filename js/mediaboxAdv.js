@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.2.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.06.15
+	mediaboxAdvanced v1.2.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.08.11
 	(c) 2007-2010 John Einselen <http://iaian7.com>
 		based on
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -49,9 +49,9 @@ var Mediabox;
 	/*	API		*/
 
 	Mediabox = {
-		close: function(){ 
+		close: function(){
 			close();	// Thanks to Yosha on the google group for fixing the close function API!
-		}, 
+		},
 
 		open: function(_images, startImage, _options) {
 			options = $extend({
@@ -431,7 +431,7 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || "464px";
 				mediaHeight = mediaHeight || "376px";
-				mediaId = URL.match(/\d{6}/g)
+				mediaId = URL.match(/\d{6}/g);
 				preload = new Swiff('http://embed.break.com/'+mediaId, {
 					width: mediaWidth,
 					height: mediaHeight,
@@ -486,7 +486,7 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || "480px";
 				mediaHeight = mediaHeight || "392px";
-				mediaId = URL.match(/\d{5}/g)
+				mediaId = URL.match(/\d{5}/g);
 				preload = new Swiff('http://www.gametrailers.com/remote_wrap.php?mid='+mediaId, {
 					id: mediaId,
 					width: mediaWidth,
