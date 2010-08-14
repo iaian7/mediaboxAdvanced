@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.0.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.0.6 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.08.01
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -301,18 +301,19 @@ var Mediabox;
 			}
 // MEDIA TYPES
 // IMAGES
-			if (URL.match(/\.gif|\.jpg|\.png/i)) {
+			if (URL.match(/\.gif|\.jpg|\.png|twitpic\.com/i)) {
 				mediaType = 'img';
+				URL = URL.replace(/twitpic\.com/i, "twitpic.com/show/full");
 				preload = new Image();
 				preload.onload = startEffect;
-				preload.src = images[imageIndex][0];
+				preload.src = URL;
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i)) {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.initialWidth;
 				mediaHeight = mediaHeight || options.initialHeight;
 				if (options.useNB) {
-				preload = new Swiff(''+options.NBpath+'?videoURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=false', {
+				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=true', {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
@@ -328,16 +329,30 @@ var Mediabox;
 				}
 				startEffect();
 // MP3, AAC
-			} else if (URL.match(/\.mp3|\.aac/i)) {
+			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i)) {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.initialWidth;
-				mediaHeight = mediaHeight || options.initialHeight;
+				mediaHeight = mediaHeight || "20px";
+				if (URL.match(/tweetmic\.com|tmic\.fm/i)) {
+					URL = URL.split('/');
+					URL[4] = URL[4] || URL[3];
+					URL = "http://media4.fjarnet.net/tweet/tweetmicapp-"+URL[4]+'.mp3';
+				}
+//				if (options.useNB) {
+//				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=true', {
+//					id: 'MediaboxSWF',
+//					width: mediaWidth,
+//					height: mediaHeight,
+//					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+//					});
+//				} else {
 				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
+//				}
 				startEffect();
 // SWF
 			} else if (URL.match(/\.swf/i)) {
@@ -417,6 +432,18 @@ var Mediabox;
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {flashvars: 'photo_id='+mediaId+'&amp;show_info_box='+options.flInfo, wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
+// Fliggo
+			} else if (URL.match(/fliggo\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "425px";
+				mediaHeight = mediaHeight || "355px";
+				URL = URL.replace('/video/', '/embed/');
+				preload = new Swiff(URL, {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // GameTrailers Video
@@ -553,6 +580,32 @@ var Mediabox;
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[5];
 				preload = new Swiff('http://www.tudou.com/v/'+mediaId, {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
+// Twitvid
+			} else if (URL.match(/twitvid\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "600px";
+				mediaHeight = mediaHeight || "338px";
+				mediaSplit = URL.split('/');
+				mediaId = mediaSplit[3];
+				preload = new Swiff('http://www.twitvid.com/player/'+mediaId, {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
+// Twitvid.io
+			} else if (URL.match(/twitvid\.io/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "580px";
+				mediaHeight = mediaHeight || "323px";
+				mediaSplit = URL.split('/');
+				mediaId = mediaSplit[3];
+				preload = new Swiff('http://twitvid.io/embed/'+mediaId, {
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
@@ -753,8 +806,8 @@ var Mediabox;
 		caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
 		number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, activeImage + 1).replace(/{y}/, images.length) : "");
 
-		if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.png/i))) preloadPrev.src = images[prevImage][0];
-		if ((nextImage >= 0) && (images[nextImage][0].match(/\.gif|\.jpg|\.png/i))) preloadNext.src = images[nextImage][0];
+		if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.png|twitpic\.com/i))) preloadPrev.src = images[prevImage][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
+		if ((nextImage >= 0) && (images[nextImage][0].match(/\.gif|\.jpg|\.png|twitpic\.com/i))) preloadNext.src = images[nextImage][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
 
 		mediaWidth = image.offsetWidth;
 		mediaHeight = image.offsetHeight+bottom.offsetHeight;
