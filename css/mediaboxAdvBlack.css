@@ -1,6 +1,6 @@
 		/*	mediaboxAdvanced Black theme	*/
-		/*	version 2.0 - August 2010		*/
-		/*	for mediaboxAdvanced v.1.3.0	*/
+		/*	version 2.1 - August 2010		*/
+		/*	for mediaboxAdvanced v.1.3.1	*/
 
 		/*	Overlay background styling	*/
 
@@ -14,6 +14,8 @@
 	background-color: #000;
 	cursor: pointer;
 }
+
+		/*	Legacy fix for older browsers	*/
 
 #mbOverlay.mbOverlayFF {
 	background: transparent url(/images/80.png) repeat;
@@ -46,11 +48,11 @@
 }
 
 #mbCenter.mbLoading {
-	background: #000 url(/images/BlackLoading.gif) no-repeat center;
-/*	This style is applied only during animation.	*/
-/*	For example, the next lines turn off shadows	*/
-/*	improving browser performance on slow systems.	*/
-/*	To leave shadows on, just remove the following:	*/
+	background: #000 url(/images/loading.gif) no-repeat center;
+		/*	This style is applied only during animation.	*/
+		/*	For example, the next lines turn off shadows	*/
+		/*	improving browser performance on slow systems.	*/
+		/*	To leave shadows on, just remove the following:	*/
 	-webkit-box-shadow: none;
 	-khtml-box-shadow: none;
 	-moz-box-shadow: none;
@@ -74,17 +76,7 @@
 	padding: 10px;
 }
 
-#mbCenter a, #mbCenter a:link, #mbCenter a:visited {
-/*	text-decoration: none;		*/
-	color: #ddd;
-}
-
-#mbCenter a:hover, #mbCenter a:active {
-/*	text-decoration: underline;	*/
-	color: #fff;
-}
-
-		/*	Caption and Button styling	*/
+		/*	Title, Caption and Button styling	*/
 
 #mbBottom {
 	min-height: 20px;
@@ -119,21 +111,36 @@
 	font-size: 10px;
 }
 
-		/*	Button styling	*/
-
 #mbPrevLink, #mbNextLink, #mbCloseLink {
 	float: right;
 	outline: none;
 	margin: 0 0 0 10px;
 	font-weight: normal;
-	font-size: 10px;
 }
 
 #mbPrevLink b, #mbNextLink b, #mbCloseLink b {
-	font-size: 16px;
+	color: #eee;
 	font-weight: bold;
-	text-decoration: none;
+	text-decoration: underline;
 }
+
+#mbPrevLink big, #mbNextLink big, #mbCloseLink big {
+	color: #eee;
+	font-size: 16px;
+	line-height: 14px;
+	font-weight: bold;
+}
+
+#mbBottom a, #mbBottom a:link, #mbBottom a:visited {	/* Thanks to Danny Jung for feedback and corrections */
+	text-decoration: none;
+	color: #ddd;
+}
+
+#mbBottom a:hover, #mbBottom a:active {
+	text-decoration: underline;
+	color: #fff;
+}
+
 
 		/*	Error message styling	*/
 
