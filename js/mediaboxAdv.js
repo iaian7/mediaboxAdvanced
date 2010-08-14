@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.0.6 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.0.7 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.08.01
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -294,24 +294,32 @@ var Mediabox;
 			}
 			URL = images[imageIndex][0];
 			captionSplit = images[activeImage][1].split('::');
-// Quietube support
+
+// Quietube and yFrog support
 			if (URL.match(/quietube\.com/i)) {
 				mediaSplit = URL.split('v.php/');
 				URL = mediaSplit[1];
+			} else if (URL.match(/\/\/yfrog/i)) {
+				mediaType = (URL.substring(URL.length-1));
+				if (mediaType.match(/b|g|j|p|t/i)) mediaType = 'image';
+				if (mediaType == 's') mediaType = 'flash';
+				if (mediaType.match(/f|z/i)) mediaType = 'video';
+				URL = URL+":iphone";
 			}
+
 // MEDIA TYPES
 // IMAGES
-			if (URL.match(/\.gif|\.jpg|\.png|twitpic\.com/i)) {
+			if (URL.match(/\.gif|\.jpg|\.png|twitpic\.com/i) || mediaType == 'image') {
 				mediaType = 'img';
 				URL = URL.replace(/twitpic\.com/i, "twitpic.com/show/full");
 				preload = new Image();
 				preload.onload = startEffect;
 				preload.src = URL;
 // FLV, MP4
-			} else if (URL.match(/\.flv|\.mp4/i)) {
+			} else if (URL.match(/\.flv|\.mp4/i) || mediaType == 'video') {
 				mediaType = 'obj';
-				mediaWidth = mediaWidth || options.initialWidth;
-				mediaHeight = mediaHeight || options.initialHeight;
+				mediaWidth = mediaWidth || '640px';
+				mediaHeight = mediaHeight || '360px';
 				if (options.useNB) {
 				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=true', {
 					id: 'MediaboxSWF',
@@ -329,7 +337,7 @@ var Mediabox;
 				}
 				startEffect();
 // MP3, AAC
-			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i)) {
+			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i) || mediaType == 'audio') {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.initialWidth;
 				mediaHeight = mediaHeight || "20px";
@@ -355,7 +363,7 @@ var Mediabox;
 //				}
 				startEffect();
 // SWF
-			} else if (URL.match(/\.swf/i)) {
+			} else if (URL.match(/\.swf/i) || mediaType == 'flash') {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.initialWidth;
 				mediaHeight = mediaHeight || options.initialHeight;
@@ -798,7 +806,11 @@ var Mediabox;
 			image.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(image);
 		} else {
-			alert('this file type is not supported\n'+URL+'\nplease visit iaian7.com/webcode/Mediabox for more information');
+			image.setStyles({backgroundImage: "none", display: ""});
+			image.set('html', '<div id="mbError"><b>Error</b><br/>This file type is not supported, please visit <a href="iaian7.com/webcode/mediaboxAdvanced" title="mediaboxAdvanced" target="_new">iaian7.com</a> or contact the website author for more information.</div>');
+			mediaWidth = options.initialWidth;
+			mediaHeight = options.initialHeight;
+//			alert('this file type is not supported\n'+URL+'\nplease visit iaian7.com/webcode/mediaboxAdvanced for more information');
 		}
 		image.setStyles({width: mediaWidth, height: mediaHeight});
 
