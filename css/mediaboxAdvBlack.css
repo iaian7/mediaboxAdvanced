@@ -1,66 +1,81 @@
 /* mediaboxAdvanced - black theme */
 
 #mbOverlay {
-	position: absolute;
+	position: fixed;
 	z-index: 9998;
+	top: 0;
 	left: 0;
 	width: 100%;
+	height: 100%;
 	background-color: #000;
 	cursor: pointer;
 }
 
 #mbOverlay.mbOverlayFF {
-	background: transparent url(../images/80.png) repeat;
+	background: transparent url(/images/80.png) repeat;
 }
 
 #mbOverlay.mbOverlayIE {
-	background: transparent url(../images/50.gif) repeat;
+	position: absolute;
 }
 
-#mbCenter, #mbBottomContainer {
+#mbCenter {
 	position: absolute;
 	z-index: 9999;
 	left: 50%;
 	overflow: hidden;
 	background-color: #000;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-box-shadow: 0px 10px 40px rgba(0,0,0,0.70);
+	-webkit-box-shadow: 0px 10px 40px rgba(0,0,0,0.70);
 }
 
-.mbLoading {
-	background: #000 url(../images/BlackLoading.gif) no-repeat center;
+#mbCenter.mbLoading {
+	background: #000 url(/images/BlackLoading.gif) no-repeat center;
+
+/*	This style is applied only during animation.	*/
+/*	For example, the following turns off shadows,	*/
+/*	helping browser performance on slow systems.	*/
+/*	To leave shadows on, just remove these lines:	*/
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
 }
 
 #mbImage {
-	position: absolute;
+	position: relative;
 	left: 0;
 	top: 0;
-	border: 10px solid #000;
-	background-repeat: no-repeat;
-/*	Sets the style for inline content, if no style is given	*/
+
+/*	Begin styles for inline content, if no style is given	*/
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
-	line-height: 19px;
+	line-height: 20px;
 	font-size: 12px;
 	color: #fff;
 	text-align: left;
+	background-position: center center;
+	background-repeat: no-repeat;
+	padding: 10px;
 }
 
-/*	Sets the style for inline content, if no style is given	*/
 #mbImage a, #mbImage a:link, #mbImage a:visited {
 	color: #ddd;
 }
 
-/*	Sets the style for inline content, if no style is given	*/
 #mbImage a:hover, #mbImage a:active {
 	color: #fff;
 }
 
+/*	End inline content styles	*/
+
 #mbBottom {
+	min-height: 20px;
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
-	line-height: 19px;
+	line-height: 20px;
 	font-size: 12px;
 	color: #999;
 	text-align: left;
-	border: 10px solid #000;
-	border-top-style: none;
+	padding: 0 10px 10px;
 }
 
 #mbTitle {
@@ -76,6 +91,7 @@
 	color: #999;
 	line-height: 14px;
 	font-size: 10px;
+	margin: auto 10px;
 }
 
 #mbCaption {
@@ -89,36 +105,43 @@
 	display: block;
 	float: right;
 	height: 20px;
-	width: 46px;
-	background: transparent url(../images/BlackClose.gif) no-repeat center;
 	margin: 0;
 	outline: none;
 }
 
 #mbPrevLink {
 	width: 69px;
-	background: transparent url(../images/BlackPrevious.gif) no-repeat center;
+	background: transparent url(/images/BlackPrevious.gif) no-repeat center;
 }
 
 #mbNextLink {
 	width: 41px;
-	background: transparent url(../images/BlackNext.gif) no-repeat center;
+	background: transparent url(/images/BlackNext.gif) no-repeat center;
 }
 
 #mbCloseLink {
 	width: 46px;
-	background: transparent url(../images/BlackClose.gif) no-repeat center;
+	background: transparent url(/images/BlackClose.gif) no-repeat center;
 }
+
+/*	Styles for flash version alert	*/
 
 #mbError {
 	position: relative;
-	top: 30%;
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
-	line-height: 19px;
+	line-height: 20px;
 	font-size: 12px;
 	color: #fff;
 	text-align: center;
 	border: 10px solid #700;
-	padding: 20px 10px 30px;
-	margin: auto;
+	padding: 10px 10px 10px;
+	margin: 20px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#mbError a, #mbError a:link, #mbError a:visited, #mbError a:hover, #mbError a:active {
+	color: #d00;
+	font-weight: bold;
+	text-decoration: underline;
 }
