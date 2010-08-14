@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.1.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.1.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.08.08
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -13,7 +13,7 @@ var Mediabox;
 (function() {
 
 	// Global variables, accessible to Mediabox only
-	var options, images, activeImage, prevImage, nextImage, top, left, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
+	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
 	// DOM elements
 	overlay, center, image, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
@@ -596,6 +596,19 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
+// Twitvcam
+			} else if (URL.match(/twitcam\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "320px";
+				mediaHeight = mediaHeight || "265px";
+				mediaSplit = URL.split('/');
+				mediaId = mediaSplit[3];
+				preload = new Swiff('http://static.livestream.com/chromelessPlayer/wrappers/TwitcamPlayer.swf?hash='+mediaId, {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
 // Twitvid
 			} else if (URL.match(/twitvid\.com/i)) {
 				mediaType = 'obj';
@@ -810,10 +823,9 @@ var Mediabox;
 			preload.inject(image);
 		} else {
 			image.setStyles({backgroundImage: "none", display: ""});
-			image.set('html', '<div id="mbError"><b>Error</b><br/>This file type is not supported, please visit <a href="iaian7.com/webcode/mediaboxAdvanced" title="mediaboxAdvanced" target="_new">iaian7.com</a> or contact the website author for more information.</div>');
+			image.set('html', '<div id="mbError"><b>Error</b><br/>A file type error has occoured, please visit <a href="iaian7.com/webcode/mediaboxAdvanced" title="mediaboxAdvanced" target="_new">iaian7.com</a> or contact the website author for more information.</div>');
 			mediaWidth = options.defaultWidth;
 			mediaHeight = options.defaultHeight;
-//			alert('this file type is not supported\n'+URL+'\nplease visit iaian7.com/webcode/mediaboxAdvanced for more information');
 		}
 		image.setStyles({width: mediaWidth, height: mediaHeight});
 
@@ -826,8 +838,10 @@ var Mediabox;
 
 		mediaWidth = image.offsetWidth;
 		mediaHeight = image.offsetHeight+bottom.offsetHeight;
-		if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: -(mediaHeight/2), marginLeft: -mediaWidth/2});
-		} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: -(mediaHeight/2), marginLeft: -mediaWidth/2}); imageAnimate(); }
+		if (mediaHeight >= top+top-10) { mTop = -(top-10) } else { mTop = -(mediaHeight/2) };
+		if (mediaWidth >= left+left-10) { mLeft = -(left-10) } else { mLeft = -(mediaWidth/2) };
+		if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop, marginLeft: mLeft});
+		} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop, marginLeft: mLeft}); imageAnimate(); }
 	}
 
 	function imageAnimate() {
