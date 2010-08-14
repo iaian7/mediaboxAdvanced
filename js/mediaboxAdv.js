@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.2.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.2.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2010.06.15
 	(c) 2007-2010 John Einselen <http://iaian7.com>
 		based on
@@ -56,7 +56,8 @@ var Mediabox;
 		open: function(_images, startImage, _options) {
 			options = $extend({
 				loop: false,					// Allows to navigate between first and last images
-				keyboard: true,					// Enables keyboard control
+				keyboard: true,					// Enables keyboard control; escape key, left, and right arrows
+				alpha: true,					// Adds 'x', 'c', 'p', 'n'
 				stopKey: false,					// Stops all default keyboard actions while overlay is open (such as up/down arrows)
 													// Does not apply to iFrame content, does not affect mouse scrolling
 				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
@@ -257,19 +258,32 @@ var Mediabox;
 	}
 
 	function keyDown(event) {
-		switch(event.code) {
-			case 27:	// Esc
-			case 88:	// 'x'
-			case 67:	// 'c'
-				close();
-				break;
-			case 37:	// Left arrow
-			case 80:	// 'p'
-				previous();
-				break;	
-			case 39:	// Right arrow
-			case 78:	// 'n'
-				next();
+		if (options.alpha) {
+			switch(event.code) {
+				case 27:	// Esc
+				case 88:	// 'x'
+				case 67:	// 'c'
+					close();
+					break;
+				case 37:	// Left arrow
+				case 80:	// 'p'
+					previous();
+					break;
+				case 39:	// Right arrow
+				case 78:	// 'n'
+					next();
+			}
+		} else {
+			switch(event.code) {
+				case 27:	// Esc
+					close();
+					break;
+				case 37:	// Left arrow
+					previous();
+					break;
+				case 39:	// Right arrow
+					next();
+			}
 		}
 		if (options.stopKey) { return false; };
 	}
@@ -467,18 +481,6 @@ var Mediabox;
 					params: {flashvars: 'photo_id='+mediaId+'&amp;show_info_box='+options.flInfo, wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// Fliggo
-			} else if (URL.match(/fliggo\.com/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "425px";
-				mediaHeight = mediaHeight || "355px";
-				URL = URL.replace('/video/', '/embed/');
-				preload = new Swiff(URL, {
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
 // GameTrailers Video
 			} else if (URL.match(/gametrailers\.com/i)) {
 				mediaType = 'obj';
@@ -534,14 +536,12 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// MyspaceTV
-			} else if (URL.match(/myspacetv\.com|vids\.myspace\.com/i)) {
+// Myspace
+			} else if (URL.match(/vids\.myspace\.com/i)) {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || "425px";
 				mediaHeight = mediaHeight || "360px";
-				mediaSplit = URL.split('=');
-				mediaId = mediaSplit[2];
-				preload = new Swiff('http://lads.myspace.com/videos/vplayer.swf?m='+mediaId+'&v=2&a='+options.autoplayNum+'&type=video', {
+				preload = new Swiff(URL, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -629,19 +629,6 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// Twitvid.io
-			} else if (URL.match(/twitvid\.io/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "580px";
-				mediaHeight = mediaHeight || "323px";
-				mediaSplit = URL.split('/');
-				mediaId = mediaSplit[3];
-				preload = new Swiff('http://twitvid.io/embed/'+mediaId, {
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
 // Ustream.tv
 			} else if (URL.match(/ustream\.tv/i)) {
 				mediaType = 'obj';
@@ -710,9 +697,10 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || "410px";
 				mediaHeight = mediaHeight || "341px";
-				mediaSplit = URL.split('videos/');
+				URL = URL.replace('%3D','/');
+				mediaSplit = URL.split('watch/');
 				mediaId = mediaSplit[1];
-				preload = new Swiff('http://www.veoh.com/videodetails2.swf?permalinkId='+mediaId+'&player=videodetailsembedded&videoAutoPlay='+options.AutoplayNum, {
+				preload = new Swiff('http://www.veoh.com/static/swf/webplayer/WebPlayer.swf?version=AFrontend.5.5.2.1001&permalinkId='+mediaId+'&player=videodetailsembedded&videoAutoPlay='+options.AutoplayNum+'&id=anonymous', {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
