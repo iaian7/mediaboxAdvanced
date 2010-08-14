@@ -1,7 +1,7 @@
 /*
-	mediaboxAdvanced v1.2.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.01.24
-	(c) 2007-2009 John Einselen <http://iaian7.com>
+	mediaboxAdvanced v1.2.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.06.15
+	(c) 2007-2010 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
 	(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -56,12 +56,11 @@ var Mediabox;
 		open: function(_images, startImage, _options) {
 			options = $extend({
 				loop: false,					// Allows to navigate between first and last images
-				stopKey: true,					// Prevents default keyboard action (such as up/down arrows), in lieu of the shortcuts
-													// Does not apply to iFrame content
-													// Does not affect mouse scrolling
+				keyboard: true,					// Enables keyboard control
+				stopKey: false,					// Stops all default keyboard actions while overlay is open (such as up/down arrows)
+													// Does not apply to iFrame content, does not affect mouse scrolling
 				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
-													// Remember that Firefox 2 and Camino 1.6 on the Mac require a background .png set in the CSS
-				resizeOpening: true,			// Determines if box opens small and grows (true) or start full size (false)
+				resizeOpening: true,			// Determines if box opens small and grows (true) or starts at larger size (false)
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				resizeTransition: false,		// Mootools transition effect (false leaves it at the default)
 				initialWidth: 320,				// Initial width of the box (in pixels)
@@ -77,6 +76,8 @@ var Mediabox;
 												// ...the IMG tag allows automatic scaling for smaller screens, minimal no-click code is included but does not work in Opera
 				imgPadding: 70,					// Clearance necessary for images larger than the window size (only used when imgBackground is false)
 												// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
+//			Inline options
+//				overflow: 'auto',				// Sets CSS overflow of the overflow to allow for
 //			Global media options
 				scriptaccess: 'true',		// Allow script access to flash files
 				fullscreen: 'true',			// Use fullscreen
@@ -135,7 +136,16 @@ var Mediabox;
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayFF';
 			}
-
+/*
+			if ((Browser.Engine.gecko)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
+				foxfix = true;
+				overlay.setStyle("position", "absolute");
+				if ((Browser.Engine.version<19)) {
+					options.overlayOpacity = 1;
+					overlay.className = 'mbOverlayFF';
+				}
+			}
+*/
 			if (typeof _images == "string") {	// The function is called for a single image, with URL and Title as first two arguments
 				_images = [[_images,startImage,_options]];
 				startImage = 0;
@@ -229,19 +239,21 @@ var Mediabox;
 
 	function setup(open) {
 		// Hides on-page objects and embeds while the overlay is open, nessesary to counteract Firefox stupidity
-		["object", window.ie ? "select" : "embed"].forEach(function(tag) {
-			Array.forEach(document.getElementsByTagName(tag), function(el) {
-				if (open) el._mediabox = el.style.visibility;
-				el.style.visibility = open ? "hidden" : el._mediabox;
+		if (Browser.Engine.gecko) {
+			["object", window.ie ? "select" : "embed"].forEach(function(tag) {
+				Array.forEach(document.getElementsByTagName(tag), function(el) {
+					if (open) el._mediabox = el.style.visibility;
+					el.style.visibility = open ? "hidden" : el._mediabox;
+				});
 			});
-		});
+		}
 
 		overlay.style.display = open ? "" : "none";
 
 		var fn = open ? "addEvent" : "removeEvent";
 		if (iefix) window[fn]("scroll", position);
 		window[fn]("resize", size);
-		document[fn]("keydown", keyDown);
+		if (options.keyboard) document[fn]("keydown", keyDown);
 	}
 
 	function keyDown(event) {
@@ -830,6 +842,7 @@ var Mediabox;
 			image.setStyles({backgroundImage: "none", display: ""});
 			preload;
 		} else if (mediaType == "inline") {
+//			center.setStyles({overflow: options.overflow});
 			image.setStyles({backgroundImage: "none", display: ""});
 			image.set('html', preload);
 		} else if (mediaType == "url") {
