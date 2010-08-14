@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.1.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.1.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.09.07
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -81,7 +81,7 @@ var Mediabox;
 				imgBackground: false,			// Embed images as CSS background (true) or <img> tag (false)
 												// ...a CSS background is naturally non-clickable, preventing downloads
 												// ...the IMG tag allows automatic scaling for smaller screens, minimal no-click code is included but does not work in Opera
-				imgPadding: 60,					// Clearance necessary for images larger than the window size (only used when imgBackground is false)
+				imgPadding: 70,					// Clearance necessary for images larger than the window size (only used when imgBackground is false)
 												// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
 //			Global media options
 				scriptaccess: 'true',		// Allow script access to flash files
@@ -820,29 +820,17 @@ var Mediabox;
 			if (options.imgBackground) {
 				image.setStyles({backgroundImage: "url("+URL+")", display: ""});
 			} else {
-				winWidth = window.getWidth()-options.imgPadding;
-				winHeight = window.getHeight()-options.imgPadding;
-				if (mediaHeight >= winHeight) {
-					mediaHeight = winHeight;
-					mediaWidth = parseInt((mediaHeight/preload.height)*mediaWidth);
-				} else if (mediaWidth >= winWidth) {
-					mediaWidth = winWidth;
-					mediaHeight = parseInt((preload.width/mediaWidth)*mediaHeight);
+				if (mediaHeight >= winHeight-options.imgPadding) {
+					mediaHeight = winHeight-options.imgPadding;
+					mediaWidth = preload.width = parseInt((mediaHeight/preload.height)*mediaWidth);
+					preload.height = mediaHeight;
+				} else if (mediaWidth >= winWidth-options.imgPadding) {
+					mediaWidth = winWidth-options.imgPadding;
+					mediaHeight = preload.height = parseInt((mediaWidth/preload.width)*mediaHeight);
+					preload.width = mediaWidth;
 				}
-				preload = new Element('img', {
-					'src': URL,
-					'alt': captionSplit[0],
-					'width': mediaWidth,
-					'height': mediaHeight,
-					'events': {
-						'mousedown': function(e){
-							e.stop();
-						},
-						'contextmenu': function(e){
-							e.stop();
-						}
-					}
-				});
+//				alert(typeof(preload));
+				preload.addEvent('mousedown', function(e){ e.stop(); }).addEvent('contextmenu', function(e){ e.stop(); });
 				image.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(image);
 			}
