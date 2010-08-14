@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.1.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.1.6 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.09.07
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -207,7 +207,7 @@ var Mediabox;
 			var links = this;
 
 			links.addEvent('contextmenu', function(e){
-				if (this.toString().match(/\.gif|\.jpg|\.png|twitpic\.com/i)) e.stop();
+				if (this.toString().match(/\.gif|\.jpg|\.png/i)) e.stop();
 			});
 
 			links.removeEvents("click").addEvent("click", function() {
@@ -829,7 +829,7 @@ var Mediabox;
 					mediaHeight = preload.height = parseInt((mediaWidth/preload.width)*mediaHeight);
 					preload.width = mediaWidth;
 				}
-//				alert(typeof(preload));
+				if (Browser.Engine.trident) preload = $(preload);
 				preload.addEvent('mousedown', function(e){ e.stop(); }).addEvent('contextmenu', function(e){ e.stop(); });
 				image.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(image);
