@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.1.6 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2009.09.07
+	mediaboxAdvanced v1.1.7 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2009.10.30
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -104,7 +104,8 @@ var Mediabox;
 				useNB: true,				// use NonverBlaster in place of the JW Media Player for .flv and .mp4 files
 				NBpath: '/js/NonverBlaster.swf',	// Path to NonverBlaster.swf
 				NBloop: 'true',				// Loop video playback, true / false
-				controllerColor: '0x777777',	// set the controlbar colour
+				controlColor: '0xFFFFFF',	// set the controlbar color
+				controlBackColor: '0x000000',	// set the controlbar color
 				showTimecode: 'false',		// turn timecode display off or on
 //			Quicktime options
 				controller: 'true',			// Show controller, true / false
@@ -113,15 +114,15 @@ var Mediabox;
 //			Revver options
 				revverID: '187866',			// Revver affiliate ID, required for ad revinue sharing
 				revverFullscreen: 'true',	// Fullscreen option
-				revverBack: '000000',		// Background colour
-				revverFront: 'ffffff',		// Foreground colour
-				revverGrad: '000000',		// Gradation colour
+				revverBack: '000000',		// Background color
+				revverFront: 'ffffff',		// Foreground color
+				revverGrad: '000000',		// Gradation color
 //			Ustream options
 				usViewers: 'true',				// Show online viewer count (true/false)
 //			Youtube options
 				ytBorder: '0',				// Outline				(1=true, 0=false)
-				ytColor1: '000000',			// Outline colour
-				ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
+				ytColor1: '000000',			// Outline color
+				ytColor2: '333333',			// Base interface color (highlight colors stay consistent)
 				ytQuality: '&ap=%2526fmt%3D18', // Leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
 				ytRel: '0',					// Show related videos	(1=true, 0=false)
 				ytInfo: '1',				// Show video info		(1=true, 0=false)
@@ -132,7 +133,7 @@ var Mediabox;
 				vmTitle: '1',				// Show video title
 				vmByline: '1',				// Show byline
 				vmPortrait: '1',			// Show author portrait
-				vmColor: 'ffffff'			// Custom controller colours, hex value minus the # sign, defult is 5ca0b5
+				vmColor: 'ffffff'			// Custom controller colors, hex value minus the # sign, defult is 5ca0b5
 			}, _options || {});
 
 			if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
@@ -337,7 +338,7 @@ var Mediabox;
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
 				if (options.useNB) {
-				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=true', {
+				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
@@ -362,21 +363,21 @@ var Mediabox;
 					URL[4] = URL[4] || URL[3];
 					URL = "http://media4.fjarnet.net/tweet/tweetmicapp-"+URL[4]+'.mp3';
 				}
-//				if (options.useNB) {
-//				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColour='+options.controllerColor+'&scaleIfFullScreen=true&showScalingButton=true', {
-//					id: 'MediaboxSWF',
-//					width: mediaWidth,
-//					height: mediaHeight,
-//					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-//					});
-//				} else {
+				if (options.useNB) {
+				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
+					id: 'MediaboxSWF',
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				} else {
 				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
-//				}
+				}
 				startEffect();
 // SWF
 			} else if (URL.match(/\.swf/i) || mediaType == 'flash') {
