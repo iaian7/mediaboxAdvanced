@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.1.3 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.1.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.09.07
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -13,7 +13,7 @@ var Mediabox;
 (function() {
 
 	// Global variables, accessible to Mediabox only
-	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
+	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
 	// DOM elements
 	overlay, center, image, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
@@ -77,6 +77,12 @@ var Mediabox;
 //				animateCaption: true,			// Animate the caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
 				counterText: '({x} of {y})',	// Translate or change as you wish
+//			Image options
+				imgBackground: false,			// Embed images as CSS background (true) or <img> tag (false)
+												// ...a CSS background is naturally non-clickable, preventing downloads
+												// ...the IMG tag allows automatic scaling for smaller screens, minimal no-click code is included but does not work in Opera
+				imgPadding: 60,					// Clearance necessary for images larger than the window size (only used when imgBackground is false)
+												// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
 //			Global media options
 				scriptaccess: 'true',		// Allow script access to flash files
 				fullscreen: 'true',			// Use fullscreen
@@ -200,6 +206,10 @@ var Mediabox;
 
 			var links = this;
 
+			links.addEvent('contextmenu', function(e){
+				if (this.toString().match(/\.gif|\.jpg|\.png|twitpic\.com/i)) e.stop();
+			});
+
 			links.removeEvents("click").addEvent("click", function() {
 				// Build the list of images that will be displayed
 				var filteredArray = links.filter(linksFilter, this);
@@ -229,7 +239,9 @@ var Mediabox;
 	}
 
 	function size() {
-		overlay.setStyles({width: window.getWidth(), height: window.getHeight()});
+		winWidth = window.getWidth();
+		winHeight = window.getHeight();
+		overlay.setStyles({width: winWidth, height: winHeight});
 	}
 
 	function setup(open) {
@@ -296,9 +308,7 @@ var Mediabox;
 				mediaHeight = "";
 			}
 			URL = images[imageIndex][0];
-//			URL = escape(URL).replace("%3A", ":").replace("%23", "#");
 			URL = encodeURI(URL).replace("(","%28").replace(")","%29");
-//			URL = encodeURIComponent(URL).replace("(","%28").replace(")","%29");
 			captionSplit = images[activeImage][1].split('::');
 
 // Quietube and yFrog support
@@ -807,7 +817,35 @@ var Mediabox;
 		if (mediaType == "img"){
 			mediaWidth = preload.width;
 			mediaHeight = preload.height;
-			image.setStyles({backgroundImage: "url("+URL+")", display: ""});
+			if (options.imgBackground) {
+				image.setStyles({backgroundImage: "url("+URL+")", display: ""});
+			} else {
+				winWidth = window.getWidth()-options.imgPadding;
+				winHeight = window.getHeight()-options.imgPadding;
+				if (mediaHeight >= winHeight) {
+					mediaHeight = winHeight;
+					mediaWidth = parseInt((mediaHeight/preload.height)*mediaWidth);
+				} else if (mediaWidth >= winWidth) {
+					mediaWidth = winWidth;
+					mediaHeight = parseInt((preload.width/mediaWidth)*mediaHeight);
+				}
+				preload = new Element('img', {
+					'src': URL,
+					'alt': captionSplit[0],
+					'width': mediaWidth,
+					'height': mediaHeight,
+					'events': {
+						'mousedown': function(e){
+							e.stop();
+						},
+						'contextmenu': function(e){
+							e.stop();
+						}
+					}
+				});
+				image.setStyles({backgroundImage: "none", display: ""});
+				preload.inject(image);
+			}
 		} else if (mediaType == "obj") {
 			if (Browser.Plugins.Flash.version<8) {
 				image.setStyles({backgroundImage: "none", display: ""});
