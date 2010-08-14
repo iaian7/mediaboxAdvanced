@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.0.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.0.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.03.28
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -13,7 +13,7 @@ var Mediabox;
 (function() {
 
 	// Global variables, accessible to Mediabox only
-	var options, images, activeImage, prevImage, nextImage, top, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
+	var options, images, activeImage, prevImage, nextImage, top, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
 	// DOM elements
 	overlay, center, image, bottomContainer, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
@@ -29,12 +29,13 @@ var Mediabox;
 			$$([
 				overlay = new Element("div", {id: "mbOverlay"}).addEvent("click", close),
 				center = new Element("div", {id: "mbCenter"}),
-				bottomContainer = new Element("div", {id: "mbBottomContainer"})
+//				bottomContainer = new Element("div", {id: "mbBottomContainer"})
 			]).setStyle("display", "none")
 		);
 
 		image = new Element("div", {id: "mbImage"}).injectInside(center);
-		bottom = new Element("div", {id: "mbBottom"}).injectInside(bottomContainer).adopt(
+//		bottom = new Element("div", {id: "mbBottom"}).injectInside(bottomContainer).adopt(
+		bottom = new Element("div", {id: "mbBottom"}).injectInside(center).adopt(
 			new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
 			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),
@@ -47,7 +48,7 @@ var Mediabox;
 		fx = {
 			overlay: new Fx.Tween(overlay, {property: "opacity", duration: 360}).set(0),
 			image: new Fx.Tween(image, {property: "opacity", duration: 360, onComplete: captionAnimate}),
-			bottom: new Fx.Tween(bottom, {property: "margin-top", duration: 240})
+			bottom: new Fx.Tween(bottom, {property: "opacity", duration: 240})
 //			caption: new Fx.Tween(bottomContainer, {property: "opacity", duration: 480}).set(0)
 		};
 	});
@@ -131,6 +132,7 @@ var Mediabox;
 			}, _options || {});
 
 			if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
+				foxfix = true;
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayFF';
 			}
@@ -142,7 +144,15 @@ var Mediabox;
 
 			images = _images;
 			options.loop = options.loop && (images.length > 1);
-			position();
+
+			if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {	// Fixes IE 6 and earlier incompatibilities with CSS position: fixed;
+				iefix = true;
+				alert("you are running an antiquated and dangerously out of date broswer, please upgrade to Firefox 3.5, Safari 4, or Internet Explorer 8");
+				overlay.className = 'mbOverlayIE';
+				overlay.setStyle("position", "absolute");
+				position();
+			}
+			size();
 			setup(true);
 			top = window.getScrollTop() + (window.getHeight() / 15);
 			fx.resize = new Fx.Morph(center, $extend({duration: options.resizeDuration, onComplete: imageAnimate}, options.resizeTransition ? {transition: options.resizeTransition} : {}));
@@ -207,7 +217,14 @@ var Mediabox;
 	*/
 
 	function position() {
-		overlay.setStyles({top: window.getScrollTop(), height: window.getHeight()});
+//		overlay.setStyles({top: window.getScrollTop(), height: window.getHeight()});
+//		overlay.setStyle("top", window.getScrollTop());
+		overlay.setStyles({top: window.getScrollTop(), left: window.getScrollLeft()});
+	}
+
+	function size() {
+//		overlay.setStyle("height", window.getHeight());
+		overlay.setStyles({width: window.getWidth(), height: window.getHeight()});
 	}
 
 	function setup(open) {
@@ -222,7 +239,8 @@ var Mediabox;
 		overlay.style.display = open ? "" : "none";
 
 		var fn = open ? "addEvent" : "removeEvent";
-		window[fn]("scroll", position)[fn]("resize", position);
+		if (iefix) window[fn]("scroll", position);
+		window[fn]("resize", size);
 		document[fn]("keydown", keyDown);
 	}
 
@@ -261,7 +279,8 @@ var Mediabox;
 			if (nextImage == images.length) nextImage = options.loop ? 0 : -1;
 
 //			stop();
-			$$(prevLink, nextLink, image, bottomContainer).setStyle("display", "none");
+//			$$(prevLink, nextLink, image, bottomContainer).setStyle("display", "none");
+			$$(prevLink, nextLink, image, bottom).setStyle("display", "none");
 			fx.resize.cancel();
 			fx.image.cancel().set(0);
 			fx.bottom.cancel().set(0);
@@ -737,8 +756,8 @@ var Mediabox;
 		} else {
 			alert('this file type is not supported\n'+URL+'\nplease visit iaian7.com/webcode/Mediabox for more information');
 		}
-		$$(image, bottom).setStyle("width", mediaWidth);
-		image.setStyle("height", mediaHeight);
+//		$$(image, bottom).setStyle("width", mediaWidth);
+		image.setStyles({width: mediaWidth, height: mediaHeight});
 
 		title.set('html', (options.showCaption) ? captionSplit[0] : "");
 		caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
@@ -747,7 +766,9 @@ var Mediabox;
 		if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.png/i))) preloadPrev.src = images[prevImage][0];
 		if ((nextImage >= 0) && (images[nextImage][0].match(/\.gif|\.jpg|\.png/i))) preloadNext.src = images[nextImage][0];
 
-		fx.resize.start({height: image.offsetHeight, width: image.offsetWidth, marginLeft: -image.offsetWidth/2});
+//		alert(bottom.getComputedSize().totalHeight);
+
+		fx.resize.start({height: image.offsetHeight+bottom.getComputedSize().totalHeight, width: image.offsetWidth, marginLeft: -image.offsetWidth/2});
 	}
 
 	function imageAnimate() {
@@ -756,12 +777,12 @@ var Mediabox;
 	}
 
 	function captionAnimate() {
-		bottomContainer.setStyles({top: top + center.clientHeight, marginLeft: center.style.marginLeft, visibility: "hidden", display: ""});
+//		bottomContainer.setStyles({top: top + center.clientHeight, marginLeft: center.style.marginLeft, visibility: "hidden", display: ""});
 		if (prevImage >= 0) prevLink.style.display = "";
 		if (nextImage >= 0) nextLink.style.display = "";
-		fx.bottom.set(-bottom.offsetHeight).start(0);
+		fx.bottom.start(1);
 //		fx.caption.start(1);
-		bottomContainer.style.visibility = "";
+//		bottomContainer.style.visibility = "";
 	}
 
 	function stop() {
@@ -771,7 +792,8 @@ var Mediabox;
 		fx.image.cancel();
 		fx.bottom.cancel();
 //		fx.caption.cancel();
-		$$(prevLink, nextLink, image, bottomContainer).setStyle("display", "none");
+//		$$(prevLink, nextLink, image, bottomContainer).setStyle("display", "none");
+		$$(prevLink, nextLink, image, bottom).setStyle("display", "none");
 	}
 
 	function close() {
@@ -779,7 +801,8 @@ var Mediabox;
 			preload.onload = $empty;
 			image.set('html', '');
 			for (var f in fx) fx[f].cancel();
-			$$(center, bottomContainer).setStyle("display", "none");
+//			$$(center, bottomContainer).setStyle("display", "none");
+			center.setStyle("display", "none");
 			fx.overlay.chain(setup).start(0);
 		}
 		return false;
