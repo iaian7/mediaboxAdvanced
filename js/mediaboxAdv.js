@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.1.9 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2009.10.30
+	mediaboxAdvanced v1.2.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.01.24
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -11,7 +11,6 @@
 var Mediabox;
 
 (function() {
-
 	// Global variables, accessible to Mediabox only
 	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
 	// DOM elements
@@ -19,9 +18,7 @@ var Mediabox;
 	// Mediabox specific vars
 	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
 
-	/*
-		Initialization
-	*/
+	/*	Initialization	*/
 
 	window.addEvent("domready", function() {
 		// Create and append the Mediabox HTML code at the bottom of the document
@@ -49,9 +46,7 @@ var Mediabox;
 		};
 	});
 
-	/*
-		API
-	*/
+	/*	API		*/
 
 	Mediabox = {
 		close: function(){ 
@@ -74,7 +69,6 @@ var Mediabox;
 				defaultWidth: 640,				// Default width of the box (in pixels) for undefined media (MP4, FLV, etc.)
 				defaultHeight: 360,				// Default height of the box (in pixels) for undefined media (MP4, FLV, etc.)
 				showCaption: true,				// Display the title and caption, true / false
-//				animateCaption: true,			// Animate the caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
 				counterText: '({x} of {y})',	// Translate or change as you wish
 //			Image options
@@ -141,16 +135,6 @@ var Mediabox;
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayFF';
 			}
-/*
-			if ((Browser.Engine.gecko)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
-				foxfix = true;
-				overlay.setStyle("position", "absolute");
-				if ((Browser.Engine.version<19)) {
-					options.overlayOpacity = 1;
-					overlay.className = 'mbOverlayFF';
-				}
-			}
-*/
 
 			if (typeof _images == "string") {	// The function is called for a single image, with URL and Title as first two arguments
 				_images = [[_images,startImage,_options]];
@@ -231,9 +215,7 @@ var Mediabox;
 		}
 	});
 
-	/*
-		Internal functions
-	*/
+	/*	Internal functions	*/
 
 	function position() {
 		overlay.setStyles({top: window.getScrollTop(), left: window.getScrollLeft()});
