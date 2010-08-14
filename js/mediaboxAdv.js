@@ -1,10 +1,9 @@
 /*
-	mediaboxAdvanced v1.3.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.08.11
-	(c) 2007-2010 John Einselen <http://iaian7.com>
-		based on
+	mediaboxAdvanced v1.3.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.08.14
+		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
-	(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
+		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
 	MIT-style license.
 */
 
@@ -55,8 +54,8 @@ var Mediabox;
 
 		open: function(_images, startImage, _options) {
 			options = $extend({
-				text: ['<b>«</b>','<b>»</b>','<b>×</b>'],	// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
-//	sample alt-	text: ['<b>«</b> prev','<b>»</b> next','close <b>×</b>'],
+				text: ['<big>«</big>','<big>»</big>','<big>×</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+//	example		text: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
 				loop: false,					// Allows to navigate between first and last images
 				keyboard: true,					// Enables keyboard control; escape key, left arrow, and right arrow
 				alpha: true,					// Adds 'x', 'c', 'p', and 'n' when keyboard control is also set to true
@@ -74,14 +73,14 @@ var Mediabox;
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
 				counterText: '({x} of {y})',	// Translate or change as you wish
 //			Image options
-				imgBackground: false,			// Embed images as CSS background (true) or <img> tag (false)
-												// CSS background is naturally non-clickable, preventing downloads
-												// IMG tag allows automatic scaling for smaller screens
-												// (all images have no-click code applied, albeit not Opera compatible. To remove, comment lines 212 and 822)
-				imgPadding: 100,				// Clearance necessary for images larger than the window size (only used when imgBackground is false)
-												// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
+				imgBackground: false,		// Embed images as CSS background (true) or <img> tag (false)
+											// CSS background is naturally non-clickable, preventing downloads
+											// IMG tag allows automatic scaling for smaller screens
+											// (all images have no-click code applied, albeit not Opera compatible. To remove, comment lines 212 and 822)
+				imgPadding: 100,			// Clearance necessary for images larger than the window size (only used when imgBackground is false)
+											// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
 //			Inline options
-//				overflow: 'auto',				// Sets CSS overflow of the overflow to allow for
+//				overflow: 'auto',			// If set, overides CSS settings for inline content only
 //			Global media options
 				scriptaccess: 'true',		// Allow script access to flash files
 				fullscreen: 'true',			// Use fullscreen
@@ -144,23 +143,6 @@ var Mediabox;
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayFF';
 			}
-/*
-			if ((Browser.Engine.gecko)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
-				foxfix = true;
-				overlay.setStyle("position", "absolute");
-				if ((Browser.Engine.version<19)) {
-					options.overlayOpacity = 1;
-					overlay.className = 'mbOverlayFF';
-				}
-			}
-*/
-			if (typeof _images == "string") {	// The function is called for a single image, with URL and Title as first two arguments
-				_images = [[_images,startImage,_options]];
-				startImage = 0;
-			}
-
-			images = _images;
-			options.loop = options.loop && (images.length > 1);
 
 			if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {	// Fixes IE 6 and earlier incompatibilities with CSS position: fixed;
 				iefix = true;
@@ -168,6 +150,15 @@ var Mediabox;
 				overlay.setStyle("position", "absolute");
 				position();
 			}
+
+			if (typeof _images == "string") {	// Used for single images only, with URL and Title as first two arguments
+				_images = [[_images,startImage,_options]];
+				startImage = 0;
+			}
+
+			images = _images;
+			options.loop = options.loop && (images.length > 1);
+
 			size();
 			setup(true);
 			top = window.getScrollTop() + (window.getHeight()/2);
@@ -313,7 +304,8 @@ var Mediabox;
 			stop();
 			center.className = "mbLoading";
 
-// MEDIABOX FORMATING
+	/*	mediaboxAdvanced link formatting and media support	*/
+
 			if (!images[imageIndex][2]) images[imageIndex][2] = '';	// Thanks to Leo Feyer for offering this fix
 			WH = images[imageIndex][2].split(' ');
 			WHL = WH.length;
@@ -340,8 +332,9 @@ var Mediabox;
 				URL = URL+":iphone";
 			}
 
-// MEDIA TYPES
-// IMAGES
+	/*	Specific Media Types	*/
+
+// GIF, JPG, PNG
 			if (URL.match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i) || mediaType == 'image') {
 				mediaType = 'img';
 				URL = URL.replace(/twitpic\.com/i, "twitpic.com/show/full");
@@ -407,7 +400,7 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// Quicktime
+// MOV, M4V, M4A, MP4, AIFF, etc.
 			} else if (URL.match(/\.mov|\.m4v|\.m4a|\.aiff|\.avi|\.caf|\.dv|\.mid|\.m3u|\.mp3|\.mp2|\.mp4|\.qtz/i) || mediaType == 'qt') {
 				mediaType = 'qt';
 				mediaWidth = mediaWidth || options.defaultWidth;
@@ -420,7 +413,9 @@ var Mediabox;
 					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, loop: options.medialoop, bgcolor: options.bgcolor}
 					});
 				startEffect();
-// SOCIAL SITES
+
+	/*	Social Media Sites	*/
+
 // Blip.tv
 			} else if (URL.match(/blip\.tv/i)) {
 				mediaType = 'obj';
@@ -773,7 +768,9 @@ var Mediabox;
 					params: {flashvars: 'vid='+mediaId+'', wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// CONTENT TYPES
+
+	/*	Specific Content Types	*/
+
 // INLINE
 			} else if (URL.match(/\#mb_/i)) {
 				mediaType = 'inline';
@@ -837,7 +834,7 @@ var Mediabox;
 			image.setStyles({backgroundImage: "none", display: ""});
 			preload;
 		} else if (mediaType == "inline") {
-//			center.setStyles({overflow: options.overflow});
+//			if (options.overflow) image.setStyles({overflow: options.overflow});
 			image.setStyles({backgroundImage: "none", display: ""});
 			image.set('html', preload);
 		} else if (mediaType == "url") {
@@ -898,7 +895,8 @@ var Mediabox;
 	}
 })();
 
-// AUTOLOAD CODE BLOCK
+	/*	Autoload code block	*/
+
 Mediabox.scanPage = function() {
 //	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
