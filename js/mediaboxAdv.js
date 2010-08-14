@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.2.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.2.3 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2010.06.15
 	(c) 2007-2010 John Einselen <http://iaian7.com>
 		based on
