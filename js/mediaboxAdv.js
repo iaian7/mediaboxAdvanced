@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.0.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2009.03.28
+	mediaboxAdvanced v1.0.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2009.08.01
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -13,7 +13,7 @@ var Mediabox;
 (function() {
 
 	// Global variables, accessible to Mediabox only
-	var options, images, activeImage, prevImage, nextImage, top, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
+	var options, images, activeImage, prevImage, nextImage, top, left, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
 	// DOM elements
 	overlay, center, image, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
@@ -28,7 +28,7 @@ var Mediabox;
 		$(document.body).adopt(
 			$$([
 				overlay = new Element("div", {id: "mbOverlay"}).addEvent("click", close),
-				center = new Element("div", {id: "mbCenter"}),
+				center = new Element("div", {id: "mbCenter"})
 			]).setStyle("display", "none")
 		);
 
@@ -40,7 +40,6 @@ var Mediabox;
 			title = new Element("div", {id: "mbTitle"}),
 			number = new Element("div", {id: "mbNumber"}),
 			caption = new Element("div", {id: "mbCaption"})
-//			new Element("div", {styles: {clear: "both"}})
 		);
 
 		fx = {
@@ -82,8 +81,9 @@ var Mediabox;
 				autoplay: 'true',			// Plays the video as soon as it's opened
 				autoplayNum: '1',			// 1 = true
 				autoplayYes: 'yes',			// yes = true
-//				volume: '50',				// 0-100 (currently only implemented for justin.tv)
+//				volume: '50',				// 0-100 (not currently implemented)
 				bgcolor: '#000000',			// Background color, used for both flash and QT media
+				wmode: 'opaque',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
 //			JW Media Player settings and options
 				playerpath: '/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
 				backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
@@ -131,6 +131,16 @@ var Mediabox;
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayFF';
 			}
+/*
+			if ((Browser.Engine.gecko)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
+				foxfix = true;
+				overlay.setStyle("position", "absolute");
+				if ((Browser.Engine.version<19)) {
+					options.overlayOpacity = 1;
+					overlay.className = 'mbOverlayFF';
+				}
+			}
+*/
 
 			if (typeof _images == "string") {	// The function is called for a single image, with URL and Title as first two arguments
 				_images = [[_images,startImage,_options]];
@@ -143,14 +153,15 @@ var Mediabox;
 			if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {	// Fixes IE 6 and earlier incompatibilities with CSS position: fixed;
 				iefix = true;
 				overlay.className = 'mbOverlayIE';
+				overlay.setStyle("position", "absolute");
 				position();
 			}
 			size();
 			setup(true);
-//			top = window.getScrollTop() + (window.getHeight()/15);
 			top = window.getScrollTop() + (window.getHeight()/2);
+			left = window.getScrollLeft() + (window.getWidth()/2);
 			fx.resize = new Fx.Morph(center, $extend({duration: options.resizeDuration, onComplete: imageAnimate}, options.resizeTransition ? {transition: options.resizeTransition} : {}));
-			center.setStyles({top: top, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2), marginLeft: -(options.initialWidth/2), display: ""});
+			center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2), marginLeft: -(options.initialWidth/2), display: ""});
 			fx.overlay.start(options.overlayOpacity);
 			return changeImage(startImage);
 		}
@@ -191,8 +202,6 @@ var Mediabox;
 				var filteredArray = links.filter(linksFilter, this);
 				var filteredLinks = [];
 				var filteredHrefs = [];
-				
-				alert("You clicked: "+this);
 
 				filteredArray.each(function(item, index){
 					if(filteredHrefs.indexOf(item.toString()) < 0) {
@@ -270,12 +279,7 @@ var Mediabox;
 			prevImage = ((activeImage || !options.loop) ? activeImage : images.length) - 1;
 			nextImage = activeImage + 1;
 			if (nextImage == images.length) nextImage = options.loop ? 0 : -1;
-
-//			stop();
-			$$(prevLink, nextLink, image).setStyle("display", "none");
-			fx.resize.cancel();
-			fx.image.cancel().set(0);
-			fx.bottom.cancel().set(0);
+			stop();
 			center.className = "mbLoading";
 
 // MEDIABOX FORMATING
@@ -312,14 +316,14 @@ var Mediabox;
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				} else {
 				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				}
 				startEffect();
@@ -332,7 +336,7 @@ var Mediabox;
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // SWF
@@ -344,13 +348,9 @@ var Mediabox;
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// MOV
-//			} else if (URL.match(/\.mov/i)) {
-//				mediaType = 'obj';
-//				startEffect();
 // SOCIAL SITES
 // Blip.tv
 			} else if (URL.match(/blip\.tv/i)) {
@@ -361,7 +361,7 @@ var Mediabox;
 					src: URL,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Break.com
@@ -371,10 +371,9 @@ var Mediabox;
 				mediaHeight = mediaHeight || "376px";
 				mediaId = URL.match(/\d{6}/g)
 				preload = new Swiff('http://embed.break.com/'+mediaId, {
-//					src: 'http://embed.break.com/'+mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // DailyMotion
@@ -386,7 +385,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Facebook
@@ -402,7 +401,7 @@ var Mediabox;
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Flickr
@@ -417,7 +416,7 @@ var Mediabox;
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {flashvars: 'photo_id='+mediaId+'&amp;show_info_box='+options.flInfo, wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {flashvars: 'photo_id='+mediaId+'&amp;show_info_box='+options.flInfo, wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // GameTrailers Video
@@ -430,7 +429,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Google Video
@@ -444,7 +443,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Justin.tv
@@ -458,8 +457,8 @@ var Mediabox;
 					id: 'jtv_player_flash',
 					width: mediaWidth,
 					height: mediaHeight,
-//					params: {flashvars: 'channel='+mediaId+'&auto_play=true&start_volume=25', wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					params: {flashvars: 'channel='+mediaId, wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+//					params: {flashvars: 'channel='+mediaId+'&auto_play=true&start_volume=25', wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {flashvars: 'channel='+mediaId, wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Megavideo - Thanks to Robert Jandreu for suggesting this code!
@@ -473,7 +472,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Metacafe
@@ -487,7 +486,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // MyspaceTV
@@ -501,7 +500,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Revver
@@ -515,7 +514,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Rutube
@@ -529,7 +528,7 @@ var Mediabox;
 					movie: 'http://video.rutube.ru/'+mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Seesmic
@@ -543,7 +542,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Tudou
@@ -556,7 +555,7 @@ var Mediabox;
 				preload = new Swiff('http://www.tudou.com/v/'+mediaId, {
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Ustream.tv
@@ -567,7 +566,7 @@ var Mediabox;
 				preload = new Swiff(URL+'&amp;viewcount='+options.usViewers+'&amp;autoplay='+options.autoplay, {
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // YouKu
@@ -580,7 +579,7 @@ var Mediabox;
 				preload = new Swiff('http://player.youku.com/player.php/sid/'+mediaId+'=/v.swf', {
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // YouTube
@@ -605,7 +604,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // YouTube
@@ -619,7 +618,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Veoh
@@ -633,7 +632,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Viddler
@@ -649,7 +648,7 @@ var Mediabox;
 					classid: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, id: 'viddler_'+mediaId, movie: URL}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, id: 'viddler_'+mediaId, movie: URL}
 					});
 				startEffect();
 // Viddyou
@@ -664,7 +663,7 @@ var Mediabox;
 					movie: 'http://www.viddyou.com/get/v2_'+options.vuPlayer+'/'+mediaId+'.swf',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Vimeo
@@ -678,7 +677,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // 12seconds
@@ -692,7 +691,7 @@ var Mediabox;
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {flashvars: 'vid='+mediaId+'', wmode: 'opaque', bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {flashvars: 'vid='+mediaId+'', wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // CONTENT TYPES
@@ -715,6 +714,7 @@ var Mediabox;
 					'id': mediaId,
 					'width': mediaWidth,
 					'height': mediaHeight,
+//					'allowtransparency': 'true',
 					'frameborder': 0
 					});
 				startEffect();
@@ -773,12 +773,11 @@ var Mediabox;
 	}
 
 	function stop() {
-		preload.onload = $empty;
-//		preload.src = preloadPrev.src = preloadNext.src = URL;
+		if (preload) preload.onload = $empty;
 		fx.resize.cancel();
-		fx.image.cancel();
-		fx.bottom.cancel();
-		$$(prevLink, nextLink, image, bottom).setStyle("display", "none");
+		fx.image.cancel().set(0);
+		fx.bottom.cancel().set(0);
+		$$(prevLink, nextLink).setStyle("display", "none");
 	}
 
 	function close() {
