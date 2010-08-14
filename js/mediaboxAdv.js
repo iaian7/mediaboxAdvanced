@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.1.8 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.1.9 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.10.30
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -90,23 +90,23 @@ var Mediabox;
 				autoplay: 'true',			// Plays the video as soon as it's opened
 				autoplayNum: '1',			// 1 = true
 				autoplayYes: 'yes',			// yes = true
-				volume: '50',				// 0-100 (not currently implemented), used for NB and QT
+				volume: '100',				// 0-100, used for NonverBlaster and Quicktime players
+				medialoop: 'true',			// Loop video playback, true / false, used for NonverBlaster and Quicktime players
 				bgcolor: '#000000',			// Background color, used for flash and QT media
 				wmode: 'opaque',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
+//			NonverBlaster
+				useNB: true,				// use NonverBlaster (true) or JW Media Player (false) for .flv and .mp4 files
+				playerpath: '/js/NonverBlaster.swf',	// Path to NonverBlaster.swf
+				controlColor: '0xFFFFFF',	// set the controlbar color
+				controlBackColor: '0x000000',	// set the controlbar color
+				showTimecode: 'false',		// turn timecode display off or on
 //			JW Media Player settings and options
-				playerpath: '/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
+				JWplayerpath: '/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
 				backcolor:	'000000',		// Base color for the controller, color name / hex value (0x000000)
 				frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
 				lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 				screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 				controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
-//			NonverBlaster
-				useNB: true,				// use NonverBlaster in place of the JW Media Player for .flv and .mp4 files
-				NBpath: '/js/NonverBlaster.swf',	// Path to NonverBlaster.swf
-				NBloop: 'true',				// Loop video playback, true / false
-				controlColor: '0xFFFFFF',	// set the controlbar color
-				controlBackColor: '0x000000',	// set the controlbar color
-				showTimecode: 'false',		// turn timecode display off or on
 //			Quicktime options
 				controller: 'true',			// Show controller, true / false
 //			Flickr options
@@ -299,11 +299,12 @@ var Mediabox;
 			center.className = "mbLoading";
 
 // MEDIABOX FORMATING
+			if (!images[imageIndex][2]) images[imageIndex][2] = '';	// Thanks to Leo Feyer for offering this fix
 			WH = images[imageIndex][2].split(' ');
 			WHL = WH.length;
 			if (WHL>1) {
-				mediaWidth = (WH[WHL-2].match("%")) ? (window.getWidth()*("0."+(WH[WHL-2].replace("%", ""))))+"px" : WH[WHL-2]+"px";
-				mediaHeight = (WH[WHL-1].match("%")) ? (window.getHeight()*("0."+(WH[WHL-1].replace("%", ""))))+"px" : WH[WHL-1]+"px";
+				mediaWidth = (WH[WHL-2].match("%")) ? (window.getWidth()*((WH[WHL-2].replace("%", ""))*0.01))+"px" : WH[WHL-2]+"px";
+				mediaHeight = (WH[WHL-1].match("%")) ? (window.getHeight()*((WH[WHL-1].replace("%", ""))*0.01))+"px" : WH[WHL-1]+"px";
 			} else {
 				mediaWidth = "";
 				mediaHeight = "";
@@ -338,14 +339,14 @@ var Mediabox;
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
 				if (options.useNB) {
-				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
+				preload = new Swiff(''+options.playerpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.medialoop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&defaultVolume='+options.volume+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				} else {
-				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
+				preload = new Swiff(''+options.JWplayerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
@@ -364,14 +365,14 @@ var Mediabox;
 					URL = "http://media4.fjarnet.net/tweet/tweetmicapp-"+URL[4]+'.mp3';
 				}
 				if (options.useNB) {
-				preload = new Swiff(''+options.NBpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.NBloop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
+				preload = new Swiff(''+options.playerpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.medialoop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&defaultVolume='+options.volume+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				} else {
-				preload = new Swiff(''+options.playerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
+				preload = new Swiff(''+options.JWplayerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
 					id: 'MediaboxSWF',
 					width: mediaWidth,
 					height: mediaHeight,
@@ -392,16 +393,16 @@ var Mediabox;
 					});
 				startEffect();
 // Quicktime
-			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i) || mediaType == 'qt') {
-				mediaType = 'obj';
+			} else if (URL.match(/\.mov|\.m4v|\.m4a|\.aiff|\.avi|\.caf|\.dv|\.mid|\.m3u|\.mp3|\.mp2|\.mp4|\.qtz/i) || mediaType == 'qt') {
+				mediaType = 'qt';
 				mediaWidth = mediaWidth || options.defaultWidth;
-				mediaHeight = mediaHeight || options.defaultHeight;
+				mediaHeight = (parseInt(mediaHeight)+16)+"px" || options.defaultHeight;
 				preload = new Quickie(URL, {
 					id: 'MediaboxQT',
 					width: mediaWidth,
 					height: mediaHeight,
-					container: 'qtmovie',
-					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, bgcolor: options.bgcolor}
+					container: 'mbImage',
+					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, loop: options.medialoop, bgcolor: options.bgcolor}
 					});
 				startEffect();
 // SOCIAL SITES
@@ -509,21 +510,6 @@ var Mediabox;
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
-// Justin.tv
-			} else if (URL.match(/justin\.tv/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "353px";
-				mediaHeight = mediaHeight || "295px";
-				mediaSplit = URL.split('/');
-				mediaId = mediaSplit[3];
-				preload = new Swiff('http://www.justin.tv/widgets/jtv_player.swf', {
-					id: 'jtv_player_flash',
-					width: mediaWidth,
-					height: mediaHeight,
-//					params: {flashvars: 'channel='+mediaId+'&auto_play=true&start_volume=25', wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					params: {flashvars: 'channel='+mediaId, wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
 // Megavideo - Thanks to Robert Jandreu for suggesting this code!
@@ -858,6 +844,9 @@ var Mediabox;
 				image.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(image);
 			}
+		} else if (mediaType == "qt") {
+			image.setStyles({backgroundImage: "none", display: ""});
+			preload;
 		} else if (mediaType == "inline") {
 			image.setStyles({backgroundImage: "none", display: ""});
 			image.set('html', preload);
