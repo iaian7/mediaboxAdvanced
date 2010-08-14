@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.1.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2009.08.08
+	mediaboxAdvanced v1.1.3 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2009.09.07
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
 	Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -89,7 +89,7 @@ var Mediabox;
 				wmode: 'opaque',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
 //			JW Media Player settings and options
 				playerpath: '/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
-				backcolor:  '000000',		// Base color for the controller, color name / hex value (0x000000)
+				backcolor:	'000000',		// Base color for the controller, color name / hex value (0x000000)
 				frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
 				lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
 				screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
@@ -111,12 +111,12 @@ var Mediabox;
 				revverFront: 'ffffff',		// Foreground colour
 				revverGrad: '000000',		// Gradation colour
 //			Ustream options
-				usViewers: 'true',				// Show online viewer count	(true/false)
+				usViewers: 'true',				// Show online viewer count (true/false)
 //			Youtube options
-				ytBorder: '0',				// Outline 				(1=true, 0=false)
+				ytBorder: '0',				// Outline				(1=true, 0=false)
 				ytColor1: '000000',			// Outline colour
 				ytColor2: '333333',			// Base interface colour (highlight colours stay consistent)
-				ytQuality: '&ap=%2526fmt%3D18',	// Leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
+				ytQuality: '&ap=%2526fmt%3D18', // Leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
 				ytRel: '0',					// Show related videos	(1=true, 0=false)
 				ytInfo: '1',				// Show video info		(1=true, 0=false)
 				ytSearch: '0',				// Show search field	(1=true, 0=false)
@@ -182,10 +182,10 @@ var Mediabox;
 		/*
 			options:	Optional options object, see Mediabox.open()
 			linkMapper:	Optional function taking a link DOM element and an index as arguments and returning an array containing 3 elements:
-					the image URL and the image caption (may contain HTML)
-			linksFilter:	Optional function taking a link DOM element and an index as arguments and returning true if the element is part of
-					the image collection that will be shown on click, false if not. "this" refers to the element that was clicked.
-					This function must always return true when the DOM element argument is "this".
+						the image URL and the image caption (may contain HTML)
+			linksFilter:Optional function taking a link DOM element and an index as arguments and returning true if the element is part of
+						the image collection that will be shown on click, false if not. "this" refers to the element that was clicked.
+						This function must always return true when the DOM element argument is "this".
 		*/
 		mediabox: function(_options, linkMapper, linksFilter) {
 			linkMapper = linkMapper || function(el) {
@@ -296,6 +296,9 @@ var Mediabox;
 				mediaHeight = "";
 			}
 			URL = images[imageIndex][0];
+//			URL = escape(URL).replace("%3A", ":").replace("%23", "#");
+			URL = encodeURI(URL).replace("(","%28").replace(")","%29");
+//			URL = encodeURIComponent(URL).replace("(","%28").replace(")","%29");
 			captionSplit = images[activeImage][1].split('::');
 
 // Quietube and yFrog support
