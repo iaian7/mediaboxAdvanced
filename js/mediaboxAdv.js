@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.0.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.0.3 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2009.03.28
 	(c) 2007-2009 John Einselen <http://iaian7.com>
 		based on
@@ -15,7 +15,7 @@ var Mediabox;
 	// Global variables, accessible to Mediabox only
 	var options, images, activeImage, prevImage, nextImage, top, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
 	// DOM elements
-	overlay, center, image, bottomContainer, bottom, captionSplit, title, caption, prevLink, number, nextLink,
+	overlay, center, image, bottom, text, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
 	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
 
@@ -29,16 +29,22 @@ var Mediabox;
 			$$([
 				overlay = new Element("div", {id: "mbOverlay"}).addEvent("click", close),
 				center = new Element("div", {id: "mbCenter"}),
-//				bottomContainer = new Element("div", {id: "mbBottomContainer"})
 			]).setStyle("display", "none")
 		);
 
 		image = new Element("div", {id: "mbImage"}).injectInside(center);
-//		bottom = new Element("div", {id: "mbBottom"}).injectInside(bottomContainer).adopt(
 		bottom = new Element("div", {id: "mbBottom"}).injectInside(center).adopt(
 			new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
-			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),
+//			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),
+			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous)
+//			title = new Element("div", {id: "mbTitle"}),
+//			number = new Element("div", {id: "mbNumber"}),
+//			caption = new Element("div", {id: "mbCaption"}),
+//			new Element("div", {styles: {clear: "both"}})
+		);
+
+		text = new Element("div", {id: "mbText"}).injectInside(bottom).adopt(
 			title = new Element("div", {id: "mbTitle"}),
 			number = new Element("div", {id: "mbNumber"}),
 			caption = new Element("div", {id: "mbCaption"}),
@@ -47,9 +53,12 @@ var Mediabox;
 
 		fx = {
 			overlay: new Fx.Tween(overlay, {property: "opacity", duration: 360}).set(0),
-			image: new Fx.Tween(image, {property: "opacity", duration: 360, onComplete: captionAnimate}),
-			bottom: new Fx.Tween(bottom, {property: "opacity", duration: 240})
-//			caption: new Fx.Tween(bottomContainer, {property: "opacity", duration: 480}).set(0)
+//			image: new Fx.Tween(image, {property: "opacity", duration: 360, onComplete: captionAnimate}),
+			image: new Fx.Tween(image, {property: "opacity", duration: 360}).set(0),
+//			bottom: new Fx.Tween(bottom, {property: "opacity", duration: 240}).set(0),
+			text: new Fx.Tween(text, {property: "opacity", duration: 240}).set(0),
+			nextLink: new Fx.Tween(nextLink, {property: "opacity", duration: 240}).set(0),
+			prevLink: new Fx.Tween(prevLink, {property: "opacity", duration: 240}).set(0)
 		};
 	});
 
@@ -279,12 +288,13 @@ var Mediabox;
 			if (nextImage == images.length) nextImage = options.loop ? 0 : -1;
 
 //			stop();
-//			$$(prevLink, nextLink, image, bottomContainer).setStyle("display", "none");
-			$$(prevLink, nextLink, image, bottom).setStyle("display", "none");
+			$$(prevLink, nextLink, image).setStyle("display", "none");
 			fx.resize.cancel();
 			fx.image.cancel().set(0);
-			fx.bottom.cancel().set(0);
-//			fx.caption.cancel().set(0);
+//			fx.bottom.cancel().set(0);
+			fx.text.cancel().set(0);
+			fx.nextLink.cancel().set(0);
+			fx.prevLink.cancel().set(0);
 			center.className = "mbLoading";
 
 // MEDIABOX FORMATING
@@ -773,16 +783,19 @@ var Mediabox;
 
 	function imageAnimate() {
 		fx.image.start(1);
+//		if (prevImage >= 0) prevLink.style.display = "";
+//		if (nextImage >= 0) nextLink.style.display = "";
+		if (nextImage >= 0) fx.nextLink.start(1) || fx.nextLink.start(0);
+		if (prevImage >= 0) fx.prevLink.start(1) || fx.nextLink.start(0);
+//		fx.bottom.start(1);
+		fx.text.start(1);
 		center.className = "";
 	}
 
 	function captionAnimate() {
-//		bottomContainer.setStyles({top: top + center.clientHeight, marginLeft: center.style.marginLeft, visibility: "hidden", display: ""});
 		if (prevImage >= 0) prevLink.style.display = "";
 		if (nextImage >= 0) nextLink.style.display = "";
 		fx.bottom.start(1);
-//		fx.caption.start(1);
-//		bottomContainer.style.visibility = "";
 	}
 
 	function stop() {
@@ -790,9 +803,10 @@ var Mediabox;
 //		preload.src = preloadPrev.src = preloadNext.src = URL;
 		fx.resize.cancel();
 		fx.image.cancel();
-		fx.bottom.cancel();
-//		fx.caption.cancel();
-//		$$(prevLink, nextLink, image, bottomContainer).setStyle("display", "none");
+//		fx.bottom.cancel();
+		fx.text.cancel().set(0);
+		fx.nextLink.cancel().set(0);
+		fx.prevLink.cancel().set(0);
 		$$(prevLink, nextLink, image, bottom).setStyle("display", "none");
 	}
 
@@ -801,7 +815,6 @@ var Mediabox;
 			preload.onload = $empty;
 			image.set('html', '');
 			for (var f in fx) fx[f].cancel();
-//			$$(center, bottomContainer).setStyle("display", "none");
 			center.setStyle("display", "none");
 			fx.overlay.chain(setup).start(0);
 		}
