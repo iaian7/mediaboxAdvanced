@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.4.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.4.6 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2011.2.19
 		(c) 2007-2011 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -206,7 +206,7 @@ var Mediabox;
 			linkMapper = linkMapper || function(el) {
 				elrel = el.rel.split(/[\[\]]/);
 				elrel = elrel[1];
-				return [el.href, el.title, elrel];
+				return [el.get('href'), el.title, elrel];	// thanks to Dušan Medlín for figuring out the URL bug!
 			};
 
 			linksFilter = linksFilter || function() {
@@ -431,7 +431,7 @@ var Mediabox;
 					id: 'MediaboxQT',
 					width: mediaWidth,
 					height: mediaHeight,
-					container: 'mbImage',
+//					container: 'mbImage',
 					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, loop: options.medialoop, bgcolor: options.bgcolor}
 					});
 				startEffect();
@@ -838,8 +838,8 @@ var Mediabox;
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
 				URLsplit = URL.split('#');
+//				preload = new Element("div", {id: "mbImageInline"}).adopt(document.id(URLsplit[1]).getChildren().clone([true,true]));
 				preload = document.id(URLsplit[1]);
-//				preload = document.id(URLsplit[1]).get('html');
 				startEffect();
 // HTML (applies to ALL links not recognised as a specific media type)
 			} else {
@@ -887,13 +887,13 @@ var Mediabox;
 		} else if (mediaType == "inline") {
 //			if (options.overflow) image.setStyles({overflow: options.overflow});
 			image.setStyles({backgroundImage: "none", display: ""});
+//			preload.inject(image);
+//			image.grab(preload.get('html'));
 			(options.inlineClone)?image.grab(preload.get('html')):image.adopt(preload.getChildren());
-//			(options.inlineClone)?image.grab(preload.clone()):image.adopt(preload.getChildren());
-//			.get('html')
-//			image.set('html', preload);
 		} else if (mediaType == "qt") {
 			image.setStyles({backgroundImage: "none", display: ""});
-			preload;
+			preload.inject(image);
+//			preload;
 		} else if (mediaType == "ios" || Browser.Platform.ios) {
 			image.setStyles({backgroundImage: "none", display: ""});
 			image.set('html', options.linkText.replace(/{x}/gi, URL));
@@ -971,6 +971,24 @@ var Mediabox;
 		}
 		return false;
 	}
+})();
+
+	/*	Quicktime detection from Quickie.js	*/
+
+Browser.Plugins.QuickTime = (function(){
+	if (navigator.plugins) {
+		for (var i = 0, l = navigator.plugins.length; i < l; i++) {
+			if (navigator.plugins[i].name.indexOf('QuickTime') >= 0) {
+				return true;
+			}
+		}
+	} else {
+		try { var test = new ActiveXObject('QuickTime.QuickTime'); }
+		catch(e) {}
+		
+		if (test) { return true; }
+	}
+	return false;
 })();
 
 	/*	Autoload code block	*/
