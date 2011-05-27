@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.4.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2011.2.12
+	mediaboxAdvanced v1.4.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2011.2.19
 		(c) 2007-2011 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
 		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -13,7 +13,7 @@ var Mediabox;
 	// Global variables, accessible to Mediabox only
 	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
 	// DOM elements
-	overlay, center, image, bottom, captionSplit, title, caption, prevLink, number, nextLink,
+	overlay, center, image, bottom, captionSplit, title, caption, number, prevLink, nextLink,
 	// Mediabox specific vars
 	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt, margin;
 
@@ -91,6 +91,7 @@ var Mediabox;
 											// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
 //			Inline options
 				overflow: 'auto',			// If set, overides CSS settings for inline content only, set to "false" to leave CSS settings intact.
+				inlineClone: false,			// Clones the inline element instead of moving it from the page to the overlay
 //			Global media options
 				html5: 'true',				// HTML5 settings for YouTube and Vimeo, false = off, true = on
 				scriptaccess: 'true',		// Allow script access to flash files
@@ -254,7 +255,7 @@ var Mediabox;
 		// Hides on-page objects and embeds while the overlay is open, nessesary to counteract Firefox stupidity
 		if (Browser.firefox) {
 			["object", window.ie ? "select" : "embed"].forEach(function(tag) {
-				Array.forEach(document.getElementsByTagName(tag), function(el) {
+				Array.forEach($$(tag), function(el) {
 					if (open) el._mediabox = el.style.visibility;
 					el.style.visibility = open ? "hidden" : el._mediabox;
 				});
@@ -322,6 +323,7 @@ var Mediabox;
 			if (nextImage == images.length) nextImage = options.loop ? 0 : -1;
 			stop();
 			center.className = "mbLoading";
+			if (preload && mediaType == "inline" && !options.inlineClone) preload.adopt(image.getChildren());	// prevents loss of adopted data
 
 	/*	mediaboxAdvanced link formatting and media support	*/
 
@@ -836,7 +838,8 @@ var Mediabox;
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
 				URLsplit = URL.split('#');
-				preload = document.id(URLsplit[1]).get('html');
+				preload = document.id(URLsplit[1]);
+//				preload = document.id(URLsplit[1]).get('html');
 				startEffect();
 // HTML (applies to ALL links not recognised as a specific media type)
 			} else {
@@ -860,6 +863,7 @@ var Mediabox;
 	function startEffect() {
 //		if (Browser.Platform.ios && (mediaType == "obj" || mediaType == "qt" || mediaType == "html")) alert("this isn't gonna work");
 //		if (Browser.Platform.ios && (mediaType == "obj" || mediaType == "qt" || mediaType == "html")) mediaType = "ios";
+		(mediaType == "img")?image.addEvent("click", next):image.removeEvent("click", next);
 		if (mediaType == "img"){
 			mediaWidth = preload.width;
 			mediaHeight = preload.height;
@@ -881,9 +885,12 @@ var Mediabox;
 				preload.inject(image);
 			}
 		} else if (mediaType == "inline") {
-			if (options.overflow) image.setStyles({overflow: options.overflow});
+//			if (options.overflow) image.setStyles({overflow: options.overflow});
 			image.setStyles({backgroundImage: "none", display: ""});
-			image.set('html', preload);
+			(options.inlineClone)?image.grab(preload.get('html')):image.adopt(preload.getChildren());
+//			(options.inlineClone)?image.grab(preload.clone()):image.adopt(preload.getChildren());
+//			.get('html')
+//			image.set('html', preload);
 		} else if (mediaType == "qt") {
 			image.setStyles({backgroundImage: "none", display: ""});
 			preload;
@@ -917,6 +924,8 @@ var Mediabox;
 		title.set('html', (options.showCaption) ? captionSplit[0] : "");
 		caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
 		number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, activeImage + 1).replace(/{y}/, images.length) : "");
+//		The following line inverts the displayed number (so instead of the first element being labeled 1/10, it's 10/10)
+//		number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, images.length - activeImage).replace(/{y}/, images.length) : "");
 
 		if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i))) preloadPrev.src = images[prevImage][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
 		if ((nextImage >= 0) && (images[nextImage][0].match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i))) preloadNext.src = images[nextImage][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
@@ -941,7 +950,10 @@ var Mediabox;
 	}
 
 	function stop() {
-		if (preload) preload.onload = function(){}; // $empty replacement
+		if (preload) {
+			if (mediaType == "inline" && !options.inlineClone) preload.adopt(image.getChildren());	// prevents loss of adopted data
+			preload.onload = function(){}; // $empty replacement
+		}
 		fx.resize.cancel();
 		fx.image.cancel().set(0);
 		fx.bottom.cancel().set(0);
@@ -950,8 +962,9 @@ var Mediabox;
 
 	function close() {
 		if (activeImage >= 0) {
+			if (mediaType == "inline" && !options.inlineClone) preload.adopt(image.getChildren());	// prevents loss of adopted data
 			preload.onload = function(){}; // $empty replacement
-			image.set('html', '');
+			image.empty();
 			for (var f in fx) fx[f].cancel();
 			center.setStyle("display", "none");
 			fx.overlay.chain(setup).start(0);
@@ -968,7 +981,8 @@ Mediabox.scanPage = function() {
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
 	});
-	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
+//	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
+	links.mediabox({/* Put custom options here */}, null, function(el) {
 		var rel0 = this.rel.replace(/[[]|]/gi," ");
 		var relsize = rel0.split(" ");
 		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
