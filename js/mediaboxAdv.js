@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.3.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.08.14
+	mediaboxAdvanced v1.3.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.09.15
 		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
 		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -15,7 +15,7 @@ var Mediabox;
 	// DOM elements
 	overlay, center, image, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
-	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt;
+	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt, margin;
 
 	/*	Initialization	*/
 
@@ -54,7 +54,8 @@ var Mediabox;
 
 		open: function(_images, startImage, _options) {
 			options = $extend({
-				text: ['<big>«</big>','<big>»</big>','<big>×</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+				text: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+//				text: ['<big>«</big>','<big>»</big>','<big>×</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
 //	example		text: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
 				loop: false,					// Allows to navigate between first and last images
 				keyboard: true,					// Enables keyboard control; escape key, left arrow, and right arrow
@@ -82,6 +83,7 @@ var Mediabox;
 //			Inline options
 //				overflow: 'auto',			// If set, overides CSS settings for inline content only
 //			Global media options
+				html5: 'true',				// HTML5 settings for YouTube and Vimeo, false = off, true = on
 				scriptaccess: 'true',		// Allow script access to flash files
 				fullscreen: 'true',			// Use fullscreen
 				fullscreenNum: '1',			// 1 = true
@@ -138,6 +140,8 @@ var Mediabox;
 			nextLink.set('html', options.text[1]);
 			closeLink.set('html', options.text[2]);
 
+			margin = center.getStyle('padding-left').toInt()+image.getStyle('margin-left').toInt()+image.getStyle('padding-left').toInt();
+
 			if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 				foxfix = true;
 				options.overlayOpacity = 1;
@@ -164,7 +168,7 @@ var Mediabox;
 			top = window.getScrollTop() + (window.getHeight()/2);
 			left = window.getScrollLeft() + (window.getWidth()/2);
 			fx.resize = new Fx.Morph(center, $extend({duration: options.resizeDuration, onComplete: imageAnimate}, options.resizeTransition ? {transition: options.resizeTransition} : {}));
-			center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2), marginLeft: -(options.initialWidth/2), display: ""});
+			center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
 			fx.overlay.start(options.overlayOpacity);
 			return changeImage(startImage);
 		}
@@ -655,19 +659,52 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// YouTube
+// YouTube HTML5
+/*			} else if (options.html5 && URL.match(/youtube\.com\/watch/i)) {
+				mediaType = 'url';
+				mediaSplit = URL.split('v=');
+				mediaWidth = mediaWidth || "640";
+				mediaHeight = mediaHeight || "385";
+				mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
+				preload = new Element('iframe', {
+					'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
+					'id': mediaId,
+					'type': 'text/html',
+					'class': 'youtube-player',
+					'width': mediaWidth,
+					'height': mediaHeight,
+					'frameborder': 0
+					});
+				startEffect();*/
+// YouTube Video
 			} else if (URL.match(/youtube\.com\/watch/i)) {
 				mediaType = 'obj';
 				mediaSplit = URL.split('v=');
 				mediaId = mediaSplit[1];
-				if (mediaId.match(/fmt=18/i)) {
-					mediaFmt = '&ap=%2526fmt%3D18';
-					mediaWidth = mediaWidth || "560px";
-					mediaHeight = mediaHeight || "345px";
+
+				if (options.html5) {
+					mediaType = 'url';
+					mediaWidth = mediaWidth || "640";
+					mediaHeight = mediaHeight || "385";
+					mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
+					preload = new Element('iframe', {
+						'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
+						'id': mediaId,
+						'type': 'text/html',
+						'class': 'youtube-player',
+						'width': mediaWidth,
+						'height': mediaHeight,
+						'frameborder': 0
+						});
+					startEffect();
 				} else if (mediaId.match(/fmt=22/i)) {
 					mediaFmt = '&ap=%2526fmt%3D22';
 					mediaWidth = mediaWidth || "640px";
 					mediaHeight = mediaHeight || "385px";
+				} else if (mediaId.match(/fmt=18/i)) {
+					mediaFmt = '&ap=%2526fmt%3D18';
+					mediaWidth = mediaWidth || "560px";
+					mediaHeight = mediaHeight || "345px";
 				} else {
 					mediaFmt = options.ytQuality;
 					mediaWidth = mediaWidth || "480px";
@@ -680,7 +717,7 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// YouTube
+// YouTube Playlist
 			} else if (URL.match(/youtube\.com\/view/i)) {
 				mediaType = 'obj';
 				mediaSplit = URL.split('p=');
@@ -740,6 +777,24 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
+// Vimeo HTML5
+/*			} else if (options.html5 && URL.match(/vimeo\.com/i)) {
+				mediaType = 'url';
+				mediaSplit = URL.split('/');
+//				mediaId = mediaSplit[1];
+				mediaWidth = mediaWidth || "640";
+				mediaHeight = mediaHeight || "360";
+				mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
+				preload = new Element('iframe', {
+					'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait,
+					'id': mediaId,
+					'type': 'text/html',
+					'class': 'vimeo-player',
+					'width': mediaWidth,
+					'height': mediaHeight,
+					'frameborder': 0
+					});
+				startEffect();*/
 // Vimeo
 			} else if (URL.match(/vimeo\.com/i)) {
 				mediaType = 'obj';
@@ -747,13 +802,30 @@ var Mediabox;
 				mediaHeight = mediaHeight || "360px";	// site defualt: 225px
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[3];
-				preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;autoplay='+options.autoplayNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
-					id: mediaId,
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
+
+				if (options.html5) {
+					mediaType = 'url';
+					mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
+					preload = new Element('iframe', {
+						'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait,
+						'id': mediaId,
+						'style': 'background-color: black;',
+						'type': 'text/html',
+						'class': 'vimeo-player',
+						'width': mediaWidth,
+						'height': mediaHeight,
+						'frameborder': 0
+						});
+					startEffect();
+				} else {
+					preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;autoplay='+options.autoplayNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
+						id: mediaId,
+						width: mediaWidth,
+						height: mediaHeight,
+						params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+						});
+					startEffect();
+				}
 // 12seconds
 			} else if (URL.match(/12seconds\.tv/i)) {
 				mediaType = 'obj';
@@ -784,13 +856,12 @@ var Mediabox;
 				mediaType = 'url';
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
-				mediaId = "mediaId_"+new Date().getTime();	// Safari will not update iframe content with a static id.
+				mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
 				preload = new Element('iframe', {
 					'src': URL,
 					'id': mediaId,
 					'width': mediaWidth,
 					'height': mediaHeight,
-//					'allowtransparency': 'true',
 					'frameborder': 0
 					});
 				startEffect();
@@ -858,10 +929,10 @@ var Mediabox;
 
 		mediaWidth = image.offsetWidth;
 		mediaHeight = image.offsetHeight+bottom.offsetHeight;
-		if (mediaHeight >= top+top-10) { mTop = -(top-10) } else { mTop = -(mediaHeight/2) };
-		if (mediaWidth >= left+left-10) { mLeft = -(left-10) } else { mLeft = -(mediaWidth/2) };
-		if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop, marginLeft: mLeft});
-		} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop, marginLeft: mLeft}); imageAnimate(); }
+		if (mediaHeight >= top+top) { mTop = -top } else { mTop = -(mediaHeight/2) };
+		if (mediaWidth >= left+left) { mLeft = -left } else { mLeft = -(mediaWidth/2) };
+		if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
+		} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin}); imageAnimate(); }
 	}
 
 	function imageAnimate() {
