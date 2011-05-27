@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.3.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.4.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2011.1.8
 		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -325,7 +325,8 @@ var Mediabox;
 				mediaHeight = "";
 			}
 			URL = images[imageIndex][0];
-			URL = encodeURI(URL).replace("(","%28").replace(")","%29");
+//			URL = encodeURI(URL).replace("(","%28").replace(")","%29");
+//			URL = encodeURI(URL).replace("(","%28").replace(")","%29").replace("%20"," ");
 			captionSplit = images[activeImage][1].split('::');
 
 // Quietube and yFrog support
@@ -351,11 +352,10 @@ var Mediabox;
 				preload.src = URL;
 // iOS Link
 			} else if (Browser.Platform.ios) {
-//			} else if (1!=1) {
 				mediaType = 'ios';
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
-				preload = options.linkText.replace(/{x}/, URL);
+				preload = options.linkText.replace('{x}', URL);
 				startEffect();
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i) || mediaType == 'video') {
@@ -485,7 +485,7 @@ var Mediabox;
 					});
 				startEffect();
 // Flickr
-			} else if (URL.match(/flickr\.com/i)) {
+			} else if (URL.match(/flickr\.com(?!.+\/show\/)/i)) {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || "500px";
 				mediaHeight = mediaHeight || "375px";
