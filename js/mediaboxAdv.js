@@ -1,5 +1,5 @@
 /*
-	mediaboxAdvanced v1.3.2 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	mediaboxAdvanced v1.3.3 - The ultimate extension of Slimbox and Mediabox; an all-media script
 	updated 2010.09.15
 		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -622,6 +622,19 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
+// Twiturm
+			} else if (URL.match(/twiturm\.com/i)) {
+				mediaType = 'obj';
+				mediaWidth = mediaWidth || "402px";
+				mediaHeight = mediaHeight || "48px";
+				mediaSplit = URL.split('/');
+				mediaId = mediaSplit[3];
+				preload = new Swiff('http://twiturm.com/flash/twiturm_mp3.swf?playerID=0&sf='+mediaId, {
+					width: mediaWidth,
+					height: mediaHeight,
+					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					});
+				startEffect();
 // Twitvid
 			} else if (URL.match(/twitvid\.com/i)) {
 				mediaType = 'obj';
@@ -659,29 +672,9 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// YouTube HTML5
-/*			} else if (options.html5 && URL.match(/youtube\.com\/watch/i)) {
-				mediaType = 'url';
-				mediaSplit = URL.split('v=');
-				mediaWidth = mediaWidth || "640";
-				mediaHeight = mediaHeight || "385";
-				mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
-				preload = new Element('iframe', {
-					'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
-					'id': mediaId,
-					'type': 'text/html',
-					'class': 'youtube-player',
-					'width': mediaWidth,
-					'height': mediaHeight,
-					'frameborder': 0
-					});
-				startEffect();*/
-// YouTube Video
+// YouTube Video (now includes HTML5 option)
 			} else if (URL.match(/youtube\.com\/watch/i)) {
-				mediaType = 'obj';
 				mediaSplit = URL.split('v=');
-				mediaId = mediaSplit[1];
-
 				if (options.html5) {
 					mediaType = 'url';
 					mediaWidth = mediaWidth || "640";
@@ -690,33 +683,37 @@ var Mediabox;
 					preload = new Element('iframe', {
 						'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
 						'id': mediaId,
-						'type': 'text/html',
-						'class': 'youtube-player',
+//						'type': 'text/html',
+//						'class': 'youtube-player',
 						'width': mediaWidth,
 						'height': mediaHeight,
 						'frameborder': 0
 						});
 					startEffect();
-				} else if (mediaId.match(/fmt=22/i)) {
-					mediaFmt = '&ap=%2526fmt%3D22';
-					mediaWidth = mediaWidth || "640px";
-					mediaHeight = mediaHeight || "385px";
-				} else if (mediaId.match(/fmt=18/i)) {
-					mediaFmt = '&ap=%2526fmt%3D18';
-					mediaWidth = mediaWidth || "560px";
-					mediaHeight = mediaHeight || "345px";
 				} else {
-					mediaFmt = options.ytQuality;
-					mediaWidth = mediaWidth || "480px";
-					mediaHeight = mediaHeight || "295px";
+					mediaType = 'obj';
+					mediaId = mediaSplit[1];
+					if (mediaId.match(/fmt=22/i)) {
+						mediaFmt = '&ap=%2526fmt%3D22';
+						mediaWidth = mediaWidth || "640px";
+						mediaHeight = mediaHeight || "385px";
+					} else if (mediaId.match(/fmt=18/i)) {
+						mediaFmt = '&ap=%2526fmt%3D18';
+						mediaWidth = mediaWidth || "560px";
+						mediaHeight = mediaHeight || "345px";
+					} else {
+						mediaFmt = options.ytQuality;
+						mediaWidth = mediaWidth || "480px";
+						mediaHeight = mediaHeight || "295px";
+					}
+					preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
+						id: mediaId,
+						width: mediaWidth,
+						height: mediaHeight,
+						params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+						});
+					startEffect();
 				}
-				preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
-					id: mediaId,
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
 // YouTube Playlist
 			} else if (URL.match(/youtube\.com\/view/i)) {
 				mediaType = 'obj';
@@ -777,27 +774,8 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// Vimeo HTML5
-/*			} else if (options.html5 && URL.match(/vimeo\.com/i)) {
-				mediaType = 'url';
-				mediaSplit = URL.split('/');
-//				mediaId = mediaSplit[1];
-				mediaWidth = mediaWidth || "640";
-				mediaHeight = mediaHeight || "360";
-				mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
-				preload = new Element('iframe', {
-					'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait,
-					'id': mediaId,
-					'type': 'text/html',
-					'class': 'vimeo-player',
-					'width': mediaWidth,
-					'height': mediaHeight,
-					'frameborder': 0
-					});
-				startEffect();*/
-// Vimeo
+// Vimeo (now includes HTML5 option)
 			} else if (URL.match(/vimeo\.com/i)) {
-				mediaType = 'obj';
 				mediaWidth = mediaWidth || "640px";		// site defualt: 400px
 				mediaHeight = mediaHeight || "360px";	// site defualt: 225px
 				mediaSplit = URL.split('/');
@@ -809,15 +787,15 @@ var Mediabox;
 					preload = new Element('iframe', {
 						'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait,
 						'id': mediaId,
-						'style': 'background-color: black;',
-						'type': 'text/html',
-						'class': 'vimeo-player',
+//						'type': 'text/html',
+//						'class': 'vimeo-player',
 						'width': mediaWidth,
 						'height': mediaHeight,
 						'frameborder': 0
 						});
 					startEffect();
 				} else {
+					mediaType = 'obj';
 					preload = new Swiff('http://www.vimeo.com/moogaloop.swf?clip_id='+mediaId+'&amp;server=www.vimeo.com&amp;fullscreen='+options.fullscreenNum+'&amp;autoplay='+options.autoplayNum+'&amp;show_title='+options.vmTitle+'&amp;show_byline='+options.vmByline+'&amp;show_portrait='+options.vmPortrait+'&amp;color='+options.vmColor, {
 						id: mediaId,
 						width: mediaWidth,
