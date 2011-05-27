@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.3.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.09.16
+	mediaboxAdvanced v1.3.4b - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.09.21
 		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
 		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -677,8 +677,8 @@ var Mediabox;
 				mediaSplit = URL.split('v=');
 				if (options.html5) {
 					mediaType = 'url';
-					mediaWidth = mediaWidth || "640";
-					mediaHeight = mediaHeight || "385";
+					mediaWidth = mediaWidth || "640px";
+					mediaHeight = mediaHeight || "385px";
 					mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
 					preload = new Element('iframe', {
 						'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
