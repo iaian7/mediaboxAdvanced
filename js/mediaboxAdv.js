@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.3.4b - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.09.21
+	mediaboxAdvanced v1.3.5 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2011.1.8
 		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
 		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -28,8 +28,8 @@ var Mediabox;
 			]).setStyle("display", "none")
 		);
 
-		image = new Element("div", {id: "mbImage"}).injectInside(center);
-		bottom = new Element("div", {id: "mbBottom"}).injectInside(center).adopt(
+		image = new Element("div", {id: "mbImage"}).inject(center, "inside");
+		bottom = new Element("div", {id: "mbBottom"}).inject(center, "inside").adopt(
 			closeLink = new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
 			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),
@@ -53,26 +53,30 @@ var Mediabox;
 		},
 
 		open: function(_images, startImage, _options) {
-			options = $extend({
-				text: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
-//				text: ['<big>«</big>','<big>»</big>','<big>×</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
-//	example		text: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
-				loop: false,					// Allows to navigate between first and last images
+			options = {
+//			Text options (translate as needed)
+				buttonText: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+//				buttonText: ['<big>«</big>','<big>»</big>','<big>×</big>'],
+//				buttonText: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
+				counterText: '({x} of {y})',	// Translate or change as you wish, {x} = current item number, {y} = total gallery length
+				linkText: '<a href="{x}" target="_new">{x}</a><br/>opens in a new tab</div>',	// Text shown for use in iOS
+				flashText: '<b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.',	// Text shown if Flash is not installed.
+//			General overlay options
+				center: true,					// Set to false for use with custom CSS layouts
+				loop: false,					// Navigate from last to first elements in a gallery
 				keyboard: true,					// Enables keyboard control; escape key, left arrow, and right arrow
-				alpha: true,					// Adds 'x', 'c', 'p', and 'n' when keyboard control is also set to true
-				stopKey: false,					// Stops all default keyboard actions while overlay is open (such as up/down arrows)
-													// Does not apply to iFrame content, does not affect mouse scrolling
+				keyboardAlpha: false,			// Adds 'x', 'c', 'p', and 'n' when keyboard control is also set to true
+				keyboardStop: false,			// Stops all default keyboard actions while overlay is open (such as up/down arrows)
+												// Does not apply to iFrame content, does not affect mouse scrolling
 				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
 				resizeOpening: true,			// Determines if box opens small and grows (true) or starts at larger size (false)
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
-				resizeTransition: false,		// Mootools transition effect (false leaves it at the default)
 				initialWidth: 320,				// Initial width of the box (in pixels)
 				initialHeight: 180,				// Initial height of the box (in pixels)
 				defaultWidth: 640,				// Default width of the box (in pixels) for undefined media (MP4, FLV, etc.)
 				defaultHeight: 360,				// Default height of the box (in pixels) for undefined media (MP4, FLV, etc.)
 				showCaption: true,				// Display the title and caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
-				counterText: '({x} of {y})',	// Translate or change as you wish
 //			Image options
 				imgBackground: false,		// Embed images as CSS background (true) or <img> tag (false)
 											// CSS background is naturally non-clickable, preventing downloads
@@ -81,7 +85,7 @@ var Mediabox;
 				imgPadding: 100,			// Clearance necessary for images larger than the window size (only used when imgBackground is false)
 											// Change this number only if the CSS style is significantly divergent from the original, and requires different sizes
 //			Inline options
-//				overflow: 'auto',			// If set, overides CSS settings for inline content only
+				overflow: 'auto',			// If set, overides CSS settings for inline content only, set to "false" to leave CSS settings intact.
 //			Global media options
 				html5: 'true',				// HTML5 settings for YouTube and Vimeo, false = off, true = on
 				scriptaccess: 'true',		// Allow script access to flash files
@@ -134,21 +138,21 @@ var Mediabox;
 				vmByline: '1',				// Show byline
 				vmPortrait: '1',			// Show author portrait
 				vmColor: 'ffffff'			// Custom controller colors, hex value minus the # sign, defult is 5ca0b5
-			}, _options || {});
+			};
 
-			prevLink.set('html', options.text[0]);
-			nextLink.set('html', options.text[1]);
-			closeLink.set('html', options.text[2]);
+			prevLink.set('html', options.buttonText[0]);
+			nextLink.set('html', options.buttonText[1]);
+			closeLink.set('html', options.buttonText[2]);
 
 			margin = center.getStyle('padding-left').toInt()+image.getStyle('margin-left').toInt()+image.getStyle('padding-left').toInt();
 
-			if ((Browser.Engine.gecko) && (Browser.Engine.version<19)) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
+			if (Browser.firefox2) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 				foxfix = true;
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayFF';
 			}
 
-			if ((Browser.Engine.trident) && (Browser.Engine.version<5)) {	// Fixes IE 6 and earlier incompatibilities with CSS position: fixed;
+			if (Browser.ie6) {	// Fixes IE 6 and earlier incompatibilities with CSS position: fixed;
 				iefix = true;
 				overlay.className = 'mbOverlayIE';
 				overlay.setStyle("position", "absolute");
@@ -167,8 +171,8 @@ var Mediabox;
 			setup(true);
 			top = window.getScrollTop() + (window.getHeight()/2);
 			left = window.getScrollLeft() + (window.getWidth()/2);
-			fx.resize = new Fx.Morph(center, $extend({duration: options.resizeDuration, onComplete: imageAnimate}, options.resizeTransition ? {transition: options.resizeTransition} : {}));
-			center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
+			fx.resize = new Fx.Morph(center, {duration: options.resizeDuration, onComplete: imageAnimate});
+/****/		center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
 			fx.overlay.start(options.overlayOpacity);
 			return changeImage(startImage);
 		}
@@ -242,7 +246,7 @@ var Mediabox;
 
 	function setup(open) {
 		// Hides on-page objects and embeds while the overlay is open, nessesary to counteract Firefox stupidity
-		if (Browser.Engine.gecko) {
+		if (Browser.firefox) {
 			["object", window.ie ? "select" : "embed"].forEach(function(tag) {
 				Array.forEach(document.getElementsByTagName(tag), function(el) {
 					if (open) el._mediabox = el.style.visibility;
@@ -260,7 +264,7 @@ var Mediabox;
 	}
 
 	function keyDown(event) {
-		if (options.alpha) {
+		if (options.keyboardAlpha) {
 			switch(event.code) {
 				case 27:	// Esc
 				case 88:	// 'x'
@@ -287,7 +291,7 @@ var Mediabox;
 					next();
 			}
 		}
-		if (options.stopKey) { return false; };
+		if (options.keyboardStop) { return false; };
 	}
 
 	function previous() {
@@ -345,6 +349,14 @@ var Mediabox;
 				preload = new Image();
 				preload.onload = startEffect;
 				preload.src = URL;
+// iOS Link
+			} else if (Browser.Platform.ios) {
+//			} else if (1!=1) {
+				mediaType = 'ios';
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
+				preload = options.linkText.replace(/{x}/, URL);
+				startEffect();
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i) || mediaType == 'video') {
 				mediaType = 'obj';
@@ -860,13 +872,13 @@ var Mediabox;
 					mediaHeight = preload.height = parseInt((mediaWidth/preload.width)*mediaHeight);
 					preload.width = mediaWidth;
 				}
-				if (Browser.Engine.trident) preload = document.id(preload);
+				if (Browser.ie) preload = document.id(preload);
 				preload.addEvent('mousedown', function(e){ e.stop(); }).addEvent('contextmenu', function(e){ e.stop(); });
 				image.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(image);
 			}
 		} else if (mediaType == "obj") {
-			if (Browser.Plugins.Flash.version<8) {
+			if (Browser.Plugins.Flash.version < "8") {
 				image.setStyles({backgroundImage: "none", display: ""});
 				image.set('html', '<div id="mbError"><b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.</div>');
 				mediaWidth = options.DefaultWidth;
@@ -879,15 +891,20 @@ var Mediabox;
 			image.setStyles({backgroundImage: "none", display: ""});
 			preload;
 		} else if (mediaType == "inline") {
-//			if (options.overflow) image.setStyles({overflow: options.overflow});
+			if (options.overflow) image.setStyles({overflow: options.overflow});
 			image.setStyles({backgroundImage: "none", display: ""});
 			image.set('html', preload);
 		} else if (mediaType == "url") {
 			image.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(image);
+		} else if (mediaType == "ios") {
+			image.setStyles({backgroundImage: "none", display: ""});
+			image.set('html', preload);
+			mediaWidth = options.DefaultWidth;
+			mediaHeight = options.DefaultHeight;
 		} else {
 			image.setStyles({backgroundImage: "none", display: ""});
-			image.set('html', '<div id="mbError"><b>Error</b><br/>A file type error has occoured, please visit <a href="iaian7.com/webcode/mediaboxAdvanced" title="mediaboxAdvanced" target="_new">iaian7.com</a> or contact the website author for more information.</div>');
+			image.set('html', options.flashText);
 			mediaWidth = options.defaultWidth;
 			mediaHeight = options.defaultHeight;
 		}
@@ -905,8 +922,8 @@ var Mediabox;
 		mediaHeight = image.offsetHeight+bottom.offsetHeight;
 		if (mediaHeight >= top+top) { mTop = -top } else { mTop = -(mediaHeight/2) };
 		if (mediaWidth >= left+left) { mLeft = -left } else { mLeft = -(mediaWidth/2) };
-		if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
-		} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin}); imageAnimate(); }
+/****/	if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
+/****/	} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin}); imageAnimate(); }
 	}
 
 	function imageAnimate() {
@@ -921,7 +938,7 @@ var Mediabox;
 	}
 
 	function stop() {
-		if (preload) preload.onload = $empty;
+		if (preload) preload.onload = function(){}; // $empty replacement
 		fx.resize.cancel();
 		fx.image.cancel().set(0);
 		fx.bottom.cancel().set(0);
@@ -930,7 +947,7 @@ var Mediabox;
 
 	function close() {
 		if (activeImage >= 0) {
-			preload.onload = $empty;
+			preload.onload = function(){}; // $empty replacement
 			image.set('html', '');
 			for (var f in fx) fx[f].cancel();
 			center.setStyle("display", "none");
