@@ -1,7 +1,7 @@
 /*
-	mediaboxAdvanced v1.4.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2011.1.8
-		(c) 2007-2010 John Einselen <http://iaian7.com>
+	mediaboxAdvanced v1.4.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2011.2.12
+		(c) 2007-2011 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
 		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
 	MIT-style license.
@@ -11,7 +11,7 @@ var Mediabox;
 
 (function() {
 	// Global variables, accessible to Mediabox only
-	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), foxfix = false, iefix = false,
+	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
 	// DOM elements
 	overlay, center, image, bottom, captionSplit, title, caption, prevLink, number, nextLink,
 	// Mediabox specific vars
@@ -59,7 +59,7 @@ var Mediabox;
 //				buttonText: ['<big>«</big>','<big>»</big>','<big>×</big>'],
 //				buttonText: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
 				counterText: '({x} of {y})',	// Translate or change as you wish, {x} = current item number, {y} = total gallery length
-				linkText: '<a href="{x}" target="_new">{x}</a><br/>opens in a new tab</div>',	// Text shown for use in iOS
+				linkText: '<a href="{x}" target="_new">{x}</a><br/>open in a new tab</div>',	// Text shown on iOS devices for non-image links
 				flashText: '<b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.',	// Text shown if Flash is not installed.
 //			General overlay options
 				center: true,					// Set to false for use with custom CSS layouts
@@ -68,7 +68,7 @@ var Mediabox;
 				keyboardAlpha: false,			// Adds 'x', 'c', 'p', and 'n' when keyboard control is also set to true
 				keyboardStop: false,			// Stops all default keyboard actions while overlay is open (such as up/down arrows)
 												// Does not apply to iFrame content, does not affect mouse scrolling
-				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
+				overlayOpacity: 1.0,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
 				resizeOpening: true,			// Determines if box opens small and grows (true) or starts at larger size (false)
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				initialWidth: 320,				// Initial width of the box (in pixels)
@@ -77,6 +77,10 @@ var Mediabox;
 				defaultHeight: 360,				// Default height of the box (in pixels) for undefined media (MP4, FLV, etc.)
 				showCaption: true,				// Display the title and caption, true / false
 				showCounter: true,				// If true, a counter will only be shown if there is more than 1 image to display
+//			iOS device options
+				iOSenable: true,				// If set to false, dissables overlay and opens links in a new tab (applies to all iOS devices)
+				iPhoneImages: true,				// Exception to above (applies to iPhone/iPod only) allows images to open in an overlay
+				iPadImages: true,				// Exception to above (applies to iPad only) allows images to open in an overlay
 //			Image options
 				imgBackground: false,		// Embed images as CSS background (true) or <img> tag (false)
 											// CSS background is naturally non-clickable, preventing downloads
@@ -147,15 +151,16 @@ var Mediabox;
 			margin = center.getStyle('padding-left').toInt()+image.getStyle('margin-left').toInt()+image.getStyle('padding-left').toInt();
 
 			if (Browser.firefox2) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
-				foxfix = true;
 				options.overlayOpacity = 1;
-				overlay.className = 'mbOverlayFF';
+				overlay.className = 'mbOverlayOpaque';
 			}
 
-			if (Browser.ie6) {	// Fixes IE 6 and earlier incompatibilities with CSS position: fixed;
-				iefix = true;
-				overlay.className = 'mbOverlayIE';
-				overlay.setStyle("position", "absolute");
+			if (Browser.Platform.ios || Browser.ie6) {
+				if (Browser.Platform.ios) options.keyboard = false;
+				if (Browser.Platform.ios) options.overlayOpacity = 0.0;	// This helps ammeliorate the issues with CSS overlays in iOS, leaving a clickable background, but avoiding the visible issues
+				options.resizeOpening = false;
+//				overlay.className = 'mbOverlayAbsolute';
+				overlay.setStyle("position", "absolute");	// Temporary stopgap for lack of CSS "position: fixed;" element positioning in iOS browsers
 				position();
 			}
 
@@ -258,7 +263,7 @@ var Mediabox;
 		overlay.style.display = open ? "" : "none";
 
 		var fn = open ? "addEvent" : "removeEvent";
-		if (iefix) window[fn]("scroll", position);
+		if (Browser.Platform.ios || Browser.ie6) window[fn]("scroll", position);	// scroll position is updated only after movement has stopped
 		window[fn]("resize", size);
 		if (options.keyboard) document[fn]("keydown", keyDown);
 	}
@@ -350,12 +355,20 @@ var Mediabox;
 				preload = new Image();
 				preload.onload = startEffect;
 				preload.src = URL;
+// INLINE
+			} else if (URL.match(/\#mb_/i)) {
+				mediaType = 'inline';
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
+				URLsplit = URL.split('#');
+				preload = document.id(URLsplit[1]).get('html');
+				startEffect();
 // iOS Link
 			} else if (Browser.Platform.ios) {
 				mediaType = 'ios';
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
-				preload = options.linkText.replace('{x}', URL);
+				preload = options.linkText.replace(/{x}/gi, URL);
 				startEffect();
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i) || mediaType == 'video') {
@@ -826,18 +839,7 @@ var Mediabox;
 					params: {flashvars: 'vid='+mediaId+'', wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-
-	/*	Specific Content Types	*/
-
-// INLINE
-			} else if (URL.match(/\#mb_/i)) {
-				mediaType = 'inline';
-				mediaWidth = mediaWidth || options.defaultWidth;
-				mediaHeight = mediaHeight || options.defaultHeight;
-				URLsplit = URL.split('#');
-				preload = document.id(URLsplit[1]).get('html');
-				startEffect();
-// HTML
+// PLAIN HTML (applies to ALL links not recognised as a specific media type)
 			} else {
 				mediaType = 'url';
 				mediaWidth = mediaWidth || options.defaultWidth;
@@ -960,6 +962,7 @@ var Mediabox;
 	/*	Autoload code block	*/
 
 Mediabox.scanPage = function() {
+//	if (Browser.Platform.ios && !(navigator.userAgent.match(/iPad/i))) return;	// this quits the process if the visitor is using a non-iPad iOS device (iPhone or iPod Touch)
 //	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
