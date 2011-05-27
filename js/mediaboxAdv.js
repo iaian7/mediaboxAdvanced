@@ -1,6 +1,6 @@
 /*
-	mediaboxAdvanced v1.3.3 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2010.09.15
+	mediaboxAdvanced v1.3.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
+	updated 2010.09.16
 		(c) 2007-2010 John Einselen <http://iaian7.com>
 	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
 		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
@@ -683,8 +683,6 @@ var Mediabox;
 					preload = new Element('iframe', {
 						'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
 						'id': mediaId,
-//						'type': 'text/html',
-//						'class': 'youtube-player',
 						'width': mediaWidth,
 						'height': mediaHeight,
 						'frameborder': 0
@@ -787,8 +785,6 @@ var Mediabox;
 					preload = new Element('iframe', {
 						'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait,
 						'id': mediaId,
-//						'type': 'text/html',
-//						'class': 'vimeo-player',
 						'width': mediaWidth,
 						'height': mediaHeight,
 						'frameborder': 0
