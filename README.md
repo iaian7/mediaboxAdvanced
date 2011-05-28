@@ -8,24 +8,35 @@ Based on Lightbox, Slimbox, and the Mootools javascript library, *mediaboxAdvanc
 How to use
 ----------
 
-mediaboxAdvanced supports a wide range of media formats, simply link to any image, flash video, or popular website, and the media will be automatically loaded into an overlay when clicked.
+mediaboxAdvanced supports a wide range of media formats; simply link to any image, flash video, or popular website, and the media will be automatically loaded into an overlay when clicked.
 
 *Installation*
 
 * The following files must be correctly linked in the page header:
 
 	mediaboxAdv.css
-	mootools-main.js
 	
+	MooTools-main.js
+	
+	mediaboxAdv.js
+
+(mediaboxAdvanced depends on all MooTools core elements except Request, Cookie, and JSON features)
 
 * Optionally, you can also include Quickie.js for Quicktime support
 
 	quickie.js
 
+(available here http://mootools.net/forge/p/quickie)
+
 * To play media files such as mp4, mp3, and other formats, you'll need to upload a flash-based player to the server and update the link inside mediaboxAdv.js to match.
 
 	nonverblaster.swf
+	
+	or
+	
 	jwmediaplayer.swf
+
+(available from http://www.nonverbla.de/nonverblaster-hover/ or http://www.longtailvideo.com/players/jw-flv-player/)
 
 
 *Link formatting*

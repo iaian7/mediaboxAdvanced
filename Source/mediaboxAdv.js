@@ -1,10 +1,23 @@
 /*
-	mediaboxAdvanced v1.4.6 - The ultimate extension of Slimbox and Mediabox; an all-media script
-	updated 2011.2.19
-		(c) 2007-2011 John Einselen <http://iaian7.com>
-	based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
-		(c) 2007-2008 Christophe Beyls <http://www.digitalia.be>
-	MIT-style license.
+mediaboxAdvanced v1.4.6c - The ultimate extension of Slimbox and Mediabox; an all-media script
+updated 2011.2.19
+	(c) 2007-2011 John Einselen - http://iaian7.com
+based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
+	(c) 2007-2008 Christophe Beyls - http://www.digitalia.be
+
+description: The ultimate extension of Slimbox and Mediabox; an all-media script
+
+license: MIT-style
+
+authors:
+- John Einselen
+- Christophe Beyls
+
+requires:
+- core/1.3.2: [Core, Array, String, Number, Function, Object, Event, Browser, Class, Class.Extras, Slick.*, Element.*, FX.*, DOMReady, Swiff]
+- Quickie/2.1: '*'
+
+provides: [Mediabox.open, Mediabox.close, Mediabox.scanPage]
 */
 
 var Mediabox;
@@ -15,7 +28,7 @@ var Mediabox;
 	// DOM elements
 	overlay, center, image, bottom, captionSplit, title, caption, number, prevLink, nextLink,
 	// Mediabox specific vars
-	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", mediaFmt, margin;
+	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", margin;
 
 	/*	Initialization	*/
 
@@ -128,12 +141,11 @@ var Mediabox;
 				revverFront: 'ffffff',		// Foreground color
 				revverGrad: '000000',		// Gradation color
 //			Ustream options
-				usViewers: 'true',				// Show online viewer count (true/false)
+				usViewers: 'true',			// Show online viewer count (true, false)
 //			Youtube options
 				ytBorder: '0',				// Outline				(1=true, 0=false)
 				ytColor1: '000000',			// Outline color
 				ytColor2: '333333',			// Base interface color (highlight colors stay consistent)
-				ytQuality: '&ap=%2526fmt%3D18', // Leave empty for standard quality, use '&ap=%2526fmt%3D18' for high quality, and '&ap=%2526fmt%3D22' for HD (note that not all videos are availible in high quality, and very few in HD)
 				ytRel: '0',					// Show related videos	(1=true, 0=false)
 				ytInfo: '1',				// Show video info		(1=true, 0=false)
 				ytSearch: '0',				// Show search field	(1=true, 0=false)
@@ -600,20 +612,6 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// Seesmic
-			} else if (URL.match(/seesmic\.com/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "435px";
-				mediaHeight = mediaHeight || "355px";
-				mediaSplit = URL.split('/');
-				mediaId = mediaSplit[5];
-				preload = new Swiff('http://seesmic.com/Standalone.swf?video='+mediaId, {
-					id: mediaId,
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
 // Tudou
 			} else if (URL.match(/tudou\.com/i)) {
 				mediaType = 'obj';
@@ -627,7 +625,7 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
 				startEffect();
-// Twitvcam
+// Twitcam
 			} else if (URL.match(/twitcam\.com/i)) {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || "320px";
@@ -635,19 +633,6 @@ var Mediabox;
 				mediaSplit = URL.split('/');
 				mediaId = mediaSplit[3];
 				preload = new Swiff('http://static.livestream.com/chromelessPlayer/wrappers/TwitcamPlayer.swf?hash='+mediaId, {
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
-// Twiturm
-			} else if (URL.match(/twiturm\.com/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "402px";
-				mediaHeight = mediaHeight || "48px";
-				mediaSplit = URL.split('/');
-				mediaId = mediaSplit[3];
-				preload = new Swiff('http://twiturm.com/flash/twiturm_mp3.swf?playerID=0&sf='+mediaId, {
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
@@ -709,20 +694,9 @@ var Mediabox;
 				} else {
 					mediaType = 'obj';
 					mediaId = mediaSplit[1];
-					if (mediaId.match(/fmt=22/i)) {
-						mediaFmt = '&ap=%2526fmt%3D22';
-						mediaWidth = mediaWidth || "640px";
-						mediaHeight = mediaHeight || "385px";
-					} else if (mediaId.match(/fmt=18/i)) {
-						mediaFmt = '&ap=%2526fmt%3D18';
-						mediaWidth = mediaWidth || "560px";
-						mediaHeight = mediaHeight || "345px";
-					} else {
-						mediaFmt = options.ytQuality;
-						mediaWidth = mediaWidth || "480px";
-						mediaHeight = mediaHeight || "295px";
-					}
-					preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
+					mediaWidth = mediaWidth || "480px";
+					mediaHeight = mediaHeight || "385px";
+					preload = new Swiff('http://www.youtube.com/v/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
 						id: mediaId,
 						width: mediaWidth,
 						height: mediaHeight,
@@ -737,7 +711,7 @@ var Mediabox;
 				mediaId = mediaSplit[1];
 				mediaWidth = mediaWidth || "480px";
 				mediaHeight = mediaHeight || "385px";
-				preload = new Swiff('http://www.youtube.com/p/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+mediaFmt+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
+				preload = new Swiff('http://www.youtube.com/p/'+mediaId+'&autoplay='+options.autoplayNum+'&fs='+options.fullscreenNum+'&border='+options.ytBorder+'&color1=0x'+options.ytColor1+'&color2=0x'+options.ytColor2+'&rel='+options.ytRel+'&showinfo='+options.ytInfo+'&showsearch='+options.ytSearch, {
 					id: mediaId,
 					width: mediaWidth,
 					height: mediaHeight,
@@ -775,21 +749,6 @@ var Mediabox;
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen, id: 'viddler_'+mediaId, movie: URL}
 					});
 				startEffect();
-// Viddyou
-			} else if (URL.match(/viddyou\.com/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "416px";
-				mediaHeight = mediaHeight || "312px";
-				mediaSplit = URL.split('=');
-				mediaId = mediaSplit[1];
-				preload = new Swiff('http://www.viddyou.com/get/v2_'+options.vuPlayer+'/'+mediaId+'.swf', {
-					id: mediaId,
-					movie: 'http://www.viddyou.com/get/v2_'+options.vuPlayer+'/'+mediaId+'.swf',
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
 // Vimeo (now includes HTML5 option)
 			} else if (URL.match(/vimeo\.com/i)) {
 				mediaWidth = mediaWidth || "640px";		// site defualt: 400px
@@ -818,20 +777,6 @@ var Mediabox;
 						});
 					startEffect();
 				}
-// 12seconds
-			} else if (URL.match(/12seconds\.tv/i)) {
-				mediaType = 'obj';
-				mediaWidth = mediaWidth || "430px";
-				mediaHeight = mediaHeight || "360px";
-				mediaSplit = URL.split('/');
-				mediaId = mediaSplit[5];
-				preload = new Swiff('http://embed.12seconds.tv/players/remotePlayer.swf', {
-					id: mediaId,
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {flashvars: 'vid='+mediaId+'', wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				startEffect();
 // INLINE
 			} else if (URL.match(/\#mb_/i)) {
 				mediaType = 'inline';
