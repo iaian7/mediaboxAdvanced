@@ -1,285 +1,263 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
 	<title>mediaboxAdvanced demo</title>
 	<meta name="author" content="Iaian7 / John Einselen" />
 	<meta name="copyright" content="©2007-2011 John Einselen" />
-	<link rel="stylesheet" href="css/style.css" media="screen,projection" type="text/css" />
+	<link rel="stylesheet" href="style.css" media="screen,projection" type="text/css" />
+	<link rel="stylesheet" href="../Source/mediaboxAdv-Dark.css" media="screen,projection" type="text/css" />
 	<script src="http://iaian7.com/js/mootools-core-1.3.js" type="text/javascript"></script>
 	<script src="http://iaian7.com/js/mootools-more-1.3.js" type="text/javascript"></script>
 	<script src="http://iaian7.com/js/quickie.js" type="text/javascript"></script>
 	<script src="../Source/mediaboxAdv.js" type="text/javascript"></script>
 </head>
+
 <body>
-
-	<div>
-		<a href="http://www.youtube.com/watch?v=LIY2IpNTv_A" rel="lightbox[1]" title="link 1::youtube video">link 1</a>
-	</div>
-
-<div>
+<div id="page">
+	<h1>mediaboxAdvanced demo</h1>
   	<p>Based on Lightbox, Slimbox, and the Mootools javascript library, <strong>mediaboxAdvanced</strong> is a modal overlay that can handle images, videos, animations, social video sites, twitter media links, inline elements, and external pages with ease.</p>
 	<p><img src="http://iaian7.com/images/webcode/mediaboxAdv/mediaboxAdv-1.1.png" width="175" height="110" alt="" style="float:none; position:relative; display:block; left:50%; margin-left:-87.5px; margin-right:0px;" class="an7_img" /></p>
-	<p><b><a href="#introduction">Introduction</a>&nbsp; | &nbsp;<a href="#examples">Examples</a>&nbsp; | &nbsp;<a href="#installation">Installation</a>&nbsp; | &nbsp;<a href="#scripting">Scripting</a>&nbsp; | &nbsp;<a href="#troubleshooting">Troubleshooting</a>&nbsp; | &nbsp;<a href="#support">Support</a></b></p>
-	<h1 id="introduction">Introduction</h1>
-	<h3>A lightbox for any occasion</h3>
-	<p>mediaboxAdvanced supports most online media formats, and anything not recognized is automatically contained within a dynamic frame, allowing you to open a lightbox-style overlay with <em>anything</em> inside.  From <span class="caps">JPEG</span> images or flash videos, to <span class="caps">PHP</span> pages, mediaboxAdvanced can display your content in an easy-to-style overlay.</p>
-	<h3>Based on Slimbox</h3>
-	<p>Inheriting the foundation laid by Slimbox, mediaboxAdvanced boasts animations that are hard to break, keyboard navigation, valid <span class="caps">CSS</span>, and javascript accessibility.</p>
-	<h3>Gallery sets</h3>
-	<p>mediaboxAdvanced supports cross-media sets, allowing you to navigate from one item to another without closing the overlay.  Images are preloaded dynamically as the viewer browses, while other media elements, often much larger, are loaded only when needed.</p>
-	<h3>CSS3 support</h3>
-	<p>Elements have been designed with CSS3 effects in mind, making it a cinch to apply rounded corners, shadows, image based borders, or anything else you could want!  For those worried about speed, the style sheet includes rules applied only during animation; by default, shadows are turned off while elements scale.</p>
-	<h3>Titles and captions</h3>
-	<p>Using title::caption notation, mediaboxAdvanced lets you set both a title and a caption, just a title, or leave the title attribute blank for elements you need left unlabelled, such as user interface elements.</p>
-	<h3>Validates cleanly</h3>
-	<p>It&#8217;s all valid <span class="caps">XHTML</span>, and if a user has javascript turned off, your links operate normally.</p>
-	<h1 id="examples">Media types and Examples</h1>
-	<p>mediaboxAdvanced supports a wide range of media formats, and an even wider range of social media sites.  Simply link to any image, flash video, or popular website, and the media will be automatically loaded into the overlay.</p>
 	<p><b><a href="#images">Images</a>&nbsp; | &nbsp;<a href="#twitter">Twitter</a>&nbsp; | &nbsp;<a href="#social">Social Video</a>&nbsp; | &nbsp;<a href="#flash">Flash media</a>&nbsp; | &nbsp;<a href="#quicktime">Quicktime</a>&nbsp; | &nbsp;<a href="#inline">Inline</a>&nbsp; | &nbsp;<a href="#html"><span class="caps">HTML</span></a></b></p>
+
 	<h2 id="images">Images</h2>
 	<p>Images contained in gallery sets are preloaded, even when the set contains mixed media types.</p>
-	<p><span style="float: none; " class="an7_imgdir"><a href="/media/mediabox/concrete.jpg" rel="lightbox[set1]" title="Concrete::taken in eastern Michigan" class="an7_thumb"><img src="/media/mediabox/thumbs/concrete.jpg" alt="Concrete" /></a><a href="/media/mediabox/nature1.jpg" rel="lightbox[set1]" title="Autumn 1" class="an7_thumb"><img src="/media/mediabox/thumbs/nature1.jpg" alt="Nature1" /></a><a href="/media/mediabox/nature2.jpg" rel="lightbox[set1]" title="Autumn 2" class="an7_thumb"><img src="/media/mediabox/thumbs/nature2.jpg" alt="Nature2" /></a><a href="/media/mediabox/nature3.jpg" rel="lightbox[set1]" title="Autumn 3" class="an7_thumb"><img src="/media/mediabox/thumbs/nature3.jpg" alt="Nature3" /></a><a href="/media/mediabox/trainyard.jpg" rel="lightbox[set1]" title="Trainyard::taken near Marion, Indiana" class="an7_thumb"><img src="/media/mediabox/thumbs/trainyard.jpg" alt="Concrete" /></a><a href="/media/mediabox/window.jpg" rel="lightbox[set1]" title="Window::taken in &lt;a href=&quot;http://www.cityofwabash.com/&quot; title=&quot;cityofwabash.com&quot; target=&quot;_blank&quot;&gt;Wabash, Indiana&lt;/a&gt;" class="an7_thumb"><img src="/media/mediabox/thumbs/window.jpg" alt="window" /></a></span></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;/media/mediabox/concrete.jpg&quot; rel=&quot;lightbox[set1]&quot; title=&quot;Concrete::taken in eastern Michigan&quot;&gt;&lt;img src=&quot;/media/mediabox/thumbs/concrete.jpg&quot; alt=&quot;Concrete&quot; class=&quot;lbThumb&quot;/&gt;&lt;/a&gt;</code></p> 
+	<p><span style="float: none; " class="an7_imgdir"><a href="examples/nature1.jpg" rel="lightbox[set1]" title="Autumn 1" class="an7_thumb"><img src="examples/nature1thumb.jpg" alt="Nature1" /></a><a href="examples/nature2.jpg" rel="lightbox[set1]" title="Autumn 2" class="an7_thumb"><img src="examples/nature2thumb.jpg" alt="Nature2" /></a><a href="examples/nature3.jpg" rel="lightbox[set1]" title="Autumn 3" class="an7_thumb"><img src="examples/nature3thumb.jpg" alt="Nature3" /></a></span></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;/media/mediabox/concrete.jpg&quot; rel=&quot;lightbox[set1]&quot; title=&quot;Concrete::taken in eastern Michigan&quot;&gt;&lt;img src=&quot;/media/mediabox/thumbs/concrete.jpg&quot; alt=&quot;Concrete&quot; class=&quot;lbThumb&quot;/&gt;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p>You can include links in a title by encoding <span class="caps">HTML</span> characters using their <a href="http://www.w3schools.com/tags/ref_entities.asp">entity name</a>. &nbsp; &nbsp; <code>&lt; = &amp;lt;</code> &nbsp; <code>&gt; = &amp;gt;</code> &nbsp; <code>&quot; = &amp;quot;</code></p>
-	<p><a href="/media/mediabox/window.jpg" rel="lightbox" title="Window::taken in &lt;a href=&quot;http://www.cityofwabash.com/&quot; title=&quot;cityofwabash.com&quot; target=&quot;_blank&quot;&gt;Wabash, Indiana&lt;/a&gt;" class="an7_thumb"><img src="/media/mediabox/thumbs/window.jpg" alt="window" /></a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;/media/mediabox/window.jpg&quot; rel=&quot;lightbox&quot; title=&quot;Window::taken in &amp;lt;a href=&amp;quot;http://www.cityofwabash.com/&amp;quot; title=&amp;quot;cityofwabash.com&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;Wabash, Indiana&amp;lt;/a&amp;gt;&quot; class=&quot;an7_thumb&quot;&gt;&lt;img src=&quot;/media/mediabox/thumbs/window.jpg&quot; alt=&quot;window&quot; /&gt;&lt;/a&gt;</code></p> 
+	<p>You can also include links in a title by encoding <span class="caps">HTML</span> characters using their <a href="http://www.w3schools.com/tags/ref_entities.asp">entity name</a>. &nbsp; &nbsp; <code>&lt; = &amp;lt;</code> &nbsp; <code>&gt; = &amp;gt;</code> &nbsp; <code>&quot; = &amp;quot;</code></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;/media/mediabox/window.jpg&quot; rel=&quot;lightbox&quot; title=&quot;Window::taken in &amp;lt;a href=&amp;quot;http://www.cityofwabash.com/&amp;quot; title=&amp;quot;cityofwabash.com&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;Wabash, Indiana&amp;lt;/a&amp;gt;&quot; class=&quot;an7_thumb&quot;&gt;&lt;img src=&quot;/media/mediabox/thumbs/window.jpg&quot; alt=&quot;window&quot; /&gt;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p>mediaboxAdvanced will also weed out identical links in a set.  Links to the same <span class="caps">URL</span>, be it an image, social video, media, or website, will be combined using the settings from the first of the identical links (title, width, and height).  Open any of the below duplicate images, and they will link to the original image from the gallery above, including the correct position in the set.</p>
-	<p><span style="float: none; " class="an7_imgdir"><a href="/media/mediabox/nature3.jpg" rel="lightbox[set1]" title="Autumn 3" class="an7_thumb"><img src="/media/mediabox/thumbs/nature3.jpg" alt="Nature3" /></a><a href="/media/mediabox/trainyard.jpg" rel="lightbox[set1]" title="Trainyard::taken near Marion, Indiana" class="an7_thumb"><img src="/media/mediabox/thumbs/trainyard.jpg" alt="Concrete" /></a><a href="/media/mediabox/window.jpg" rel="lightbox[set1]" title="Image set::Window - taken in Wabash, Indiana" class="an7_thumb"><img src="/media/mediabox/thumbs/window.jpg" alt="window" /></a><a href="/media/mediabox/concrete.jpg" rel="lightbox[set1]" title="Concrete::taken in eastern Michigan" class="an7_thumb"><img src="/media/mediabox/thumbs/concrete.jpg" alt="Concrete" /></a><a href="/media/mediabox/nature1.jpg" rel="lightbox[set1]" title="Autumn 1" class="an7_thumb"><img src="/media/mediabox/thumbs/nature1.jpg" alt="Nature1" /></a><a href="/media/mediabox/nature2.jpg" rel="lightbox[set1]" title="Autumn 2" class="an7_thumb"><img src="/media/mediabox/thumbs/nature2.jpg" alt="Nature2" /></a></span></p>
-	<p>You can choose how images should be embedded; as a <span class="caps">CSS</span> background (<code>imgBackground: true</code>), which makes it harder for visitors to rip off images, or as an <span class="caps">IMG</span> tag (<code>imgBackground: false</code>), which can automatically scale images for smaller screens.  While I&#8217;ve added click protection to the <span class="caps">IMG</span> embed option, Opera does not allow javascript to disable the right click context menu.  All other browsers have image dragging and right clicking disabled.  While this does not protect your images from truly determined users, it should discourage the vast majority from ripping off your files.</p>
-	<p>Page links are also automatically protected, with the context menu turned off, further protecting image files from rampaging downloaders.  Same as for the <span class="caps">IMG</span> tag click protection, this works in all browsers except Opera.</p>
+
 	<h2 id="twitter">Twitter media</h2>
-	<p><a href="http://twitcam.com/118d" rel="lightbox[twitter]" title="Twitcam">Twitcam »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://twitcam.com/118d&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Twitcam&quot;&gt;Twitcam »&lt;/a&gt;</code></p> 
+	<p><a href="http://twitcam.com/118d" rel="lightbox[twitter]" title="Twitcam">Twitcam &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://twitcam.com/118d&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Twitcam&quot;&gt;Twitcam &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://tweetmic.com/p/otcfg1uo6ed" rel="lightbox[twitter]" title="TweetMic long url">TweetMic»</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://tweetmic.com/p/otcfg1uo6ed&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TweetMic long url&quot;&gt;TweetMic»&lt;/a&gt;</code></p> 
+	<p><a href="http://tweetmic.com/p/otcfg1uo6ed" rel="lightbox[twitter]" title="TweetMic long url">TweetMic&raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://tweetmic.com/p/otcfg1uo6ed&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TweetMic long url&quot;&gt;TweetMic&raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://tmic.fm/otcfg1uo6ed" rel="lightbox[twitter]" title="TweetMic short url">Tmic.FM »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://tmic.fm/otcfg1uo6ed&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TweetMic short url&quot;&gt;Tmic.FM »&lt;/a&gt;</code></p> 
+	<p><a href="http://tmic.fm/otcfg1uo6ed" rel="lightbox[twitter]" title="TweetMic short url">Tmic.FM &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://tmic.fm/otcfg1uo6ed&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TweetMic short url&quot;&gt;Tmic.FM &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://twitpic.com/8fc41" rel="lightbox[twitter]" title="TwitPic">TwitPic »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://twitpic.com/8fc41&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TwitPic&quot;&gt;TwitPic »&lt;/a&gt;</code></p> 
+	<p><a href="http://twitpic.com/8fc41" rel="lightbox[twitter]" title="TwitPic">TwitPic &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://twitpic.com/8fc41&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TwitPic&quot;&gt;TwitPic &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://twiturm.com/ocicc" rel="lightbox[twitter]" title="Twiturm">Twiturm »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://twiturm.com/ocicc&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Twiturm&quot;&gt;Twiturm »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.twitvid.com/5N35X" rel="lightbox[twitter]" title="TwitVid::Red Knapp's Dairy Bar">TwitVid &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.twitvid.com/5N35X&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TwitVid&quot;&gt;TwitVid &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.twitvid.com/5N35X" rel="lightbox[twitter]" title="TwitVid::Red Knapp's Dairy Bar">TwitVid »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.twitvid.com/5N35X&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;TwitVid&quot;&gt;TwitVid »&lt;/a&gt;</code></p> 
+	<p><a href="http://yfrog.com/4et9zpj" rel="lightbox[twitter]" title="Yfrog image::Photo by &lt;a href=&quot;http://twitter.com/iaian7&quot; title=&quot;John Einselen&quot; target=&quot;_blank&quot;&gt;John Einselen&lt;/a&gt;">Yfrog image &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://yfrog.com/4et9zpj&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Yfrog image::Photo by John Einselen&quot;&gt;Yfrog image &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://yfrog.com/4et9zpj" rel="lightbox[twitter]" title="Yfrog image::Photo by &lt;a href=&quot;http://twitter.com/iaian7&quot; title=&quot;John Einselen&quot; target=&quot;_blank&quot;&gt;John Einselen&lt;/a&gt;">Yfrog image »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://yfrog.com/4et9zpj&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Yfrog image::Photo by John Einselen&quot;&gt;Yfrog image »&lt;/a&gt;</code></p> 
+	<p><a href="http://yfrog.us/0ia9mcz" rel="lightbox[twitter]" title="Yfrog video">Yfrog video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://yfrog.us/0ia9mcz&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Yfrog video&quot;&gt;Yfrog video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://yfrog.us/0ia9mcz" rel="lightbox[twitter]" title="Yfrog video">Yfrog video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://yfrog.us/0ia9mcz&quot; rel=&quot;lightbox[twitter]&quot; title=&quot;Yfrog video&quot;&gt;Yfrog video »&lt;/a&gt;</code></p> 
-	</blockquote>
+
 	<h2 id="social">Social video</h2>
 	<p>Width and height settings are not required for social video links, but can be still be defined if you want to override the defaults.  This can be especially useful when videos don&#8217;t fit the typical aspect ratio of a given site, or if you want to fit the scale to a specific site layout.</p>
-	<p><a href="http://www.facebook.com/video/video.php?v=543650258685" rel="lightbox[social 756 424]" title="facebook.com">Facebook »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.facebook.com/video/video.php?v=543650258685&quot; rel=&quot;lightbox[social 756 424]&quot; title=&quot;facebook.com&quot;&gt;Facebook »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.facebook.com/video/video.php?v=543650258685" rel="lightbox[social 756 424]" title="facebook.com">Facebook &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.facebook.com/video/video.php?v=543650258685&quot; rel=&quot;lightbox[social 756 424]&quot; title=&quot;facebook.com&quot;&gt;Facebook &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p>mediaboxAdvanced accepts both <code>...v= 543650258685</code> and <code>...v= 543650258685&amp;subj=72053641</code> <span class="caps">URL</span> formats.  <strong>Please note that privacy settings apply!</strong>  If a video is not public, the general public will not be able to view it.</p> 
+	<blockquote>
+		<p>mediaboxAdvanced accepts both <code>...v= 543650258685</code> and <code>...v= 543650258685&amp;subj=72053641</code> <span class="caps">URL</span> formats.  <strong>Please note that privacy settings apply!</strong>  If a video is not public, the general public will not be able to view it.</p>
 	</blockquote>
-	<p><a href="http://www.flickr.com/photos/bhl1/2402027765/in/pool-video" rel="lightbox[social 400 300]" title="flickr.com">Flickr video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.flickr.com/photos/bhl1/2402027765/in/pool-video&quot; rel=&quot;lightbox[social 400 300]&quot; title=&quot;flickr.com&quot;&gt;Flickr video »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.flickr.com/photos/bhl1/2402027765/in/pool-video" rel="lightbox[social 400 300]" title="flickr.com">Flickr video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.flickr.com/photos/bhl1/2402027765/in/pool-video&quot; rel=&quot;lightbox[social 400 300]&quot; title=&quot;flickr.com&quot;&gt;Flickr video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.gametrailers.com/player/49936.html" rel="lightbox[social]" title="gametrailers.com/player/">GameTrailers.com player »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.gametrailers.com/player/49936.html&quot; rel=&quot;lightbox[social]&quot; title=&quot;gametrailers.com/player/&quot;&gt;GameTrailers.com player »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.gametrailers.com/player/49936.html" rel="lightbox[social]" title="gametrailers.com/player/">GameTrailers.com player &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.gametrailers.com/player/49936.html&quot; rel=&quot;lightbox[social]&quot; title=&quot;gametrailers.com/player/&quot;&gt;GameTrailers.com player &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.gametrailers.com/video/e3-09-assassins-creed/50139" rel="lightbox[social]" title="gametrailers.com/video/">GameTrailers.com video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.gametrailers.com/video/e3-09-assassins-creed/50139&quot; rel=&quot;lightbox[social]&quot; title=&quot;gametrailers.com/video/&quot;&gt;GameTrailers.com video »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.gametrailers.com/video/e3-09-assassins-creed/50139" rel="lightbox[social]" title="gametrailers.com/video/">GameTrailers.com video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.gametrailers.com/video/e3-09-assassins-creed/50139&quot; rel=&quot;lightbox[social]&quot; title=&quot;gametrailers.com/video/&quot;&gt;GameTrailers.com video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://video.google.com/videoplay?docid=-8111235669135653751" rel="lightbox[social 640 290]" title="video.google.com">Google video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://video.google.com/videoplay?docid=-8111235669135653751&quot; rel=&quot;lightbox[social 640 290]&quot; title=&quot;video.google.com&quot;&gt;Google video »&lt;/a&gt;</code></p> 
+	<p><a href="http://video.google.com/videoplay?docid=-8111235669135653751" rel="lightbox[social 640 290]" title="video.google.com">Google video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://video.google.com/videoplay?docid=-8111235669135653751&quot; rel=&quot;lightbox[social 640 290]&quot; title=&quot;video.google.com&quot;&gt;Google video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://megavideo.com/?v=WD28NSRM" rel="lightbox[social]" title="megavideo.com">Megavideo »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://megavideo.com/?v=WD28NSRM&quot; rel=&quot;lightbox[social]&quot; title=&quot;megavideo.com&quot;&gt;Megavideo »&lt;/a&gt;</code></p> 
+	<p><a href="http://megavideo.com/?v=WD28NSRM" rel="lightbox[social]" title="megavideo.com">Megavideo &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://megavideo.com/?v=WD28NSRM&quot; rel=&quot;lightbox[social]&quot; title=&quot;megavideo.com&quot;&gt;Megavideo &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.metacafe.com/watch/2185365/spot_electrabel_gdf_suez_happy_new_year_2009/" rel="lightbox[social 400 350]" title="www.metacafe.com">MetaCafe »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.metacafe.com/watch/2185365/spot_electrabel_gdf_suez_happy_new_year_2009/&quot; rel=&quot;lightbox[social 400 350]&quot; title=&quot;www.metacafe.com&quot;&gt;MetaCafe »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.metacafe.com/watch/2185365/spot_electrabel_gdf_suez_happy_new_year_2009/" rel="lightbox[social 400 350]" title="www.metacafe.com">MetaCafe &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.metacafe.com/watch/2185365/spot_electrabel_gdf_suez_happy_new_year_2009/&quot; rel=&quot;lightbox[social 400 350]&quot; title=&quot;www.metacafe.com&quot;&gt;MetaCafe &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://quietube.com/v.php/http://www.youtube.com/watch?v=b5Ff2X_3P_4" rel="lightbox[social 480 392]" title="youtube via quietube.com">Quietube + Youtube »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://quietube.com/v.php/http://www.youtube.com/watch?v=b5Ff2X_3P_4&quot; rel=&quot;lightbox[social 480 392]&quot; title=&quot;youtube via quietube.com&quot;&gt;Quietube + Youtube »&lt;/a&gt;</code></p> 
+	<p><a href="http://quietube.com/v.php/http://www.youtube.com/watch?v=b5Ff2X_3P_4" rel="lightbox[social 480 392]" title="youtube via quietube.com">Quietube + Youtube &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://quietube.com/v.php/http://www.youtube.com/watch?v=b5Ff2X_3P_4&quot; rel=&quot;lightbox[social 480 392]&quot; title=&quot;youtube via quietube.com&quot;&gt;Quietube + Youtube &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://quietube.com/v.php/http://vimeo.com/2295261" rel="lightbox[social 480 392]" title="vimeo via quietube.com">Quietube + Vimeo »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://quietube.com/v.php/http://vimeo.com/2295261&quot; rel=&quot;lightbox[social 480 392]&quot; title=&quot;quietube.com&quot;&gt;Quietube + Vimeo »&lt;/a&gt;</code></p> 
+	<p><a href="http://quietube.com/v.php/http://vimeo.com/2295261" rel="lightbox[social 480 392]" title="vimeo via quietube.com">Quietube + Vimeo &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://quietube.com/v.php/http://vimeo.com/2295261&quot; rel=&quot;lightbox[social 480 392]&quot; title=&quot;quietube.com&quot;&gt;Quietube + Vimeo &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p><a href="http://quietube.com/">Quietube.com</a> is a site designed to strip away the clutter of a few popular social video sites &#8211; if you&#8217;re concerned about the quality of user experience sans-javascript, when mediaboxAdvanced would not intercept links, this may be a good option.  Right-click the above links to open in a new tab, and see for yourself.</p> 
+	<blockquote>
+		<p><a href="http://quietube.com/">Quietube.com</a> is a site designed to strip away the clutter of a few popular social video sites &#8211; if you&#8217;re concerned about the quality of user experience sans-javascript, when mediaboxAdvanced would not intercept links, this may be a good option.  Right-click the above links to open in a new tab, and see for yourself.</p>
 	</blockquote>
-	<p><a href="http://www.revver.com/video/758469/see-whats-possible-challenge/" rel="lightbox[social 480 392]" title="www.revver.com">Revver »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.revver.com/video/758469/see-whats-possible-challenge/&quot; rel=&quot;lightbox[social 480 392]&quot; title=&quot;www.revver.com&quot;&gt;Revver »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.revver.com/video/758469/see-whats-possible-challenge/" rel="lightbox[social 480 392]" title="www.revver.com">Revver &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.revver.com/video/758469/see-whats-possible-challenge/&quot; rel=&quot;lightbox[social 480 392]&quot; title=&quot;www.revver.com&quot;&gt;Revver &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://rutube.ru/tracks/732179.html?v=31d844c852720c85a74d55474dd3f65a" rel="lightbox[social]" title="www.RuTube.ru">RuTube »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://rutube.ru/tracks/732179.html?v=31d844c852720c85a74d55474dd3f65a&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.RuTube.ru&quot;&gt;RuTube »&lt;/a&gt;</code></p> 
+	<p><a href="http://rutube.ru/tracks/732179.html?v=31d844c852720c85a74d55474dd3f65a" rel="lightbox[social]" title="www.RuTube.ru">RuTube &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://rutube.ru/tracks/732179.html?v=31d844c852720c85a74d55474dd3f65a&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.RuTube.ru&quot;&gt;RuTube &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://seesmic.com/app?#/video/GtXGiBXzWb/watch" rel="lightbox[social 425 353]" title="www.seesmic.com">Seesmic »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://seesmic.com/app?#/video/GtXGiBXzWb/watch&quot; rel=&quot;lightbox[social 425 353]&quot; title=&quot;www.seesmic.com&quot;&gt;Seesmic »&lt;/a&gt;</code></p> 
+	<p><a href="http://seesmic.com/app?#/video/GtXGiBXzWb/watch" rel="lightbox[social 425 353]" title="www.seesmic.com">Seesmic &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://seesmic.com/app?#/video/GtXGiBXzWb/watch&quot; rel=&quot;lightbox[social 425 353]&quot; title=&quot;www.seesmic.com&quot;&gt;Seesmic &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.tudou.com/programs/view/KG2UG_U4DMY/" rel="lightbox[social 400 340]" title="www.tudou.com">Tudou »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.tudou.com/programs/view/KG2UG_U4DMY/&quot; rel=&quot;lightbox[social 400 340]&quot; title=&quot;www.tudou.com&quot;&gt;Tudou »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.tudou.com/programs/view/KG2UG_U4DMY/" rel="lightbox[social 400 340]" title="www.tudou.com">Tudou &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.tudou.com/programs/view/KG2UG_U4DMY/&quot; rel=&quot;lightbox[social 400 340]&quot; title=&quot;www.tudou.com&quot;&gt;Tudou &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://v.youku.com/v_show/id_XNDI1MDkyMDQ" rel="lightbox[social 480 400]" title="www.youku.com">YouKu »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://v.youku.com/v_show/id_XNDI1MDkyMDQ&quot; rel=&quot;lightbox[social 480 400]&quot; title=&quot;www.youku.com&quot;&gt;YouKu »&lt;/a&gt;</code></p> 
+	<p><a href="http://v.youku.com/v_show/id_XNDI1MDkyMDQ" rel="lightbox[social 480 400]" title="www.youku.com">YouKu &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://v.youku.com/v_show/id_XNDI1MDkyMDQ&quot; rel=&quot;lightbox[social 480 400]&quot; title=&quot;www.youku.com&quot;&gt;YouKu &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.youtube.com/watch?v=MrqcK5arPPk" rel="lightbox[social]" title="www.youtube.com">YouTube »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.youtube.com/watch?v=MrqcK5arPPk&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.youtube.com&quot;&gt;YouTube »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.youtube.com/watch?v=MrqcK5arPPk" rel="lightbox[social]" title="www.youtube.com">YouTube &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.youtube.com/watch?v=MrqcK5arPPk&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.youtube.com&quot;&gt;YouTube &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.youtube.com/view_play_list?p=63F0C78739B09958" rel="lightbox[social]" title="www.youtube.com playlist::hover over the window to see everything in the play queue">YouTube Playlist »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.youtube.com/view_play_list?p=63F0C78739B09958&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.youtube.com playlist::hover over the window to see everything in the play queue&quot;&gt;YouTube Playlist »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.youtube.com/view_play_list?p=63F0C78739B09958" rel="lightbox[social]" title="www.youtube.com playlist::hover over the window to see everything in the play queue">YouTube Playlist &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.youtube.com/view_play_list?p=63F0C78739B09958&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.youtube.com playlist::hover over the window to see everything in the play queue&quot;&gt;YouTube Playlist &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p>To embed using one of the higher quality YouTube streams, you&#8217;ll need to append a format code to your <span class="caps">URL</span> or set a default quality setting in the script options.  The HD video format: <code>&amp;fmt=22</code> does not deprecate to a lower format automatically, so please make sure any videos embedded with this quality setting are actually <em>available</em> in HD.  High quality videos: <code>&amp;fmt=18</code> will default to the lower quality if HQ isn&#8217;t available, which makes it a little more reliable (besides streaming faster than HD).  MediaboxAdvanced will override the script&#8217;s quality option with any manually appended format numbers, so both methods can be used on a website.</p> 
+	<blockquote>
+		<p>To embed using one of the higher quality YouTube streams, you&#8217;ll need to append a format code to your <span class="caps">URL</span> or set a default quality setting in the script options.  The HD video format: <code>&amp;fmt=22</code> does not deprecate to a lower format automatically, so please make sure any videos embedded with this quality setting are actually <em>available</em> in HD.  High quality videos: <code>&amp;fmt=18</code> will default to the lower quality if HQ isn&#8217;t available, which makes it a little more reliable (besides streaming faster than HD).  MediaboxAdvanced will override the script&#8217;s quality option with any manually appended format numbers, so both methods can be used on a website.</p>
 	</blockquote>
-	<p><a href="http://www.youtube.com/watch?v=2_HXUhShhmY" rel="lightbox[social 640 385]" title="www.youtube.com">YouTube HQ »</a> (via options)</p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.youtube.com/watch?v= 2_HXUhShhmY&quot; rel=&quot;lightbox[social 640 385]&quot; title=&quot;www.youtube.com&quot;&gt;YouTube HQ »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.youtube.com/watch?v=2_HXUhShhmY" rel="lightbox[social 640 385]" title="www.youtube.com">YouTube HQ &raquo;</a> (via options)</p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.youtube.com/watch?v= 2_HXUhShhmY&quot; rel=&quot;lightbox[social 640 385]&quot; title=&quot;www.youtube.com&quot;&gt;YouTube HQ &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.youtube.com/watch?v=L5Nu8bo2d-o&fmt=22" rel="lightbox[social 960 565]" title="www.youtube.com">YouTube HD »</a> (via url code)</p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.youtube.com/watch?v=L5Nu8bo2d-o&amp;fmt=22&quot; rel=&quot;lightbox[social 960 565]&quot; title=&quot;www.youtube.com&quot;&gt;YouTube HD »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.youtube.com/watch?v=L5Nu8bo2d-o&fmt=22" rel="lightbox[social 960 565]" title="www.youtube.com">YouTube HD &raquo;</a> (via url code)</p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.youtube.com/watch?v=L5Nu8bo2d-o&amp;fmt=22&quot; rel=&quot;lightbox[social 960 565]&quot; title=&quot;www.youtube.com&quot;&gt;YouTube HD &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.veoh.com/browse/videos/category/scifi_and_fantasy/watch/v20072707NWacjBq6" rel="lightbox[social 540 438]" title="www.veoh.com">Veoh »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.veoh.com/browse/videos/category/scifi_and_fantasy/watch/v20072707NWacjBq6&quot; rel=&quot;lightbox[social 540 438]&quot; title=&quot;www.veoh.com&quot;&gt;Veoh »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.veoh.com/browse/videos/category/scifi_and_fantasy/watch/v20072707NWacjBq6" rel="lightbox[social 540 438]" title="www.veoh.com">Veoh &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.veoh.com/browse/videos/category/scifi_and_fantasy/watch/v20072707NWacjBq6&quot; rel=&quot;lightbox[social 540 438]&quot; title=&quot;www.veoh.com&quot;&gt;Veoh &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.viddyou.com/viddstream?videoid=49456" rel="lightbox[social]" title="viddyou.com">Viddyou »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.viddyou.com/viddstream?videoid=49456&quot; rel=&quot;lightbox[social]&quot; title=&quot;viddyou.com&quot;&gt;Viddyou »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.viddyou.com/viddstream?videoid=49456" rel="lightbox[social]" title="viddyou.com">Viddyou &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.viddyou.com/viddstream?videoid=49456&quot; rel=&quot;lightbox[social]&quot; title=&quot;viddyou.com&quot;&gt;Viddyou &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://vimeo.com/877053" rel="lightbox[social]" title="vimeo.com">Vimeo »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://vimeo.com/877053&quot; rel=&quot;lightbox[social]&quot; title=&quot;vimeo.com&quot;&gt;Vimeo »&lt;/a&gt;</code></p> 
+	<p><a href="http://vimeo.com/877053" rel="lightbox[social]" title="vimeo.com">Vimeo &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://vimeo.com/877053&quot; rel=&quot;lightbox[social]&quot; title=&quot;vimeo.com&quot;&gt;Vimeo &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://12seconds.tv/channel/Iaian7/81432" rel="lightbox[social]" title="12seconds.tv::Yes, this is me! And no, I don't talk on 12seconds.tv">12seconds.tv »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://12seconds.tv/channel/Iaian7/81432&quot; rel=&quot;lightbox[social]&quot; title=&quot;12seconds.tv&quot;&gt;12seconds.tv »&lt;/a&gt;</code></p> 
+	<p><a href="http://12seconds.tv/channel/Iaian7/81432" rel="lightbox[social]" title="12seconds.tv::Yes, this is me! And no, I don't talk on 12seconds.tv">12seconds.tv &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://12seconds.tv/channel/Iaian7/81432&quot; rel=&quot;lightbox[social]&quot; title=&quot;12seconds.tv&quot;&gt;12seconds.tv &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
+
 	<h2>Social video embed</h2>
 	<p>Because some social video sites do not use the media ID in the page <span class="caps">URL</span>, you have to use the link given in the <em>embed</em> code.  Be forewarned that this is both more difficult (you must dig through the embed code to find the link) and does not deprecate nicely (without javascript, the links will point to the video player, not the video page).</p>
-	<p><a href="http://blip.tv/play/Ae2bN420ZA" rel="lightbox[social 640 390]" title="blip.tv::John Einselen - 2008 demo reel preview">Blip.tv »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://blip.tv/play/Ae2bN420ZA&quot; rel=&quot;lightbox[social 640 390]&quot; title=&quot;blip.tv::John Einselen - 2008 demo reel preview&quot;&gt;Blip.tv »&lt;/a&gt;</code></p> 
+	<p><a href="http://blip.tv/play/Ae2bN420ZA" rel="lightbox[social 640 390]" title="blip.tv::John Einselen - 2008 demo reel preview">Blip.tv &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://blip.tv/play/Ae2bN420ZA&quot; rel=&quot;lightbox[social 640 390]&quot; title=&quot;blip.tv::John Einselen - 2008 demo reel preview&quot;&gt;Blip.tv &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.break.com/usercontent/2009/4/The-Wonderful-World-of-Reals-703500.html" rel="lightbox[social]" title="break.com">Break.com »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.break.com/usercontent/2009/4/The-Wonderful-World-of-Reals-703500.html&quot; rel=&quot;lightbox[social]&quot; title=&quot;break.com&quot;&gt;Break.com »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.break.com/usercontent/2009/4/The-Wonderful-World-of-Reals-703500.html" rel="lightbox[social]" title="break.com">Break.com &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.break.com/usercontent/2009/4/The-Wonderful-World-of-Reals-703500.html&quot; rel=&quot;lightbox[social]&quot; title=&quot;break.com&quot;&gt;Break.com &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p>Break.com uses an inconsistent <span class="caps">URL</span> scheme &#8211; sometimes the 6-digit video ID is present in the page <span class="caps">URL</span>, but most of the time it is only present in the embed code.  So long as the <span class="caps">URL</span> contains the 6-digit code, mediaboxAdvanced will be able to load the video.</p> 
+	<blockquote>
+		<p>Break.com uses an inconsistent <span class="caps">URL</span> scheme &#8211; sometimes the 6-digit video ID is present in the page <span class="caps">URL</span>, but most of the time it is only present in the embed code.  So long as the <span class="caps">URL</span> contains the 6-digit code, mediaboxAdvanced will be able to load the video.</p>
 	</blockquote>
-	<p><a href="http://www.dailymotion.com/swf/1zR7vSr9sneRWgUqL" rel="lightbox[social 640 486]" title="www.dailymotion.com">DailyMotion »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.dailymotion.com/swf/1zR7vSr9sneRWgUqL&quot; rel=&quot;lightbox[social 640 486]&quot; title=&quot;www.dailymotion.com&quot;&gt;DailyMotion »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.dailymotion.com/swf/1zR7vSr9sneRWgUqL" rel="lightbox[social 640 486]" title="www.dailymotion.com">DailyMotion &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.dailymotion.com/swf/1zR7vSr9sneRWgUqL&quot; rel=&quot;lightbox[social 640 486]&quot; title=&quot;www.dailymotion.com&quot;&gt;DailyMotion &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://mediaservices.myspace.com/services/media/embed.aspx/m=100005440,t=1,mt=video" rel="lightbox[social set3 430 346]" title="vids.myspace.com">vids.MySpace »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://mediaservices.myspace.com/services/media/embed.aspx/m=100005440,t=1,mt=video&quot; rel=&quot;lightbox[social set3 430 346]&quot; title=&quot;vids.myspace.com&quot;&gt;vids.MySpace »&lt;/a&gt;</code></p> 
+	<p><a href="http://mediaservices.myspace.com/services/media/embed.aspx/m=100005440,t=1,mt=video" rel="lightbox[social set3 430 346]" title="vids.myspace.com">vids.MySpace &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://mediaservices.myspace.com/services/media/embed.aspx/m=100005440,t=1,mt=video&quot; rel=&quot;lightbox[social set3 430 346]&quot; title=&quot;vids.myspace.com&quot;&gt;vids.MySpace &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p>(known issues with embedding limitations)</p> 
+	<blockquote>
+		<p>(known issues with embedding limitations)</p>
 	</blockquote>
-	<p><a href="http://www.ustream.tv/flash/live/534892" rel="lightbox[social 400 326]" title="Ustream.tv">Ustream.tv »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.ustream.tv/flash/live/534892&quot; rel=&quot;lightbox[social 400 326]&quot; title=&quot;Ustream.tv&quot;&gt;Ustream.tv »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.ustream.tv/flash/live/534892" rel="lightbox[social 400 326]" title="Ustream.tv">Ustream.tv &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.ustream.tv/flash/live/534892&quot; rel=&quot;lightbox[social 400 326]&quot; title=&quot;Ustream.tv&quot;&gt;Ustream.tv &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p>(known issues with the server refusing links)</p> 
+	<blockquote>
+		<p>(known issues with the server refusing links)</p>
 	</blockquote>
-	<p><a href="http://www.viddler.com/player/d4cf1bc/" rel="lightbox[social 545 451]" title="www.viddler.com">Viddler »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.viddler.com/player/d4cf1bc/&quot; rel=&quot;lightbox[social 545 451]&quot; title=&quot;www.viddler.com&quot;&gt;Viddler »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.viddler.com/player/d4cf1bc/" rel="lightbox[social 545 451]" title="www.viddler.com">Viddler &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.viddler.com/player/d4cf1bc/&quot; rel=&quot;lightbox[social 545 451]&quot; title=&quot;www.viddler.com&quot;&gt;Viddler &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
+
 	<h2 id="flash">Flash media</h2>
 	<p><span class="caps">SWF</span> files will be embedded directly using the flash player.</p>
-	<p><a href="http://www.homestarrunner.com/sbemailtwohundred.swf" rel="lightbox[flash 550 410]" title="SWF animation::Homestarrunner.com flash animation"><span class="caps">SWF</span> animation »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://www.homestarrunner.com/sbemailtwohundred.swf&quot; rel=&quot;lightbox[flash 550 410]&quot; title=&quot;SWF animation::HomestarRunner.com flash animation&quot;&gt;SWF animation »&lt;/a&gt;</code></p> 
+	<p><a href="http://www.homestarrunner.com/sbemailtwohundred.swf" rel="lightbox[flash 550 410]" title="SWF animation::Homestarrunner.com flash animation"><span class="caps">SWF</span> animation &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://www.homestarrunner.com/sbemailtwohundred.swf&quot; rel=&quot;lightbox[flash 550 410]&quot; title=&quot;SWF animation::HomestarRunner.com flash animation&quot;&gt;SWF animation &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
 	<p><span class="caps">FLV</span>, MP4, and MP3 files can be played using either <a href="http://nonverbla.de/blog/2008/09/15/nonverblasterhover/">NonverBlaster:Hover</a> or the <a href="http://www.jeroenwijering.com/?item=JW_FLV_Media_Player">JW Media Player</a>.  Given the install base for Flash, this is typically the most reliable way of playing media files.</p>
-	<p><a href="/media/mediabox/2007vfx.flv" rel="lightbox[flash 640 360]" title="FLV video::John Einselen - 2007 demo reel"><span class="caps">FLV</span> video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;/media/mediabox/2007vfx.flv&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;FLV video::John Einselen - 2007 demo reel&quot;&gt;FLV video »&lt;/a&gt;</code></p> 
+	<p><a href="/media/mediabox/2007vfx.flv" rel="lightbox[flash 640 360]" title="FLV video::John Einselen - 2007 demo reel"><span class="caps">FLV</span> video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;/media/mediabox/2007vfx.flv&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;FLV video::John Einselen - 2007 demo reel&quot;&gt;FLV video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="/media/mediabox/2005vfx.mp4" rel="lightbox[flash 640 360]" title="MP4 video::John Einselen - 2005 demo reel">MP4 video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;/media/mediabox/2005vfx.mp4&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;MP4 video::John Einselen - 2005 demo reel&quot;&gt;MP4 video »&lt;/a&gt;</code></p> 
+	<p><a href="/media/mediabox/2005vfx.mp4" rel="lightbox[flash 640 360]" title="MP4 video::John Einselen - 2005 demo reel">MP4 video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;/media/mediabox/2005vfx.mp4&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;MP4 video::John Einselen - 2005 demo reel&quot;&gt;MP4 video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="/media/mediabox/TheISS2.mp3" rel="lightbox[audio 50% 20]" title="MP3 audio::The ISS #2 - John Einselen">MP3 audio »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;/media/mediabox/TheISS2.mp3&quot; rel=&quot;lightbox[audio 50% 20]&quot; title=&quot;MP3 audio::The ISS #2 - John Einselen&quot;&gt;MP3 audio »&lt;/a&gt;</code></p> 
+	<p><a href="/media/mediabox/TheISS2.mp3" rel="lightbox[audio 50% 20]" title="MP3 audio::The ISS #2 - John Einselen">MP3 audio &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;/media/mediabox/TheISS2.mp3&quot; rel=&quot;lightbox[audio 50% 20]&quot; title=&quot;MP3 audio::The ISS #2 - John Einselen&quot;&gt;MP3 audio &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
+
 	<h2 id="quicktime">Quicktime</h2>
 	<p>Files playable with Quicktime (.mov, ,m4v, .m4a, and many others) can use the native QT browser plugin if the MooTools plugin Quickie.js is installed (separate installation, see the download section for more).  The overlay height is automatically adjusted to include the 16px controller.  Plugin detection is not easily possible on multiple platforms, so this is a less forgiving solution than Flash, but typically far better quality and responsiveness on machines running <span class="caps">OSX</span>.</p>
 	<p>Some errors of note: Opera does not play well with Quicktime on any platform, and Chrome for Mac may not display the controller.</p>
-	<p><a href="http://symboleffects.com/media/2007vfx.mov" rel="lightbox[quicktime 640 360]" title="MOV video::2007 VFX reel - John Einselen"><span class="caps">MOV</span> video »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://symboleffects.com/media/2007vfx.mov&quot; rel=&quot;lightbox[quicktime 640 360]&quot; title=&quot;MOV video::2007 VFX reel - John Einselen&quot;&gt;MOV video »&lt;/a&gt;</code></p> 
+	<p><a href="http://symboleffects.com/media/2007vfx.mov" rel="lightbox[quicktime 640 360]" title="MOV video::2007 VFX reel - John Einselen"><span class="caps">MOV</span> video &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://symboleffects.com/media/2007vfx.mov&quot; rel=&quot;lightbox[quicktime 640 360]&quot; title=&quot;MOV video::2007 VFX reel - John Einselen&quot;&gt;MOV video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
-		<p><strong>Quickie.js, the helper script for handling QuickTime media, has not been updated to use MooTools 1.3 yet.</strong> While mediaboxAdvanced 1.4.x fully supports Mootools 1.3 and does not require compatibility enabled, until Quickie is updated you&#8217;ll still need to include Mootools 1.2.x compatibility. For testing purposes, this page does <span class="caps">NOT</span> include Mootools 1.2.x compatibility, so the above sample will fail due to Quickie&#8217;s use of deprecated code.</p> 
-	</blockquote>
+
 	<h2 id="inline">Inline content</h2>
 	<p>Using an anchor tag, Mediabox can insert html found elsewhere on your page.  This circumvents many of the associated issues with Ajax &#8211; when accessing hidden inline content, Mediabox can accommodate both for deprecation (if javascript is turned off, the inline content is not hidden, and the anchor links work normally), and for accessibility and search engine optimisation (your content is always available for non-visual browser systems).</p>
-	<p><a href="#mb_inline" rel="lightbox[inline 360 180]" title="">inline content »</a></p> 
- 
-<div id="mb_inline" style="display: none;"> 
-<span style="color: #999999; text-align: center;">This is an example of content that was hidden on the page, and opened in Mediabox using an anchor link.<br/><br/> 
-<a href="" onclick="Mediabox.close();return false;">close onClick »</a></span></div>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;#mb_inline&quot; rel=&quot;lightbox[inline 360 180]&quot; title=&quot;&quot;&gt;inline content »&lt;/a&gt;</code></p> 
+	<p><a href="#mb_inline" rel="lightbox[inline 360 180]" title="">inline content &raquo;</a></p>
+
+	<div id="mb_inline" style="display: none;">
+		<span>This is an example of content that was hidden on the page, and opened in Mediabox using an anchor link.<br/><br/><a href="" onclick="Mediabox.close();return false;">close onClick &raquo;</a></span>
+	</div>
+	<blockquote>
+		<p><code>&lt;a href=&quot;#mb_inline&quot; rel=&quot;lightbox[inline 360 180]&quot; title=&quot;&quot;&gt;inline content &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<blockquote> 
+	<blockquote>
 		<p><code>&lt;div id=&quot;mb_inline&quot; style=&quot;display: none;&quot;&gt;
 &lt;span style=&quot;color: #999999; text-align: center;&quot;&gt;This is an example of content that was hidden on the page, and opened in Mediabox using an anchor link.&lt;br/&gt;&lt;br/&gt;
-&lt;a href=&quot;&quot; onclick=&quot;Mediabox.close();return false;&quot;&gt;close onClick »&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;</code></p> 
+&lt;a href=&quot;&quot; onclick=&quot;Mediabox.close();return false;&quot;&gt;close onClick &raquo;&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;</code></p>
 	</blockquote>
 	<p>Because external links might also contain anchors, any inline content ID <strong>must</strong> use the <code>mb_</code> prefix to make sure mediaboxAdvanced knows to load it from the current page.</p>
 	<p>It&#8217;s also important to note that when mediaboxAdvanced loads an overlay, it recreates the embedded content, instead of moving it from its current location. This prevents any weirdness when closing the overlay (which destroys the overlay content to prevent even <em>more</em> weirdness!), but means that adding custom code to the embedded elements may be messed up (especially attaching events with element references). If possible, element references should use relative methods to accommodate for any position in the <span class="caps">DOM</span>.  i.e. They shouldn&#8217;t depend on a single ID since the elements will be duplicated once copied to the overlay (relative methods such as child, parent, previous, next, and multi-level selectors are typically more flexible).</p>
 	<p>There is one major caveat to this method &#8211; the keyboard commands that navigate through a gallery (&#8220;p&#8221; for previous, etc.) will interrupt typing into text fields.  Near the top of the options list, you&#8217;ll find a setting for <code>stopKey</code> &#8211; set this to <code>false</code> to override the default settings.  This does not prevent the key commands from initially affecting the overlay, however (typing &#8220;tax&#8221; into a search field for example, will close the overlay).  To change the default keyboard shortcut controls for gallery content (removing the alphabetical entries such as &#8220;x,&#8221; &#8220;c,&#8221; &#8220;p,&#8221; and &#8220;n&#8221;), you can edit the keycodes listed under the <code>keyDown</code> function (further down in the script).  Ultimately, the most stable route is to use external page content when loading forms, as iFrame embedding prevent the overlay (parent frame) key commands from interfering with the form (child frame) inputs.  Read on for details&#8230;</p>
+
 	<h2 id="html">External content</h2>
 	<p><span class="caps">HTML</span> files, <span class="caps">PHP</span>, <span class="caps">ASP</span>, and any other web document format will be displayed inside a dynamic frame.</p>
-	<p><a href="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=detroit,+mi&amp;aq=&amp;sll=42.653,-83.14063&amp;sspn=0.026765,0.024848&amp;ie=UTF8&amp;hq=&amp;hnear=Detroit,+Wayne,+Michigan&amp;z=10&amp;ll=42.331427,-83.045754&amp;output=embed" rel="lightbox[external 640 360]" title="Google.com">Google map »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://maps.google.com/maps?f=q&amp;amp;source=s_q&amp;amp;hl=en&amp;amp;geocode=&amp;amp;q=detroit,+mi&amp;amp;aq=&amp;amp;sll=42.653,-83.14063&amp;amp;sspn=0.026765,0.024848&amp;amp;ie=UTF8&amp;amp;hq=&amp;amp;hnear=Detroit,+Wayne,+Michigan&amp;amp;z=10&amp;amp;ll=42.331427,-83.045754&amp;amp;output=embed&quot; rel=&quot;lightbox[external 640 360]&quot; title=&quot;Google.com&quot;&gt;Google map »&lt;/a&gt;</code></p> 
+	<p><a href="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=detroit,+mi&amp;aq=&amp;sll=42.653,-83.14063&amp;sspn=0.026765,0.024848&amp;ie=UTF8&amp;hq=&amp;hnear=Detroit,+Wayne,+Michigan&amp;z=10&amp;ll=42.331427,-83.045754&amp;output=embed" rel="lightbox[external 640 360]" title="Google.com">Google map &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://maps.google.com/maps?f=q&amp;amp;source=s_q&amp;amp;hl=en&amp;amp;geocode=&amp;amp;q=detroit,+mi&amp;amp;aq=&amp;amp;sll=42.653,-83.14063&amp;amp;sspn=0.026765,0.024848&amp;amp;ie=UTF8&amp;amp;hq=&amp;amp;hnear=Detroit,+Wayne,+Michigan&amp;amp;z=10&amp;amp;ll=42.331427,-83.045754&amp;amp;output=embed&quot; rel=&quot;lightbox[external 640 360]&quot; title=&quot;Google.com&quot;&gt;Google map &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://movies.yahoo.com" rel="lightbox[external 640 50%]" title="movies.Yahoo.com">movies.Yahoo.com »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://movies.yahoo.com&quot; rel=&quot;lightbox[external 640 50%]&quot; title=&quot;movies.Yahoo.com&quot;&gt;movies.Yahoo.com »&lt;/a&gt;</code></p> 
+	<p><a href="http://movies.yahoo.com" rel="lightbox[external 640 50%]" title="movies.Yahoo.com">movies.Yahoo.com &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://movies.yahoo.com&quot; rel=&quot;lightbox[external 640 50%]&quot; title=&quot;movies.Yahoo.com&quot;&gt;movies.Yahoo.com &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://vectorform.com/" rel="lightbox[external 80% 660]" title="Vectorform.com">Vectorform.com »</a></p>
-	<blockquote> 
-		<p><code>&lt;a href=&quot;http://vectorform.com/&quot; rel=&quot;lightbox[external 80% 660]&quot; title=&quot;Vectorform.com&quot;&gt;Vectorform.com »&lt;/a&gt;</code></p> 
+	<p><a href="http://vectorform.com/" rel="lightbox[external 80% 660]" title="Vectorform.com">Vectorform.com &raquo;</a></p>
+	<blockquote>
+		<p><code>&lt;a href=&quot;http://vectorform.com/&quot; rel=&quot;lightbox[external 80% 660]&quot; title=&quot;Vectorform.com&quot;&gt;Vectorform.com &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
 </div>
-
 </body>
 </html>
