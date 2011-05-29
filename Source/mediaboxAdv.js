@@ -119,12 +119,12 @@ var Mediabox;
 				wmode: 'opaque',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
 //			NonverBlaster
 				useNB: true,				// use NonverBlaster (true) or JW Media Player (false) for .flv and .mp4 files
-				playerpath: '/js/NonverBlaster.swf',	// Path to NonverBlaster.swf
+				playerpath: 'files/NonverBlaster.swf',	// Path to NonverBlaster.swf
 				controlColor: '0xFFFFFF',	// set the controlbar color
 				controlBackColor: '0x000000',	// set the controlbar color
 				showTimecode: 'false',		// turn timecode display off or on
 //			JW Media Player settings and options
-				JWplayerpath: '/js/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
+				JWplayerpath: 'files/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
 				backcolor:	'000000',		// Base color for the controller, color name / hex value (0x000000)
 				frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
 				lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)

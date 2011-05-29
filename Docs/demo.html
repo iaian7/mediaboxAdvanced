@@ -5,30 +5,48 @@
 	<title>mediaboxAdvanced demo</title>
 	<meta name="author" content="Iaian7 / John Einselen" />
 	<meta name="copyright" content="©2007-2011 John Einselen" />
-	<link rel="stylesheet" href="style.css" media="screen,projection" type="text/css" />
-	<link rel="stylesheet" href="../Source/mediaboxAdv-Dark.css" media="screen,projection" type="text/css" />
-	<script src="http://iaian7.com/js/mootools-core-1.3.js" type="text/javascript"></script>
-	<script src="http://iaian7.com/js/mootools-more-1.3.js" type="text/javascript"></script>
-	<script src="http://iaian7.com/js/quickie.js" type="text/javascript"></script>
-	<script src="../Source/mediaboxAdv.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="files/style.css" media="screen,projection" type="text/css" />
+	<link rel="stylesheet" href="files/mediaboxAdv-Dark.css" type="text/css" title="dark" media="screen,projection" />
+	<link rel="alternate stylesheet" href="files/mediaboxAdv-Light.css" type="text/css" title="light" media="screen,projection" />
+	<link rel="alternate stylesheet" href="files/mediaboxAdv-Minimal.css" type="text/css" title="minimal" media="screen,projection" />
+	<link rel="alternate stylesheet" href="files/mediaboxAdv-Smooth.css" type="text/css" title="smooth" media="screen,projection" />
+	<script src="files/mootools-core-1.3.2.js" type="text/javascript"></script>
+	<script src="files/mediaboxAdv.js" type="text/javascript"></script>
+	<script src="files/styleswitcher.js" type="text/javascript"></script>
 </head>
 
 <body>
 <div id="page">
 	<h1>mediaboxAdvanced demo</h1>
   	<p>Based on Lightbox, Slimbox, and the Mootools javascript library, <strong>mediaboxAdvanced</strong> is a modal overlay that can handle images, videos, animations, social video sites, twitter media links, inline elements, and external pages with ease.</p>
-	<p><img src="http://iaian7.com/images/webcode/mediaboxAdv/mediaboxAdv-1.1.png" width="175" height="110" alt="" style="float:none; position:relative; display:block; left:50%; margin-left:-87.5px; margin-right:0px;" class="an7_img" /></p>
-	<p><b><a href="#images">Images</a>&nbsp; | &nbsp;<a href="#twitter">Twitter</a>&nbsp; | &nbsp;<a href="#social">Social Video</a>&nbsp; | &nbsp;<a href="#flash">Flash media</a>&nbsp; | &nbsp;<a href="#quicktime">Quicktime</a>&nbsp; | &nbsp;<a href="#inline">Inline</a>&nbsp; | &nbsp;<a href="#html"><span class="caps">HTML</span></a></b></p>
+	<p><img src="files/mediaboxAdv-1.1.png" width="175" height="110" alt="" style="float:none; position:relative; display:block; left:50%; margin-left:-87.5px; margin-right:0px;" class="an7_img" /></p>
+
+	<h2 id="styles">Styles</h2>
+	<p>The overlay is easily stylable using CSS and CSS3 effects.  There are four default styles:</p>
+	<center>
+	<a href="#" onclick="setActiveStyleSheet('dark');return false;"><b>dark</b></a>&nbsp; | &nbsp;
+	<a href="#" onclick="setActiveStyleSheet('light');return false;"><b>light</b></a>&nbsp; | &nbsp;
+	<a href="#" onclick="setActiveStyleSheet('minimal');return false;"><b>minimal</b></a>&nbsp; | &nbsp;
+	<a href="#" onclick="setActiveStyleSheet('smooth');return false;"><b>smooth</b></a>
+	</center>
+	<p>Clicking a style will switch to that theme.  Try it out by testing any of the demo links below.
+	</p>
+
+	<h2 id="nav">Demo Quicklinks</h2>
+	<p><a href="#images"><b>Images</b></a>&nbsp; | &nbsp;<a href="#twitter"><b>Twitter</b></a>&nbsp; | &nbsp;<a href="#social"><b>Social Video</b></a>&nbsp; | &nbsp;<a href="#flash"><b>Flash media</b></a>&nbsp; | &nbsp;<a href="#quicktime"><b>Quicktime</b></a>&nbsp; | &nbsp;<a href="#inline"><b>Inline</b></a>&nbsp; | &nbsp;<a href="#html"><b>HTML</b></a></p>
 
 	<h2 id="images">Images</h2>
 	<p>Images contained in gallery sets are preloaded, even when the set contains mixed media types.</p>
-	<p><span style="float: none; " class="an7_imgdir"><a href="examples/nature1.jpg" rel="lightbox[set1]" title="Autumn 1" class="an7_thumb"><img src="examples/nature1thumb.jpg" alt="Nature1" /></a><a href="examples/nature2.jpg" rel="lightbox[set1]" title="Autumn 2" class="an7_thumb"><img src="examples/nature2thumb.jpg" alt="Nature2" /></a><a href="examples/nature3.jpg" rel="lightbox[set1]" title="Autumn 3" class="an7_thumb"><img src="examples/nature3thumb.jpg" alt="Nature3" /></a></span></p>
+	<p><span style="float: none; " class="an7_imgdir"><a href="files/nature1.jpg" rel="lightbox[set1]" title="Autumn 1" class="an7_thumb"><img src="files/nature1thumb.jpg" alt="Nature1" /></a><a href="files/nature2.jpg" rel="lightbox[set1]" title="Autumn 2" class="an7_thumb"><img src="files/nature2thumb.jpg" alt="Nature2" /></a><a href="files/nature3.jpg" rel="lightbox[set1]" title="Autumn 3" class="an7_thumb"><img src="files/nature3thumb.jpg" alt="Nature3" /></a></span></p>
 	<blockquote>
-		<p><code>&lt;a href=&quot;/media/mediabox/concrete.jpg&quot; rel=&quot;lightbox[set1]&quot; title=&quot;Concrete::taken in eastern Michigan&quot;&gt;&lt;img src=&quot;/media/mediabox/thumbs/concrete.jpg&quot; alt=&quot;Concrete&quot; class=&quot;lbThumb&quot;/&gt;&lt;/a&gt;</code></p>
+		<p><code>&lt;a href=&quot;image.jpg&quot; rel=&quot;lightbox[set1]&quot; title=&quot;Concrete::taken in eastern Michigan&quot;&gt;&lt;img src=&quot;image.jpg&quot; alt=&quot;Concrete&quot; class=&quot;lbThumb&quot;/&gt;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p>You can also include links in a title by encoding <span class="caps">HTML</span> characters using their <a href="http://www.w3schools.com/tags/ref_entities.asp">entity name</a>. &nbsp; &nbsp; <code>&lt; = &amp;lt;</code> &nbsp; <code>&gt; = &amp;gt;</code> &nbsp; <code>&quot; = &amp;quot;</code></p>
+	<p>You can also include links in a title by encoding HTML characters using their <a href="http://www.w3schools.com/tags/ref_entities.asp">entity name</a>:<br/>
+	<code>&lt; = &amp;lt;</code><br/>
+	<code>&gt; = &amp;gt;</code><br/>
+	<code>&quot; = &amp;quot;</code></p>
 	<blockquote>
-		<p><code>&lt;a href=&quot;/media/mediabox/window.jpg&quot; rel=&quot;lightbox&quot; title=&quot;Window::taken in &amp;lt;a href=&amp;quot;http://www.cityofwabash.com/&amp;quot; title=&amp;quot;cityofwabash.com&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;Wabash, Indiana&amp;lt;/a&amp;gt;&quot; class=&quot;an7_thumb&quot;&gt;&lt;img src=&quot;/media/mediabox/thumbs/window.jpg&quot; alt=&quot;window&quot; /&gt;&lt;/a&gt;</code></p>
+		<p><code>&lt;a href=&quot;image.jpg&quot; rel=&quot;lightbox&quot; title=&quot;Window::taken in &amp;lt;a href=&amp;quot;http://www.cityofwabash.com/&amp;quot; title=&amp;quot;cityofwabash.com&amp;quot; target=&amp;quot;_blank&amp;quot;&amp;gt;Wabash, Indiana&amp;lt;/a&amp;gt;&quot; class=&quot;an7_thumb&quot;&gt;&lt;img src=&quot;imageThumbnail.jpg&quot; alt=&quot;window&quot; /&gt;&lt;/a&gt;</code></p>
 	</blockquote>
 
 	<h2 id="twitter">Twitter media</h2>
@@ -113,10 +131,6 @@
 	<blockquote>
 		<p><code>&lt;a href=&quot;http://rutube.ru/tracks/732179.html?v=31d844c852720c85a74d55474dd3f65a&quot; rel=&quot;lightbox[social]&quot; title=&quot;www.RuTube.ru&quot;&gt;RuTube &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://seesmic.com/app?#/video/GtXGiBXzWb/watch" rel="lightbox[social 425 353]" title="www.seesmic.com">Seesmic &raquo;</a></p>
-	<blockquote>
-		<p><code>&lt;a href=&quot;http://seesmic.com/app?#/video/GtXGiBXzWb/watch&quot; rel=&quot;lightbox[social 425 353]&quot; title=&quot;www.seesmic.com&quot;&gt;Seesmic &raquo;&lt;/a&gt;</code></p>
-	</blockquote>
 	<p><a href="http://www.tudou.com/programs/view/KG2UG_U4DMY/" rel="lightbox[social 400 340]" title="www.tudou.com">Tudou &raquo;</a></p>
 	<blockquote>
 		<p><code>&lt;a href=&quot;http://www.tudou.com/programs/view/KG2UG_U4DMY/&quot; rel=&quot;lightbox[social 400 340]&quot; title=&quot;www.tudou.com&quot;&gt;Tudou &raquo;&lt;/a&gt;</code></p>
@@ -148,17 +162,9 @@
 	<blockquote>
 		<p><code>&lt;a href=&quot;http://www.veoh.com/browse/videos/category/scifi_and_fantasy/watch/v20072707NWacjBq6&quot; rel=&quot;lightbox[social 540 438]&quot; title=&quot;www.veoh.com&quot;&gt;Veoh &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="http://www.viddyou.com/viddstream?videoid=49456" rel="lightbox[social]" title="viddyou.com">Viddyou &raquo;</a></p>
-	<blockquote>
-		<p><code>&lt;a href=&quot;http://www.viddyou.com/viddstream?videoid=49456&quot; rel=&quot;lightbox[social]&quot; title=&quot;viddyou.com&quot;&gt;Viddyou &raquo;&lt;/a&gt;</code></p>
-	</blockquote>
 	<p><a href="http://vimeo.com/877053" rel="lightbox[social]" title="vimeo.com">Vimeo &raquo;</a></p>
 	<blockquote>
 		<p><code>&lt;a href=&quot;http://vimeo.com/877053&quot; rel=&quot;lightbox[social]&quot; title=&quot;vimeo.com&quot;&gt;Vimeo &raquo;&lt;/a&gt;</code></p>
-	</blockquote>
-	<p><a href="http://12seconds.tv/channel/Iaian7/81432" rel="lightbox[social]" title="12seconds.tv::Yes, this is me! And no, I don't talk on 12seconds.tv">12seconds.tv &raquo;</a></p>
-	<blockquote>
-		<p><code>&lt;a href=&quot;http://12seconds.tv/channel/Iaian7/81432&quot; rel=&quot;lightbox[social]&quot; title=&quot;12seconds.tv&quot;&gt;12seconds.tv &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
 
 	<h2>Social video embed</h2>
@@ -204,17 +210,13 @@
 		<p><code>&lt;a href=&quot;http://www.homestarrunner.com/sbemailtwohundred.swf&quot; rel=&quot;lightbox[flash 550 410]&quot; title=&quot;SWF animation::HomestarRunner.com flash animation&quot;&gt;SWF animation &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
 	<p><span class="caps">FLV</span>, MP4, and MP3 files can be played using either <a href="http://nonverbla.de/blog/2008/09/15/nonverblasterhover/">NonverBlaster:Hover</a> or the <a href="http://www.jeroenwijering.com/?item=JW_FLV_Media_Player">JW Media Player</a>.  Given the install base for Flash, this is typically the most reliable way of playing media files.</p>
-	<p><a href="/media/mediabox/2007vfx.flv" rel="lightbox[flash 640 360]" title="FLV video::John Einselen - 2007 demo reel"><span class="caps">FLV</span> video &raquo;</a></p>
+	<p><a href="video.mp4" rel="lightbox[flash 640 360]" title="MP4 video::John Einselen - 2005 demo reel">MP4 video &raquo;</a></p>
 	<blockquote>
-		<p><code>&lt;a href=&quot;/media/mediabox/2007vfx.flv&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;FLV video::John Einselen - 2007 demo reel&quot;&gt;FLV video &raquo;&lt;/a&gt;</code></p>
+		<p><code>&lt;a href=&quot;files/video.mp4&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;MP4 video::John Einselen - 2005 demo reel&quot;&gt;MP4 video &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
-	<p><a href="/media/mediabox/2005vfx.mp4" rel="lightbox[flash 640 360]" title="MP4 video::John Einselen - 2005 demo reel">MP4 video &raquo;</a></p>
+	<p><a href="files/audio.mp3" rel="lightbox[audio 50% 20]" title="MP3 audio::The ISS #2 - John Einselen">MP3 audio &raquo;</a></p>
 	<blockquote>
-		<p><code>&lt;a href=&quot;/media/mediabox/2005vfx.mp4&quot; rel=&quot;lightbox[flash 640 360]&quot; title=&quot;MP4 video::John Einselen - 2005 demo reel&quot;&gt;MP4 video &raquo;&lt;/a&gt;</code></p>
-	</blockquote>
-	<p><a href="/media/mediabox/TheISS2.mp3" rel="lightbox[audio 50% 20]" title="MP3 audio::The ISS #2 - John Einselen">MP3 audio &raquo;</a></p>
-	<blockquote>
-		<p><code>&lt;a href=&quot;/media/mediabox/TheISS2.mp3&quot; rel=&quot;lightbox[audio 50% 20]&quot; title=&quot;MP3 audio::The ISS #2 - John Einselen&quot;&gt;MP3 audio &raquo;&lt;/a&gt;</code></p>
+		<p><code>&lt;a href=&quot;files/audio.mp3&quot; rel=&quot;lightbox[audio 50% 20]&quot; title=&quot;MP3 audio::The ISS #2 - John Einselen&quot;&gt;MP3 audio &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
 
 	<h2 id="quicktime">Quicktime</h2>
@@ -258,6 +260,7 @@
 	<blockquote>
 		<p><code>&lt;a href=&quot;http://vectorform.com/&quot; rel=&quot;lightbox[external 80% 660]&quot; title=&quot;Vectorform.com&quot;&gt;Vectorform.com &raquo;&lt;/a&gt;</code></p>
 	</blockquote>
+
 </div>
 </body>
 </html>
