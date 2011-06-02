@@ -11,7 +11,7 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0,0,0,0.9);
+	background-color: #000;
 	cursor: pointer;
 }
 
@@ -31,19 +31,26 @@
 	position: absolute;
 	z-index: 9999;
 	left: 50%;
-	overflow: hidden;
-	background-color: transparent;
-	padding: 10px;
+/*	overflow: hidden;*/
+	background-color: rgba(0,0,0,0.4);
 }
 
 #mbCenter.mbLoading {
-	background: transparent url(loading-minimal.gif) no-repeat center;
+	background: rgba(0,0,0,0.4) url(loading-minimal.gif) no-repeat center;
 }
 
-#mbImage {
+#mbMedia {
 	position: relative;
 	left: 0;
 	top: 0;
+	-webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	-khtml-box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	-moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000');
 
 		/*	Inline content styling	*/
 
@@ -52,15 +59,8 @@
 	font-size: 12px;
 	color: #fff;
 	text-align: left;
-	-webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	-khtml-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	-moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	/* For IE 8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000')";
-	/* For IE 5.5 - 7 */
-	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000');
-	background: #000 no-repeat center center;
+	background-position: center center;
+	background-repeat: no-repeat;
 }
 
 		/*	Title, Caption and Button styling	*/
@@ -72,8 +72,7 @@
 	font-size: 12px;
 	color: #999;
 	text-align: left;
-	padding: 10px 0 0;
-	text-shadow: #000 0 2px 4px;
+	padding: 10px 6px 4px;
 }
 
 #mbTitle, #mbPrevLink, #mbNextLink, #mbCloseLink {
@@ -86,7 +85,7 @@
 
 #mbNumber {
 	display: inline;
-	color: #ccc;
+	color: #999;
 	line-height: 14px;
 	font-size: 10px;
 	margin: auto 10px;
@@ -94,7 +93,7 @@
 
 #mbCaption {
 	display: block;
-	color: #ccc;
+	color: #999;
 	line-height: 14px;
 	font-size: 10px;
 }
@@ -107,13 +106,13 @@
 }
 
 #mbPrevLink b, #mbNextLink b, #mbCloseLink b {
-	color: #fff;
+	color: #eee;
 	font-weight: bold;
 	text-decoration: underline;
 }
 
 #mbPrevLink big, #mbNextLink big, #mbCloseLink big {
-	color: #fff;
+	color: #eee;
 	font-size: 16px;
 	line-height: 14px;
 	font-weight: bold;
@@ -121,7 +120,7 @@
 
 #mbBottom a, #mbBottom a:link, #mbBottom a:visited {	/* Thanks to Danny Jung for feedback and corrections */
 	text-decoration: none;
-	color: #fff;
+	color: #ddd;
 }
 
 #mbBottom a:hover, #mbBottom a:active {

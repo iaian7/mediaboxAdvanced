@@ -18,7 +18,7 @@
 		/*	Legacy fix for older browsers	*/
 
 #mbOverlay.mbOverlayFF {
-	background: transparent url(/images/80.png) repeat;
+	background: transparent url(80.png) repeat;
 }
 
 #mbOverlay.mbOverlayIE {
@@ -31,38 +31,26 @@
 	position: absolute;
 	z-index: 9999;
 	left: 50%;
-	overflow: hidden;
-	background-color: #000;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	-webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	-khtml-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	-moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
+/*	overflow: hidden;*/
+	background-color: rgba(0,0,0,0.4);
+}
+
+#mbCenter.mbLoading {
+	background: rgba(0,0,0,0.4) url(loading-minimal.gif) no-repeat center;
+}
+
+#mbMedia {
+	position: relative;
+	left: 0;
+	top: 0;
+	-webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	-khtml-box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	-moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
+	box-shadow: 0px 5px 20px rgba(0,0,0,0.60);
 	/* For IE 8 */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000')";
 	/* For IE 5.5 - 7 */
 	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000');
-}
-
-#mbCenter.mbLoading {
-	background: #000 url(/images/loading.gif) no-repeat center;
-		/*	This style is applied only during animation.	*/
-		/*	For example, the next lines turn off shadows	*/
-		/*	improving browser performance on slow systems.	*/
-		/*	To leave shadows on, just remove the following:	*/
-	-webkit-box-shadow: none;
-	-khtml-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-}
-
-#mbImage {
-	position: relative;
-	left: 0;
-	top: 0;
 
 		/*	Inline content styling	*/
 
@@ -73,7 +61,6 @@
 	text-align: left;
 	background-position: center center;
 	background-repeat: no-repeat;
-	padding: 10px;
 }
 
 		/*	Title, Caption and Button styling	*/
@@ -85,7 +72,7 @@
 	font-size: 12px;
 	color: #999;
 	text-align: left;
-	padding: 0 10px 10px;
+	padding: 10px 6px 4px;
 }
 
 #mbTitle, #mbPrevLink, #mbNextLink, #mbCloseLink {

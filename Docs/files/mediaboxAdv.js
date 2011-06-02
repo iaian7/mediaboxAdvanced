@@ -1,5 +1,5 @@
 /*
-mediaboxAdvanced v1.4.6c - The ultimate extension of Slimbox and Mediabox; an all-media script
+mediaboxAdvanced v1.5.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
 updated 2011.2.19
 	(c) 2007-2011 John Einselen - http://iaian7.com
 based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -24,9 +24,9 @@ var Mediabox;
 
 (function() {
 	// Global variables, accessible to Mediabox only
-	var options, images, activeImage, prevImage, nextImage, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
+	var options, mediaArray, activeMedia, prevMedia, nextMedia, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
 	// DOM elements
-	overlay, center, image, bottom, captionSplit, title, caption, number, prevLink, nextLink,
+	overlay, center, media, bottom, captionSplit, title, caption, number, prevLink, nextLink,
 	// Mediabox specific vars
 	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", margin;
 
@@ -41,7 +41,8 @@ var Mediabox;
 			]).setStyle("display", "none")
 		);
 
-		image = new Element("div", {id: "mbImage"}).inject(center, "inside");
+		top = new Element("div", {id: "mbTop"}).inject(center, "inside");
+			media = new Element("div", {id: "mbMedia"}).inject(top, "inside");
 		bottom = new Element("div", {id: "mbBottom"}).inject(center, "inside").adopt(
 			closeLink = new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
@@ -49,11 +50,11 @@ var Mediabox;
 			title = new Element("div", {id: "mbTitle"}),
 			number = new Element("div", {id: "mbNumber"}),
 			caption = new Element("div", {id: "mbCaption"})
-		);
+			);
 
 		fx = {
 			overlay: new Fx.Tween(overlay, {property: "opacity", duration: 360}).set(0),
-			image: new Fx.Tween(image, {property: "opacity", duration: 360, onComplete: captionAnimate}),
+			media: new Fx.Tween(media, {property: "opacity", duration: 360, onComplete: captionAnimate}),
 			bottom: new Fx.Tween(bottom, {property: "opacity", duration: 240}).set(0)
 		};
 	});
@@ -65,7 +66,7 @@ var Mediabox;
 			close();	// Thanks to Yosha on the google group for fixing the close function API!
 		},
 
-		open: function(_images, startImage, _options) {
+		open: function(_mediaArray, startMedia, _options) {
 			options = {
 //			Text options (translate as needed)
 				buttonText: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
@@ -81,7 +82,7 @@ var Mediabox;
 				keyboardAlpha: false,			// Adds 'x', 'c', 'p', and 'n' when keyboard control is also set to true
 				keyboardStop: false,			// Stops all default keyboard actions while overlay is open (such as up/down arrows)
 												// Does not apply to iFrame content, does not affect mouse scrolling
-				overlayOpacity: 0.7,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
+				overlayOpacity: 0.8,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
 				resizeOpening: true,			// Determines if box opens small and grows (true) or starts at larger size (false)
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				initialWidth: 320,				// Initial width of the box (in pixels)
@@ -116,20 +117,16 @@ var Mediabox;
 				volume: '100',				// 0-100, used for NonverBlaster and Quicktime players
 				medialoop: 'true',			// Loop video playback, true / false, used for NonverBlaster and Quicktime players
 				bgcolor: '#000000',			// Background color, used for flash and QT media
-				wmode: 'opaque',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
+				wmode: 'transparent',			// Background setting for Adobe Flash ('opaque' and 'transparent' are most common)
 //			NonverBlaster
-				useNB: true,				// use NonverBlaster (true) or JW Media Player (false) for .flv and .mp4 files
 				playerpath: 'files/NonverBlaster.swf',	// Path to NonverBlaster.swf
-				controlColor: '0xFFFFFF',	// set the controlbar color
-				controlBackColor: '0x000000',	// set the controlbar color
-				showTimecode: 'false',		// turn timecode display off or on
-//			JW Media Player settings and options
-				JWplayerpath: 'files/player.swf',	// Path to the mediaplayer.swf or flvplayer.swf file
-				backcolor:	'000000',		// Base color for the controller, color name / hex value (0x000000)
-				frontcolor: '999999',		// Text and button color for the controller, color name / hex value (0x000000)
-				lightcolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
-				screencolor: '000000',		// Rollover color for the controller, color name / hex value (0x000000)
-				controlbar: 'over',			// bottom, over, none (this setting is ignored when playing audio files)
+				showTimecode: 'false',		// turn timecode display off or on (true, false)
+				controlColor: '0xFFFFFF',	// set the control color
+				controlBackColor: '0x0000000',	// set the bakcground color (video only)
+//				playerBackColor: '0x0000FF',	// set the player background color (leave blank to allow CSS styles to show through for audio)
+				playerBackColor: '',	// set the player background color (leave blank to allow CSS styles to show through)
+				wmodeNB: 'transparent',			// Background setting for Adobe Flash (set to 'transparent' for a blank background, 'opaque' in other situations)
+//				autoAdvance: 'false',		// placeholder setting only - not currently implemented (intending to add auto gallery list navigation on play-end)
 //			Quicktime options
 				controller: 'true',			// Show controller, true / false
 //			Flickr options
@@ -162,7 +159,7 @@ var Mediabox;
 			nextLink.set('html', options.buttonText[1]);
 			closeLink.set('html', options.buttonText[2]);
 
-			margin = center.getStyle('padding-left').toInt()+image.getStyle('margin-left').toInt()+image.getStyle('padding-left').toInt();
+			margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
 
 			if (Browser.firefox2) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 				options.overlayOpacity = 1;
@@ -178,22 +175,22 @@ var Mediabox;
 				position();
 			}
 
-			if (typeof _images == "string") {	// Used for single images only, with URL and Title as first two arguments
-				_images = [[_images,startImage,_options]];
-				startImage = 0;
+			if (typeof _mediaArray == "string") {	// Used for single mediaArray only, with URL and Title as first two arguments
+				_mediaArray = [[_mediaArray,startMedia,_options]];
+				startMedia = 0;
 			}
 
-			images = _images;
-			options.loop = options.loop && (images.length > 1);
+			mediaArray = _mediaArray;
+			options.loop = options.loop && (mediaArray.length > 1);
 
 			size();
 			setup(true);
 			top = window.getScrollTop() + (window.getHeight()/2);
 			left = window.getScrollLeft() + (window.getWidth()/2);
-			fx.resize = new Fx.Morph(center, {duration: options.resizeDuration, onComplete: imageAnimate});
+			fx.resize = new Fx.Morph(center, {duration: options.resizeDuration, onComplete: mediaAnimate});
 /****/		center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
 			fx.overlay.start(options.overlayOpacity);
-			return changeImage(startImage);
+			return changeMedia(startMedia);
 		}
 	};
 
@@ -232,7 +229,7 @@ var Mediabox;
 			});
 
 			links.removeEvents("click").addEvent("click", function() {
-				// Build the list of images that will be displayed
+				// Build the list of media that will be displayed
 				var filteredArray = links.filter(linksFilter, this);
 				var filteredLinks = [];
 				var filteredHrefs = [];
@@ -314,33 +311,33 @@ var Mediabox;
 	}
 
 	function previous() {
-		return changeImage(prevImage);
+		return changeMedia(prevMedia);
 	}
 
 	function next() {
-		return changeImage(nextImage);
+		return changeMedia(nextMedia);
 	}
 
-	function changeImage(imageIndex) {
-		if (imageIndex >= 0) {
+	function changeMedia(mediaIndex) {
+		if (mediaIndex >= 0) {
 //			if (Browser.Platform.ios && !options.iOSenable) {
-//				window.open(images[imageIndex][0], "_blank");
+//				window.open(mediaArray[mediaIndex][0], "_blank");
 //				close();
 //				return false;
 //			}
-			image.set('html', '');
-			activeImage = imageIndex;
-			prevImage = ((activeImage || !options.loop) ? activeImage : images.length) - 1;
-			nextImage = activeImage + 1;
-			if (nextImage == images.length) nextImage = options.loop ? 0 : -1;
+			media.set('html', '');
+			activeMedia = mediaIndex;
+			prevMedia = ((activeMedia || !options.loop) ? activeMedia : mediaArray.length) - 1;
+			nextMedia = activeMedia + 1;
+			if (nextMedia == mediaArray.length) nextMedia = options.loop ? 0 : -1;
 			stop();
 			center.className = "mbLoading";
-			if (preload && mediaType == "inline" && !options.inlineClone) preload.adopt(image.getChildren());	// prevents loss of adopted data
+			if (preload && mediaType == "inline" && !options.inlineClone) preload.adopt(media.getChildren());	// prevents loss of adopted data
 
 	/*	mediaboxAdvanced link formatting and media support	*/
 
-			if (!images[imageIndex][2]) images[imageIndex][2] = '';	// Thanks to Leo Feyer for offering this fix
-			WH = images[imageIndex][2].split(' ');
+			if (!mediaArray[mediaIndex][2]) mediaArray[mediaIndex][2] = '';	// Thanks to Leo Feyer for offering this fix
+			WH = mediaArray[mediaIndex][2].split(' ');
 			WHL = WH.length;
 			if (WHL>1) {
 				mediaWidth = (WH[WHL-2].match("%")) ? (window.getWidth()*((WH[WHL-2].replace("%", ""))*0.01))+"px" : WH[WHL-2]+"px";
@@ -349,10 +346,10 @@ var Mediabox;
 				mediaWidth = "";
 				mediaHeight = "";
 			}
-			URL = images[imageIndex][0];
+			URL = mediaArray[mediaIndex][0];
 //			URL = encodeURI(URL).replace("(","%28").replace(")","%29");
 //			URL = encodeURI(URL).replace("(","%28").replace(")","%29").replace("%20"," ");
-			captionSplit = images[activeImage][1].split('::');
+			captionSplit = mediaArray[activeMedia][1].split('::');
 
 // Quietube and yFrog support
 			if (URL.match(/quietube\.com/i)) {
@@ -380,47 +377,29 @@ var Mediabox;
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
-				if (options.useNB) {
-				preload = new Swiff(''+options.playerpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.medialoop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&defaultVolume='+options.volume+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
-					id: 'MediaboxSWF',
+				preload = new Swiff(''+options.playerpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.medialoop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&playerBackColor='+options.playerBackColor+'&defaultVolume='+options.volume+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
+					id: 'mbVideo',
 					width: mediaWidth,
 					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
+					params: {wmode: options.wmodeNB, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
-				} else {
-				preload = new Swiff(''+options.JWplayerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay+'&controlbar='+options.controlbar, {
-					id: 'MediaboxSWF',
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				}
 				startEffect();
 // MP3, AAC
 			} else if (URL.match(/\.mp3|\.aac|tweetmic\.com|tmic\.fm/i) || mediaType == 'audio') {
 				mediaType = 'obj';
 				mediaWidth = mediaWidth || options.defaultWidth;
-				mediaHeight = mediaHeight || "20px";
+				mediaHeight = mediaHeight || "17px";
 				if (URL.match(/tweetmic\.com|tmic\.fm/i)) {
 					URL = URL.split('/');
 					URL[4] = URL[4] || URL[3];
 					URL = "http://media4.fjarnet.net/tweet/tweetmicapp-"+URL[4]+'.mp3';
 				}
-				if (options.useNB) {
 				preload = new Swiff(''+options.playerpath+'?mediaURL='+URL+'&allowSmoothing=true&autoPlay='+options.autoplay+'&buffer=6&showTimecode='+options.showTimecode+'&loop='+options.medialoop+'&controlColor='+options.controlColor+'&controlBackColor='+options.controlBackColor+'&defaultVolume='+options.volume+'&scaleIfFullScreen=true&showScalingButton=true&crop=false', {
-					id: 'MediaboxSWF',
+					id: 'mbAudio',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
 					});
-				} else {
-				preload = new Swiff(''+options.JWplayerpath+'?file='+URL+'&backcolor='+options.backcolor+'&frontcolor='+options.frontcolor+'&lightcolor='+options.lightcolor+'&screencolor='+options.screencolor+'&autostart='+options.autoplay, {
-					id: 'MediaboxSWF',
-					width: mediaWidth,
-					height: mediaHeight,
-					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
-					});
-				}
 				startEffect();
 // SWF
 			} else if (URL.match(/\.swf/i) || mediaType == 'flash') {
@@ -428,7 +407,7 @@ var Mediabox;
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
 				preload = new Swiff(URL, {
-					id: 'MediaboxSWF',
+					id: 'mbFlash',
 					width: mediaWidth,
 					height: mediaHeight,
 					params: {wmode: options.wmode, bgcolor: options.bgcolor, allowscriptaccess: options.scriptaccess, allowfullscreen: options.fullscreen}
@@ -443,7 +422,7 @@ var Mediabox;
 					id: 'MediaboxQT',
 					width: mediaWidth,
 					height: mediaHeight,
-//					container: 'mbImage',
+//					container: 'mbMedia',
 					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, loop: options.medialoop, bgcolor: options.bgcolor}
 					});
 				startEffect();
@@ -783,7 +762,7 @@ var Mediabox;
 				mediaWidth = mediaWidth || options.defaultWidth;
 				mediaHeight = mediaHeight || options.defaultHeight;
 				URLsplit = URL.split('#');
-//				preload = new Element("div", {id: "mbImageInline"}).adopt(document.id(URLsplit[1]).getChildren().clone([true,true]));
+//				preload = new Element("div", {id: "mbMediaInline"}).adopt(document.id(URLsplit[1]).getChildren().clone([true,true]));
 				preload = document.id(URLsplit[1]);
 				startEffect();
 // HTML (applies to ALL links not recognised as a specific media type)
@@ -808,12 +787,12 @@ var Mediabox;
 	function startEffect() {
 //		if (Browser.Platform.ios && (mediaType == "obj" || mediaType == "qt" || mediaType == "html")) alert("this isn't gonna work");
 //		if (Browser.Platform.ios && (mediaType == "obj" || mediaType == "qt" || mediaType == "html")) mediaType = "ios";
-		(mediaType == "img")?image.addEvent("click", next):image.removeEvent("click", next);
+		(mediaType == "img")?media.addEvent("click", next):media.removeEvent("click", next);
 		if (mediaType == "img"){
 			mediaWidth = preload.width;
 			mediaHeight = preload.height;
 			if (options.imgBackground) {
-				image.setStyles({backgroundImage: "url("+URL+")", display: ""});
+				media.setStyles({backgroundImage: "url("+URL+")", display: ""});
 			} else {	// Thanks to Dusan Medlin for fixing large 16x9 image errors in a 4x3 browser
 				if (mediaHeight >= winHeight-options.imgPadding && (mediaHeight / winHeight) >= (mediaWidth / winWidth)) {
 					mediaHeight = winHeight-options.imgPadding;
@@ -826,90 +805,92 @@ var Mediabox;
 				}
 				if (Browser.ie) preload = document.id(preload);
 				preload.addEvent('mousedown', function(e){ e.stop(); }).addEvent('contextmenu', function(e){ e.stop(); });
-				image.setStyles({backgroundImage: "none", display: ""});
-				preload.inject(image);
+				media.setStyles({backgroundImage: "none", display: ""});
+				preload.inject(media);
 			}
 		} else if (mediaType == "inline") {
-//			if (options.overflow) image.setStyles({overflow: options.overflow});
-			image.setStyles({backgroundImage: "none", display: ""});
-//			preload.inject(image);
-//			image.grab(preload.get('html'));
-			(options.inlineClone)?image.grab(preload.get('html')):image.adopt(preload.getChildren());
+//			if (options.overflow) media.setStyles({overflow: options.overflow});
+			media.setStyles({backgroundImage: "none", display: ""});
+//			preload.inject(media);
+//			media.grab(preload.get('html'));
+			(options.inlineClone)?media.grab(preload.get('html')):media.adopt(preload.getChildren());
 		} else if (mediaType == "qt") {
-			image.setStyles({backgroundImage: "none", display: ""});
-			preload.inject(image);
+			media.setStyles({backgroundImage: "none", display: ""});
+			preload.inject(media);
 //			preload;
 		} else if (mediaType == "ios" || Browser.Platform.ios) {
-			image.setStyles({backgroundImage: "none", display: ""});
-			image.set('html', options.linkText.replace(/{x}/gi, URL));
+			media.setStyles({backgroundImage: "none", display: ""});
+			media.set('html', options.linkText.replace(/{x}/gi, URL));
 			mediaWidth = options.DefaultWidth;
 			mediaHeight = options.DefaultHeight;
 		} else if (mediaType == "url") {
-			image.setStyles({backgroundImage: "none", display: ""});
-			preload.inject(image);
+			media.setStyles({backgroundImage: "none", display: ""});
+			preload.inject(media);
 		} else if (mediaType == "obj") {
 			if (Browser.Plugins.Flash.version < "8") {
-				image.setStyles({backgroundImage: "none", display: ""});
-				image.set('html', '<div id="mbError"><b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.</div>');
+				media.setStyles({backgroundImage: "none", display: ""});
+				media.set('html', '<div id="mbError"><b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.</div>');
 				mediaWidth = options.DefaultWidth;
 				mediaHeight = options.DefaultHeight;
 			} else {
-				image.setStyles({backgroundImage: "none", display: ""});
-				preload.inject(image);
+				media.setStyles({backgroundImage: "none", display: ""});
+				preload.inject(media);
 			}
 		} else {
-			image.setStyles({backgroundImage: "none", display: ""});
-			image.set('html', options.flashText);
+			media.setStyles({backgroundImage: "none", display: ""});
+			media.set('html', options.flashText);
 			mediaWidth = options.defaultWidth;
 			mediaHeight = options.defaultHeight;
 		}
-		image.setStyles({width: mediaWidth, height: mediaHeight});
+		media.setStyles({width: mediaWidth, height: mediaHeight});
 		caption.setStyles({width: mediaWidth});
 
 		title.set('html', (options.showCaption) ? captionSplit[0] : "");
 		caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
-		number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, activeImage + 1).replace(/{y}/, images.length) : "");
+		number.set('html', (options.showCounter && (mediaArray.length > 1)) ? options.counterText.replace(/{x}/, activeMedia + 1).replace(/{y}/, mediaArray.length) : "");
 //		The following line inverts the displayed number (so instead of the first element being labeled 1/10, it's 10/10)
-//		number.set('html', (options.showCounter && (images.length > 1)) ? options.counterText.replace(/{x}/, images.length - activeImage).replace(/{y}/, images.length) : "");
+//		number.set('html', (options.showCounter && (mediaArray.length > 1)) ? options.counterText.replace(/{x}/, mediaArray.length - activeMedia).replace(/{y}/, mediaArray.length) : "");
 
-		if ((prevImage >= 0) && (images[prevImage][0].match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i))) preloadPrev.src = images[prevImage][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
-		if ((nextImage >= 0) && (images[nextImage][0].match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i))) preloadNext.src = images[nextImage][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
+		if ((prevMedia >= 0) && (mediaArray[prevMedia][0].match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i))) preloadPrev.src = mediaArray[prevMedia][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
+		if ((nextMedia >= 0) && (mediaArray[nextMedia][0].match(/\.gif|\.jpg|\.jpeg|\.png|twitpic\.com/i))) preloadNext.src = mediaArray[nextMedia][0].replace(/twitpic\.com/i, "twitpic.com/show/full");
 
-		mediaWidth = image.offsetWidth;
-		mediaHeight = image.offsetHeight+bottom.offsetHeight;
+		mediaWidth = media.offsetWidth;
+		mediaHeight = media.offsetHeight+bottom.offsetHeight;
 		if (mediaHeight >= top+top) { mTop = -top } else { mTop = -(mediaHeight/2) };
 		if (mediaWidth >= left+left) { mLeft = -left } else { mLeft = -(mediaWidth/2) };
 /****/	if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
-/****/	} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin}); imageAnimate(); }
+/****/	} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin}); mediaAnimate(); }
+//		center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
+//		mediaAnimate();
 	}
 
-	function imageAnimate() {
-		fx.image.start(1);
+	function mediaAnimate() {
+		fx.media.start(1);
 	}
 
 	function captionAnimate() {
 		center.className = "";
-		if (prevImage >= 0) prevLink.style.display = "";
-		if (nextImage >= 0) nextLink.style.display = "";
+		if (prevMedia >= 0) prevLink.style.display = "";
+		if (nextMedia >= 0) nextLink.style.display = "";
 		fx.bottom.start(1);
 	}
 
 	function stop() {
 		if (preload) {
-			if (mediaType == "inline" && !options.inlineClone) preload.adopt(image.getChildren());	// prevents loss of adopted data
+			if (mediaType == "inline" && !options.inlineClone) preload.adopt(media.getChildren());	// prevents loss of adopted data
 			preload.onload = function(){}; // $empty replacement
 		}
 		fx.resize.cancel();
-		fx.image.cancel().set(0);
+		fx.media.cancel().set(0);
 		fx.bottom.cancel().set(0);
 		$$(prevLink, nextLink).setStyle("display", "none");
 	}
 
 	function close() {
-		if (activeImage >= 0) {
-			if (mediaType == "inline" && !options.inlineClone) preload.adopt(image.getChildren());	// prevents loss of adopted data
+		if (activeMedia >= 0) {
+			if (mediaType == "inline" && !options.inlineClone) preload.adopt(media.getChildren());	// prevents loss of adopted data
 			preload.onload = function(){}; // $empty replacement
-			image.empty();
+			media.empty();
 			for (var f in fx) fx[f].cancel();
 			center.setStyle("display", "none");
 			fx.overlay.chain(setup).start(0);
