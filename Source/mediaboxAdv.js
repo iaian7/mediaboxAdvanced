@@ -1,5 +1,5 @@
 /*
-mediaboxAdvanced v1.5.0 - The ultimate extension of Slimbox and Mediabox; an all-media script
+mediaboxAdvanced v1.5.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
 updated 2011.2.19
 	(c) 2007-2011 John Einselen - http://iaian7.com
 based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
@@ -12,12 +12,13 @@ license: MIT-style
 authors:
 - John Einselen
 - Christophe Beyls
+- Contributions from many others
 
 requires:
 - core/1.3.2: [Core, Array, String, Number, Function, Object, Event, Browser, Class, Class.Extras, Slick.*, Element.*, FX.*, DOMReady, Swiff]
 - Quickie/2.1: '*'
 
-provides: [Mediabox.open, Mediabox.close, Mediabox.scanPage]
+provides: [Mediabox.open, Mediabox.close, Mediabox.recenter, Mediabox.scanPage]
 */
 
 var Mediabox;
@@ -41,8 +42,8 @@ var Mediabox;
 			]).setStyle("display", "none")
 		);
 
-		top = new Element("div", {id: "mbTop"}).inject(center, "inside");
-			media = new Element("div", {id: "mbMedia"}).inject(top, "inside");
+		container = new Element("div", {id: "mbTop"}).inject(center, "inside");
+			media = new Element("div", {id: "mbMedia"}).inject(container, "inside");
 		bottom = new Element("div", {id: "mbBottom"}).inject(center, "inside").adopt(
 			closeLink = new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
@@ -64,6 +65,15 @@ var Mediabox;
 	Mediabox = {
 		close: function(){
 			close();	// Thanks to Yosha on the google group for fixing the close function API!
+		},
+
+		recenter: function(){	// Thanks to Garo Hussenjian (Xapnet Productions http://www.xapnet.com) for suggesting this addition
+			if (center) {
+//				top = window.getScrollTop() + (window.getHeight()/2);
+				left = window.getScrollLeft() + (window.getWidth()/2);
+//				margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
+				center.setStyles({top: top, left: left, marginTop: -(mediaHeight/2)-margin, marginLeft: -(mediaWidth/2)-margin, display: ""});
+			}
 		},
 
 		open: function(_mediaArray, startMedia, _options) {
@@ -159,8 +169,6 @@ var Mediabox;
 			nextLink.set('html', options.buttonText[1]);
 			closeLink.set('html', options.buttonText[2]);
 
-			margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
-
 			if (Browser.firefox2) {	// Fixes Firefox 2 and Camino 1.6 incompatibility with opacity + flash
 				options.overlayOpacity = 1;
 				overlay.className = 'mbOverlayOpaque';
@@ -187,8 +195,9 @@ var Mediabox;
 			setup(true);
 			top = window.getScrollTop() + (window.getHeight()/2);
 			left = window.getScrollLeft() + (window.getWidth()/2);
-			fx.resize = new Fx.Morph(center, {duration: options.resizeDuration, onComplete: mediaAnimate});
+			margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
 /****/		center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
+			fx.resize = new Fx.Morph(center, {duration: options.resizeDuration, onComplete: mediaAnimate});
 			fx.overlay.start(options.overlayOpacity);
 			return changeMedia(startMedia);
 		}
@@ -422,7 +431,6 @@ var Mediabox;
 					id: 'MediaboxQT',
 					width: mediaWidth,
 					height: mediaHeight,
-//					container: 'mbMedia',
 					attributes: {controller: options.controller, autoplay: options.autoplay, volume: options.volume, loop: options.medialoop, bgcolor: options.bgcolor}
 					});
 				startEffect();
@@ -932,4 +940,5 @@ Mediabox.scanPage = function() {
 		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
 	});
 };
-window.addEvent("domready", Mediabox.scanPage);
+
+window.addEvents({domready: Mediabox.scanPage, resize: Mediabox.recenter});
