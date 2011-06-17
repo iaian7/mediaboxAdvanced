@@ -1,5 +1,5 @@
 /*
-mediaboxAdvanced v1.5.1 - The ultimate extension of Slimbox and Mediabox; an all-media script
+mediaboxAdvanced v1.5.4 - The ultimate extension of Slimbox and Mediabox; an all-media script
 updated 2011.2.19
 	(c) 2007-2011 John Einselen - http://iaian7.com
 based on Slimbox v1.64 - The ultimate lightweight Lightbox clone
