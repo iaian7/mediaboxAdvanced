@@ -1,5 +1,5 @@
 		/*	mediaboxAdvanced Light theme	*/
-		/*	version 2.5 - May 2011			*/
+		/*	version 2.5 - June 2011			*/
 		/*	for mediaboxAdvanced v.1.5.x	*/
 
 		/*	Overlay background styling	*/
@@ -18,11 +18,21 @@
 		/*	Fixes for older or limited browsers	*/
 
 #mbOverlay.mbOverlayOpaque {
-	background: transparent url(files/80.png) repeat;
+	background: transparent url(80.png) repeat;
 }
 
 #mbOverlay.mbOverlayAbsolute {
 	position: absolute;
+}
+
+#mbOverlay.mbMobile {
+	position: absolute;
+	background-color: transparent;
+}
+
+#mbBottom.mbMobile {
+	line-height: 28px;
+	font-size: 24px;
 }
 
 		/*	Overlay panel styling	*/
@@ -31,6 +41,7 @@
 	position: absolute;
 	z-index: 9999;
 	left: 50%;
+	padding: 10px;
 	background-color: #fff;
 	-webkit-border-radius: 10px;
 	-khtml-border-radius: 10px;
@@ -70,7 +81,7 @@
 	text-align: left;
 	background-position: center center;
 	background-repeat: no-repeat;
-	padding: 10px;
+/*	padding: 10px;*/
 }
 
 @mbMedia img {
@@ -93,31 +104,30 @@
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	text-align: left;
 	color: #777;
-	min-height: 20px;
-	padding: 0 10px 10px;
+/*	min-height: 20px;	*/
+/*	padding: 0 10px 10px;*/
+	padding: 10px 0 0;
 }
 
 #mbTitle, #mbPrevLink, #mbNextLink, #mbCloseLink {
 	display: inline;
 	color: #000;
 	font-weight: bold;
-	line-height: 20px;
-	font-size: 12px;
 }
 
 #mbNumber {
 	display: inline;
 	color: #777;
-	line-height: 14px;
-	font-size: 10px;
+/*	line-height: 0.8em; */
+	font-size: 0.8em;
 	margin: auto 10px;
 }
 
 #mbCaption {
 	display: block;
 	color: #777;
-	line-height: 14px;
-	font-size: 10px;
+	line-height: 1.6em;
+	font-size: 0.8em;
 }
 
 #mbPrevLink, #mbNextLink, #mbCloseLink {
@@ -135,8 +145,8 @@
 
 #mbPrevLink big, #mbNextLink big, #mbCloseLink big {
 	color: #333;
-	font-size: 16px;
-	line-height: 14px;
+	font-size: 1.4em;
+/*	line-height: 0.9em;*/
 	font-weight: bold;
 }
 
@@ -149,7 +159,6 @@
 	text-decoration: underline;
 	color: #000;
 }
-
 
 		/*	Error message styling	*/
 

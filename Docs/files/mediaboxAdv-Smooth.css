@@ -1,5 +1,5 @@
 		/*	mediaboxAdvanced Smooth theme	*/
-		/*	version 2.5 - May 2011			*/
+		/*	version 2.5 - June 2011			*/
 		/*	for mediaboxAdvanced v.1.5.x	*/
 
 		/*	Overlay background styling	*/
@@ -23,6 +23,16 @@
 
 #mbOverlay.mbOverlayAbsolute {
 	position: absolute;
+}
+
+#mbOverlay.mbMobile {
+	position: absolute;
+	background-color: transparent;
+}
+
+#mbBottom.mbMobile {
+	line-height: 28px;
+	font-size: 24px;
 }
 
 		/*	Overlay panel styling	*/
@@ -119,7 +129,7 @@
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	text-align: left;
 	color: #444;
-	min-height: 20px;
+/*	min-height: 20px;	*/
 	padding: 10px 0 0;
 }
 
@@ -127,23 +137,21 @@
 	display: inline;
 	color: #000;
 	font-weight: bold;
-	line-height: 20px;
-	font-size: 12px;
 }
 
 #mbNumber {
 	display: inline;
 	color: #444;
-	line-height: 14px;
-	font-size: 10px;
+/*	line-height: 0.8em; */
+	font-size: 0.8em;
 	margin: auto 10px;
 }
 
 #mbCaption {
 	display: block;
 	color: #444;
-	line-height: 14px;
-	font-size: 10px;
+	line-height: 1.6em;
+	font-size: 0.8em;
 }
 
 #mbPrevLink, #mbNextLink, #mbCloseLink {
@@ -162,8 +170,8 @@
 
 #mbPrevLink big, #mbNextLink big, #mbCloseLink big {
 	color: #222;
-	font-size: 20px;
-	line-height: 10px;
+	font-size: 1.6em;
+	line-height: 0.6em;
 	font-weight: bold;
 }
 
