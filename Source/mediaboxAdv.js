@@ -68,21 +68,22 @@ var Mediabox;
 		},
 
 		recenter: function(){	// Thanks to Garo Hussenjian (Xapnet Productions http://www.xapnet.com) for suggesting this addition
-			if (center) {
-//				top = window.getScrollTop() + (window.getHeight()/2);
+			if (center && !Browser.Platform.ios) {
 				left = window.getScrollLeft() + (window.getWidth()/2);
+				center.setStyles({left: left, marginLeft: -(mediaWidth/2)-margin});
+//				top = window.getScrollTop() + (window.getHeight()/2);
 //				margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
-				center.setStyles({top: top, left: left, marginTop: -(mediaHeight/2)-margin, marginLeft: -(mediaWidth/2)-margin, display: ""});
+//				center.setStyles({top: top, left: left, marginTop: -(mediaHeight/2)-margin, marginLeft: -(mediaWidth/2)-margin});
 			}
 		},
 
 		open: function(_mediaArray, startMedia, _options) {
 			options = {
 //			Text options (translate as needed)
-				buttonText: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Set "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+				buttonText: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Array defines "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
 //				buttonText: ['<big>«</big>','<big>»</big>','<big>×</big>'],
 //				buttonText: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
-				counterText: '({x} of {y})',	// Translate or change as you wish, {x} = current item number, {y} = total gallery length
+				counterText: '({x} of {y})',	// Counter text, {x} = current item number, {y} = total gallery length
 				linkText: '<a href="{x}" target="_new">{x}</a><br/>open in a new tab</div>',	// Text shown on iOS devices for non-image links
 				flashText: '<b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.',	// Text shown if Flash is not installed.
 //			General overlay options
@@ -176,10 +177,10 @@ var Mediabox;
 
 			if (Browser.Platform.ios || Browser.ie6) {
 				if (Browser.Platform.ios) options.keyboard = false;
-//				if (Browser.Platform.ios) options.overlayOpacity = 0.0;	// This helps ammeliorate the issues with CSS overlays in iOS, leaving a clickable background, but avoiding the visible issues
+//				if (Browser.Platform.ios) options.overlayOpacity = 0.0;	// This helps ameliorate the issues with CSS overlays in iOS, leaving a clickable background, but avoiding the visible issues
 				options.resizeOpening = false;
 				overlay.className = 'mbOverlayAbsolute';
-				overlay.setStyle("position", "absolute");	// Temporary stopgap for lack of CSS "position: fixed;" element positioning in iOS browsers
+//				overlay.setStyle("position", "absolute");	// Temporary stopgap for lack of CSS "position: fixed;" element positioning in iOS browsers
 				position();
 			}
 
@@ -941,4 +942,4 @@ Mediabox.scanPage = function() {
 	});
 };
 
-window.addEvents({domready: Mediabox.scanPage, resize: Mediabox.recenter});
+window.addEvents({domready: Mediabox.scanPage, resize: Mediabox.recenter}); // to recenter the overlay while scrolling, add "scroll: Mediabox.recenter" to the object
