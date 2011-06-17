@@ -81,7 +81,6 @@
 	text-align: left;
 	background-position: center center;
 	background-repeat: no-repeat;
-/*	padding: 10px;*/
 }
 
 @mbMedia img {
@@ -104,8 +103,7 @@
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	text-align: left;
 	color: #777;
-/*	min-height: 20px;	*/
-/*	padding: 0 10px 10px;*/
+	min-height: 20px;
 	padding: 10px 0 0;
 }
 
