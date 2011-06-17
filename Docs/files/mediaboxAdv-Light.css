@@ -15,13 +15,13 @@
 	cursor: pointer;
 }
 
-		/*	Legacy fix for older browsers	*/
+		/*	Fixes for older or limited browsers	*/
 
-#mbOverlay.mbOverlayFF {
+#mbOverlay.mbOverlayOpaque {
 	background: transparent url(files/80.png) repeat;
 }
 
-#mbOverlay.mbOverlayIE {
+#mbOverlay.mbOverlayAbsolute {
 	position: absolute;
 }
 
@@ -31,20 +31,17 @@
 	position: absolute;
 	z-index: 9999;
 	left: 50%;
-	overflow: hidden;
 	background-color: #fff;
 	-webkit-border-radius: 10px;
 	-khtml-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000'); /* For IE 5.5 - 7 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000')"; /* For IE 8 */
 	-webkit-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
 	-khtml-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
 	-moz-box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
 	box-shadow: 0px 5px 20px rgba(0,0,0,0.50);
-	/* For IE 8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000')";
-	/* For IE 5.5 - 7 */
-	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000');
 }
 
 #mbCenter.mbLoading {
@@ -91,12 +88,12 @@
 		/*	Title, Caption and Button styling	*/
 
 #mbBottom {
-	min-height: 20px;
-	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	line-height: 20px;
 	font-size: 12px;
-	color: #777;
+	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	text-align: left;
+	color: #777;
+	min-height: 20px;
 	padding: 0 10px 10px;
 }
 
