@@ -850,6 +850,7 @@ var Mediabox;
 		} else if (mediaType == "url") {
 			media.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(media);
+//			if (Browser.safari) options.resizeOpening = false;	// Prevents occasional blank video display errors in Safari, thanks to Kris Gale for the solution
 		} else if (mediaType == "obj") {
 			if (Browser.Plugins.Flash.version < "8") {
 				media.setStyles({backgroundImage: "none", display: ""});
@@ -859,6 +860,7 @@ var Mediabox;
 			} else {
 				media.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(media);
+//				if (Browser.safari) options.resizeOpening = false;	// Prevents occasional blank video display errors in Safari, thanks to Kris Gale for the solution
 			}
 		} else {
 			media.setStyles({backgroundImage: "none", display: ""});
