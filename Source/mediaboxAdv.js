@@ -245,7 +245,7 @@ var Mediabox;
 			var links = this;
 
 			links.addEvent('contextmenu', function(e){
-				if (options.clickBlock && this.toString().match(/\.gif|\.jpg|\.jpeg|\.png/i)) e.stop();
+				if (_options.clickBlock && this.toString().match(/\.gif|\.jpg|\.jpeg|\.png/i)) e.stop();
 			});
 
 			links.removeEvents("click").addEvent("click", function() {
