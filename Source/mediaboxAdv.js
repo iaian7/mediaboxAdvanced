@@ -956,7 +956,7 @@ Mediabox.scanPage = function() {
 //	if (Browser.Platform.ios && !(navigator.userAgent.match(/iPad/i))) return;	// this quits the process if the visitor is using a non-iPad iOS device (iPhone or iPod Touch)
 //	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
-		return getAttribute('data-mediabox') !== null;
+		return el.getAttribute('data-mediabox') !== null;
 	});
 //	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
 	links.mediabox({/* Put custom options here */}, null, function(el) {
