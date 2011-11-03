@@ -956,12 +956,12 @@ Mediabox.scanPage = function() {
 //	if (Browser.Platform.ios && !(navigator.userAgent.match(/iPad/i))) return;	// this quits the process if the visitor is using a non-iPad iOS device (iPhone or iPod Touch)
 //	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
-		return getAttribute('data-lightbox') !== null;
+		return getAttribute('data-mediabox') !== null;
 	});
 //	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
 	links.mediabox({/* Put custom options here */}, null, function(el) {
-		var data = this.getAttribute('data-lightbox').split(' ');
-		return (this == el) || el.getAttribute('data-lightbox').match(data[0]);
+		var data = this.getAttribute('data-mediabox').split(' ');
+		return (this == el) || el.getAttribute('data-mediabox').match(data[0]);
 	});
 };
 
