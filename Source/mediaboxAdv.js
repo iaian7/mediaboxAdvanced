@@ -946,7 +946,7 @@ Browser.Plugins.QuickTime = (function(){
 	} else {
 		try { var test = new ActiveXObject('QuickTime.QuickTime'); }
 		catch(e) {}
-		
+
 		if (test) { return true; }
 	}
 	return false;
@@ -958,13 +958,12 @@ Mediabox.scanPage = function() {
 //	if (Browser.Platform.ios && !(navigator.userAgent.match(/iPad/i))) return;	// this quits the process if the visitor is using a non-iPad iOS device (iPhone or iPod Touch)
 //	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
-		return el.rel && el.rel.test(/^lightbox/i);
+		return el.getAttribute('data-mediabox') !== null;
 	});
 //	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
 	links.mediabox({/* Put custom options here */}, null, function(el) {
-		var rel0 = this.rel.replace(/[[]|]/gi," ");
-		var relsize = rel0.split(" ");
-		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
+		var data = this.getAttribute('data-mediabox').split(' ');
+		return (this == el) || el.getAttribute('data-mediabox').match(data[0]);
 	});
 };
 
