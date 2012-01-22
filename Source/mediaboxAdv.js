@@ -965,7 +965,11 @@ Mediabox.scanPage = function() {
 	links.mediabox({/* Put custom options here */}, null, function(el) {
 		var rel0 = this.rel.replace(/[\[\]|]/gi," ");
 		var relsize = rel0.split(" ");
-		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
+//		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
+
+		var relsearch = "\\["+relsize[1]+"[ \\]]";
+		var relregexp = new RegExp(relsearch);
+		return (this == el) || ((this.rel.length > 8) && el.rel.match(relregexp));
 	});
 };
 
