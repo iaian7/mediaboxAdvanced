@@ -260,7 +260,7 @@ var Mediabox;
 					if(filteredHrefs.indexOf(item.toString()) < 0) {
 						filteredLinks.include(filteredArray[index]);
 						filteredHrefs.include(filteredArray[index].toString());
-					};
+					}
 				});
 
 				return Mediabox.open(filteredLinks.map(linkMapper), filteredHrefs.indexOf(this.toString()), _options);
@@ -329,7 +329,7 @@ var Mediabox;
 					next();
 			}
 		}
-		if (options.keyboardStop) { return false; };
+		if (options.keyboardStop) { return false; }
 	}
 
 	function previous() {
@@ -441,8 +441,8 @@ var Mediabox;
 			} else if (URL.match(/\.mov|\.m4v|\.m4a|\.aiff|\.avi|\.caf|\.dv|\.mid|\.m3u|\.mp3|\.mp2|\.mp4|\.qtz/i) || mediaType == 'qt') {
 				mediaType = 'qt';
 				mediaWidth = mediaWidth || options.defaultWidth;
-//				mediaHeight = (parseInt(mediaHeight)+16)+"px" || options.defaultHeight;
-				mediaHeight = (parseInt(mediaHeight)+16) || options.defaultHeight;
+//				mediaHeight = (parseInt(mediaHeight, 10)+16)+"px" || options.defaultHeight;
+				mediaHeight = (parseInt(mediaHeight, 10)+16) || options.defaultHeight;
 				preload = new Quickie(URL, {
 					id: 'MediaboxQT',
 					width: mediaWidth,
@@ -820,11 +820,11 @@ var Mediabox;
 			} else {	// Thanks to Dusan Medlin for fixing large 16x9 image errors in a 4x3 browser
 				if (mediaHeight >= winHeight-options.imgPadding && (mediaHeight / winHeight) >= (mediaWidth / winWidth)) {
 					mediaHeight = winHeight-options.imgPadding;
-					mediaWidth = preload.width = parseInt((mediaHeight/preload.height)*mediaWidth);
+					mediaWidth = preload.width = parseInt((mediaHeight/preload.height)*mediaWidth, 10);
 					preload.height = mediaHeight;
 				} else if (mediaWidth >= winWidth-options.imgPadding && (mediaHeight / winHeight) < (mediaWidth / winWidth)) {
 					mediaWidth = winWidth-options.imgPadding;
-					mediaHeight = preload.height = parseInt((mediaWidth/preload.width)*mediaHeight);
+					mediaHeight = preload.height = parseInt((mediaWidth/preload.width)*mediaHeight, 10);
 					preload.width = mediaWidth;
 				}
 				if (Browser.ie) preload = document.id(preload);
@@ -846,7 +846,7 @@ var Mediabox;
 //			preload;
 		} else if (mediaType == "ios" || Browser.Platform.ios) {
 			media.setStyles({backgroundImage: "none", display: ""});
-			media.set('html', options.linkText.replace(/{x}/gi, URL));
+			media.set('html', options.linkText.replace(/\{x\}/gi, URL));
 			mediaWidth = options.DefaultWidth;
 			mediaHeight = options.DefaultHeight;
 		} else if (mediaType == "url") {
@@ -873,7 +873,7 @@ var Mediabox;
 
 		title.set('html', (options.showCaption) ? captionSplit[0] : "");
 		caption.set('html', (options.showCaption && (captionSplit.length > 1)) ? captionSplit[1] : "");
-		number.set('html', (options.showCounter && (mediaArray.length > 1)) ? options.counterText.replace(/{x}/, (options.countBack)?mediaArray.length-activeMedia:activeMedia+1).replace(/{y}/, mediaArray.length) : "");
+		number.set('html', (options.showCounter && (mediaArray.length > 1)) ? options.counterText.replace(/\{x\}/, (options.countBack)?mediaArray.length-activeMedia:activeMedia+1).replace(/\{y\}/, mediaArray.length) : "");
 
 //		if (options.countBack) {
 //			number.set('html', (options.showCounter && (mediaArray.length > 1)) ? options.counterText.replace(/{x}/, activeMedia + 1).replace(/{y}/, mediaArray.length) : "");
@@ -891,8 +891,8 @@ var Mediabox;
 
 		mediaWidth = media.offsetWidth;
 		mediaHeight = media.offsetHeight+bottom.offsetHeight;
-		if (mediaHeight >= top+top) { mTop = -top } else { mTop = -(mediaHeight/2) };
-		if (mediaWidth >= left+left) { mLeft = -left } else { mLeft = -(mediaWidth/2) };
+		if (mediaHeight >= top+top) { mTop = -top; } else { mTop = -(mediaHeight/2); }
+		if (mediaWidth >= left+left) { mLeft = -left; } else { mLeft = -(mediaWidth/2); }
 /****/	if (options.resizeOpening) { fx.resize.start({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
 /****/	} else { center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin}); mediaAnimate(); }
 //		center.setStyles({width: mediaWidth, height: mediaHeight, marginTop: mTop-margin, marginLeft: mLeft-margin});
@@ -944,9 +944,10 @@ Browser.Plugins.QuickTime = (function(){
 			}
 		}
 	} else {
-		try { var test = new ActiveXObject('QuickTime.QuickTime'); }
+		var test;
+		try { test = new ActiveXObject('QuickTime.QuickTime'); }
 		catch(e) {}
-		
+
 		if (test) { return true; }
 	}
 	return false;
@@ -962,7 +963,7 @@ Mediabox.scanPage = function() {
 	});
 //	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
 	links.mediabox({/* Put custom options here */}, null, function(el) {
-		var rel0 = this.rel.replace(/[[]|]/gi," ");
+		var rel0 = this.rel.replace(/[\[\]|]/gi," ");
 		var relsize = rel0.split(" ");
 		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
 	});
