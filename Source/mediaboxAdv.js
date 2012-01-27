@@ -168,6 +168,9 @@ var Mediabox;
 				vmPortrait: '1',			// Show author portrait
 				vmColor: 'ffffff'			// Custom controller colors, hex value minus the # sign, defult is 5ca0b5
 			};
+			
+			// merge the custom options with the default settings
+			options = Object.merge(options, _options);
 
 			prevLink.set('html', options.buttonText[0]);
 			nextLink.set('html', options.buttonText[1]);
