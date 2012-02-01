@@ -683,11 +683,20 @@ var Mediabox;
 				mediaSplit = URL.split('v=');
 				if (options.html5) {
 					mediaType = 'url';
-					mediaWidth = mediaWidth || "640";
-					mediaHeight = mediaHeight || "385";
+                    var mediaEmbedURL = "http://www.youtube.com/embed/";
+                    var listSplit = mediaSplit[1].split('&list=');
+                    if (listSplit) { // YouTube Playlist (new embed style)
+                        mediaEmbedURL += "p/";
+                        mediaSplit[1] = listSplit[1].replace('PL', "");
+                        mediaWidth = mediaWidth || "480";
+                        mediaHeight = mediaHeight || "385";
+                    } else {
+                        mediaWidth = mediaWidth || "640";
+                        mediaHeight = mediaHeight || "385";
+                    }
 					mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
 					preload = new Element('iframe', {
-						'src': 'http://www.youtube.com/embed/'+mediaSplit[1],
+						'src': mediaEmbedURL+mediaSplit[1]+'?autoplay='+options.autoplayNum,
 						'id': mediaId,
 						'width': mediaWidth,
 						'height': mediaHeight,
@@ -707,7 +716,7 @@ var Mediabox;
 						});
 					startEffect();
 				}
-// YouTube Playlist
+// YouTube Playlist (old Flash style)
 			} else if (URL.match(/youtube\.com\/view/i)) {
 				mediaType = 'obj';
 				mediaSplit = URL.split('p=');
@@ -763,7 +772,7 @@ var Mediabox;
 					mediaType = 'url';
 					mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
 					preload = new Element('iframe', {
-						'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait,
+						'src': 'http://player.vimeo.com/video/'+mediaSplit[3]+'?portrait='+options.vmPortrait+'&autoplay='+options.autoplayNum,
 						'id': mediaId,
 						'width': mediaWidth,
 						'height': mediaHeight,
@@ -847,8 +856,8 @@ var Mediabox;
 		} else if (mediaType == "ios" || Browser.Platform.ios) {
 			media.setStyles({backgroundImage: "none", display: ""});
 			media.set('html', options.linkText.replace(/\{x\}/gi, URL));
-			mediaWidth = options.DefaultWidth;
-			mediaHeight = options.DefaultHeight;
+			mediaWidth = options.defaultWidth;
+			mediaHeight = options.defaultHeight;
 		} else if (mediaType == "url") {
 			media.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(media);
@@ -857,8 +866,8 @@ var Mediabox;
 			if (Browser.Plugins.Flash.version < "8") {
 				media.setStyles({backgroundImage: "none", display: ""});
 				media.set('html', '<div id="mbError"><b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.</div>');
-				mediaWidth = options.DefaultWidth;
-				mediaHeight = options.DefaultHeight;
+				mediaWidth = options.defaultWidth;
+				mediaHeight = options.defaultHeight;
 			} else {
 				media.setStyles({backgroundImage: "none", display: ""});
 				preload.inject(media);
@@ -973,4 +982,6 @@ Mediabox.scanPage = function() {
 	});
 };
 
-window.addEvents({domready: Mediabox.scanPage, resize: Mediabox.recenter}); // to recenter the overlay while scrolling, add "scroll: Mediabox.recenter" to the object
+window.addEvents({domready: Mediabox.scanPage, resize: Mediabox.recenter
+//   ,scroll: Mediabox.recenter // to recenter the overlay while scrolling
+});
