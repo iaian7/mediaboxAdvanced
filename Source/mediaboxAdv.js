@@ -844,15 +844,15 @@ var Mediabox;
 			media.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(media);
 //			preload;
+		} else if (mediaType == "url") {
+			media.setStyles({backgroundImage: "none", display: ""});
+			preload.inject(media);
+//			if (Browser.safari) options.resizeOpening = false;	// Prevents occasional blank video display errors in Safari, thanks to Kris Gale for the solution
 		} else if (mediaType == "ios" || Browser.Platform.ios) {
 			media.setStyles({backgroundImage: "none", display: ""});
 			media.set('html', options.linkText.replace(/\{x\}/gi, URL));
 			mediaWidth = options.DefaultWidth;
 			mediaHeight = options.DefaultHeight;
-		} else if (mediaType == "url") {
-			media.setStyles({backgroundImage: "none", display: ""});
-			preload.inject(media);
-//			if (Browser.safari) options.resizeOpening = false;	// Prevents occasional blank video display errors in Safari, thanks to Kris Gale for the solution
 		} else if (mediaType == "obj") {
 			if (Browser.Plugins.Flash.version < "8") {
 				media.setStyles({backgroundImage: "none", display: ""});
