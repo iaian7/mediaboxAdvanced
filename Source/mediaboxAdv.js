@@ -25,7 +25,7 @@ var Mediabox;
 
 (function() {
 	// Global variables, accessible to Mediabox only
-	var options, mediaArray, activeMedia, prevMedia, nextMedia, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
+	var options, mediaArray, activeMedia, prevMedia, nextMedia, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(), oldFocus,
 	// DOM elements
 	overlay, center, media, bottom, captionSplit, title, caption, number, prevLink, nextLink,
 	// Mediabox specific vars
@@ -38,19 +38,19 @@ var Mediabox;
 		document.id(document.body).adopt(
 			$$([
 				overlay = new Element("div", {id: "mbOverlay"}).addEvent("click", close),
-				center = new Element("div", {id: "mbCenter"})
+				center = new Element("div", {id: "mbCenter", tabindex: '0', 'aria-describedby': 'mbTitle' })
 			]).setStyle("display", "none")
 		);
 
 		container = new Element("div", {id: "mbContainer"}).inject(center, "inside");
 			media = new Element("div", {id: "mbMedia"}).inject(container, "inside");
-		bottom = new Element("div", {id: "mbBottom"}).inject(center, "inside").adopt(
-			closeLink = new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
-			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
-			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),
-			title = new Element("div", {id: "mbTitle"}),
+		bottom = new Element("div", {id: "mbBottom"/*, "aria-live": "off"*/}).inject(center, "inside").adopt(
+			closeLink = new Element("a", {id: "mbCloseLink", href: "#", title: "Close", 'aria-label': 'Close'}).addEvent("click", close),
+			nextLink = new Element("a", {id: "mbNextLink", href: "#", title: "Next", 'aria-label': 'Next'}).addEvent("click", next),
+			prevLink = new Element("a", {id: "mbPrevLink", href: "#", title: "Previous", 'aria-label': 'Previous'}).addEvent("click", previous),
+			title = new Element("div", {id: "mbTitle", "aria-live": "polite"}),
 			number = new Element("div", {id: "mbNumber"}),
-			caption = new Element("div", {id: "mbCaption"})
+			caption = new Element("div", {id: "mbCaption", "aria-live": "polite"})
 			);
 
 		fx = {
@@ -80,7 +80,11 @@ var Mediabox;
 		open: function(_mediaArray, startMedia, _options) {
 			options = {
 //			Text options (translate as needed)
-				buttonText: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Array defines "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
+				buttonText: [
+					'<big>&laquo;</big> <span class="hidden-for-accesibility">Previous</span>',
+					'<big>&raquo;</big> <span class="hidden-for-accesibility">Next</span>',
+					'<big>&times;</big> <span class="hidden-for-accesibility">Close</span>'
+				],		// Array defines "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
 //				buttonText: ['<big>«</big>','<big>»</big>','<big>×</big>'],
 //				buttonText: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
 				counterText: '({x} of {y})',	// Counter text, {x} = current item number, {y} = total gallery length
@@ -94,7 +98,7 @@ var Mediabox;
 				keyboardStop: false,			// Stops all default keyboard actions while overlay is open (such as up/down arrows)
 												// Does not apply to iFrame content, does not affect mouse scrolling
 				overlayOpacity: 0.8,			// 1 is opaque, 0 is completely transparent (change the color in the CSS file)
-				resizeOpening: true,			// Determines if box opens small and grows (true) or starts at larger size (false)
+				resizeOpening: false,			// Determines if box opens small and grows (true) or starts at larger size (false)
 				resizeDuration: 240,			// Duration of each of the box resize animations (in milliseconds)
 				initialWidth: 320,				// Initial width of the box (in pixels)
 				initialHeight: 180,				// Initial height of the box (in pixels)
@@ -198,6 +202,7 @@ var Mediabox;
 				startMedia = 0;
 			}
 
+			// oldFocus = document.activeElement;
 			mediaArray = _mediaArray;
 			options.loop = options.loop && (mediaArray.length > 1);
 
@@ -210,7 +215,7 @@ var Mediabox;
 
 /****/		center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
 			fx.resize = new Fx.Morph(center, {duration: options.resizeDuration, onComplete: mediaAnimate});
-			fx.overlay.start(options.overlayOpacity);
+			fx.overlay.chain(stealTabindex).start(options.overlayOpacity);
 			return changeMedia(startMedia);
 		}
 	};
@@ -272,6 +277,31 @@ var Mediabox;
 
 	/*	Internal functions	*/
 
+	function getFocusable() {
+		return document.body.getElements('a, input, button, area, frame, iframe, *[tabindex]').filter('*:not(#mbOverlay *, #mbCenter *)');
+	}
+
+	function stealTabindex() {
+		if(document.activeElement !== null) {
+			oldFocus = document.activeElement;
+			center.focus();
+		}
+		getFocusable().each(function(el) {
+			el.store('mb-tabindex', el.get('tabindex'));
+			el.set('tabindex', '-1');
+		});
+	}
+
+	function restoreTabindex() {
+		getFocusable().each(function(el) {
+			if(el.retrieve('mb-tabindex') !== null) {
+				el.set('tabindex', el.retrieve('mb-tabindex'));
+				el.eliminate('mb-tabindex');
+			}
+		});
+		oldFocus.focus();
+	}
+
 	function position() {
 		overlay.setStyles({top: window.getScrollTop(), left: window.getScrollLeft()});
 	}
@@ -299,6 +329,10 @@ var Mediabox;
 		if (Browser.Platform.ios || Browser.ie6) window[fn]("scroll", position);	// scroll position is updated only after movement has stopped
 		window[fn]("resize", size);
 		if (options.keyboard) document[fn]("keydown", keyDown);
+
+		if(!open) {
+			restoreTabindex();
+		}
 	}
 
 	function keyDown(event) {
@@ -830,6 +864,7 @@ var Mediabox;
 				if (Browser.ie) preload = document.id(preload);
 				if (options.clickBlock) preload.addEvent('mousedown', function(e){ e.stop(); }).addEvent('contextmenu', function(e){ e.stop(); });
 				media.setStyles({backgroundImage: "none", display: ""});
+				preload.set('alt', " ");
 				preload.inject(media);
 			}
 //			mediaWidth += "px";
@@ -840,6 +875,7 @@ var Mediabox;
 //			preload.inject(media);
 //			media.grab(preload.get('html'));
 			(options.inlineClone)?media.grab(preload.get('html')):media.adopt(preload.getChildren());
+			media.getChildren().setStyle('visibility', ''); // Counteract any auto-hide effect which might have been applied by the FireFox embed/object visibility workaround
 		} else if (mediaType == "qt") {
 			media.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(media);
@@ -955,14 +991,14 @@ Browser.Plugins.QuickTime = (function(){
 
 	/*	Autoload code block	*/
 
-Mediabox.scanPage = function() {
+Mediabox.scanPage = function(options) {
 //	if (Browser.Platform.ios && !(navigator.userAgent.match(/iPad/i))) return;	// this quits the process if the visitor is using a non-iPad iOS device (iPhone or iPod Touch)
 //	$$('#mb_').each(function(hide) { hide.set('display', 'none'); });
 	var links = $$("a").filter(function(el) {
 		return el.rel && el.rel.test(/^lightbox/i);
 	});
 //	$$(links).mediabox({/* Put custom options here */}, null, function(el) {
-	links.mediabox({/* Put custom options here */}, null, function(el) {
+	links.mediabox(options, null, function(el) {
 		var rel0 = this.rel.replace(/[\[\]|]/gi," ");
 		var relsize = rel0.split(" ");
 //		return (this == el) || ((this.rel.length > 8) && el.rel.match(relsize[1]));
@@ -973,4 +1009,4 @@ Mediabox.scanPage = function() {
 	});
 };
 
-window.addEvents({domready: Mediabox.scanPage, resize: Mediabox.recenter}); // to recenter the overlay while scrolling, add "scroll: Mediabox.recenter" to the object
+window.addEvent('resize', Mediabox.recenter); // to recenter the overlay while scrolling, add "scroll: Mediabox.recenter" to the object
