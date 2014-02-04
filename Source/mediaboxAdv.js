@@ -70,7 +70,9 @@ var Mediabox;
 		recenter: function(){	// Thanks to Garo Hussenjian (Xapnet Productions http://www.xapnet.com) for suggesting this addition
 			if (center && !Browser.Platform.ios) {
 				left = window.getScrollLeft() + (window.getWidth()/2);
-				center.setStyles({left: left, marginLeft: -(mediaWidth/2)-margin});
+				if(!isNaN(mediaWidth/2)) { // mediaWidth is sometimes non-number value. IE8 can't eat NaN.
+					center.setStyles({left: left, marginLeft: -(mediaWidth/2)-margin});
+				}
 //				top = window.getScrollTop() + (window.getHeight()/2);
 //				margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
 //				center.setStyles({top: top, left: left, marginTop: -(mediaHeight/2)-margin, marginLeft: -(mediaWidth/2)-margin});
