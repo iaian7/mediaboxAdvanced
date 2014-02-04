@@ -27,7 +27,7 @@ var Mediabox;
 	// Global variables, accessible to Mediabox only
 	var options, mediaArray, activeMedia, prevMedia, nextMedia, top, mTop, left, mLeft, winWidth, winHeight, fx, preload, preloadPrev = new Image(), preloadNext = new Image(),
 	// DOM elements
-	overlay, center, media, bottom, captionSplit, title, caption, number, prevLink, nextLink,
+	overlay, center, container, media, bottom, captionSplit, title, caption, number, prevLink, nextLink,
 	// Mediabox specific vars
 	URL, WH, WHL, elrel, mediaWidth, mediaHeight, mediaType = "none", mediaSplit, mediaId = "mediaBox", margin, marginBottom;
 
