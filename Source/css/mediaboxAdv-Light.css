@@ -1,4 +1,4 @@
-		/*	mediaboxAdvanced Dark theme	*/
+		/*	mediaboxAdvanced Light theme	*/
 		/*	version 2.6 - June 2011			*/
 		/*	for mediaboxAdvanced v.1.5.x	*/
 
@@ -10,15 +10,15 @@
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 150%;
-	background-color: #000;
+	height: 100%;
+	background-color: #ccc;
 	cursor: pointer;
 }
 
 		/*	Fixes for older or limited browsers	*/
 
 #mbOverlay.mbOverlayOpaque {
-	background: transparent url(80.png) repeat;
+	background: transparent url(../images/80.png) repeat;
 }
 
 #mbOverlay.mbOverlayAbsolute {
@@ -42,7 +42,7 @@
 	z-index: 9999;
 	left: 50%;
 	padding: 10px;
-	background-color: #000;
+	background-color: #fff;
 	-webkit-border-radius: 10px;
 	-khtml-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -56,7 +56,7 @@
 }
 
 #mbCenter.mbLoading {
-	background: #000 url(loading-dark.gif) no-repeat center;
+	background: #fff url(../images/loading-light.gif) no-repeat center;
 		/*	This style is applied only during animation.	*/
 		/*	For example, the next lines turn off shadows	*/
 		/*	improving browser performance on slow systems.	*/
@@ -77,10 +77,22 @@
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	line-height: 20px;
 	font-size: 12px;
-	color: #fff;
+	color: #000;
 	text-align: left;
 	background-position: center center;
 	background-repeat: no-repeat;
+}
+
+@mbMedia img {
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#mbAudio {
+	padding: 0 0 2px;
+	background-color: #000;
 }
 
 		/*	Title, Caption and Button styling	*/
@@ -90,20 +102,20 @@
 	font-size: 12px;
 	font-family: Myriad, Verdana, Arial, Helvetica, sans-serif;
 	text-align: left;
-	color: #999;
+	color: #777;
 	min-height: 20px;
 	padding: 10px 0 0;
 }
 
 #mbTitle, #mbPrevLink, #mbNextLink, #mbCloseLink {
 	display: inline;
-	color: #fff;
+	color: #000;
 	font-weight: bold;
 }
 
 #mbNumber {
 	display: inline;
-	color: #999;
+	color: #777;
 /*	line-height: 0.8em; */
 	font-size: 0.8em;
 	margin: auto 10px;
@@ -111,7 +123,7 @@
 
 #mbCaption {
 	display: block;
-	color: #999;
+	color: #777;
 	line-height: 1.6em;
 	font-size: 0.8em;
 }
@@ -124,13 +136,13 @@
 }
 
 #mbPrevLink b, #mbNextLink b, #mbCloseLink b {
-	color: #eee;
+	color: #333;
 	font-weight: bold;
 	text-decoration: underline;
 }
 
 #mbPrevLink big, #mbNextLink big, #mbCloseLink big {
-	color: #eee;
+	color: #333;
 	font-size: 1.4em;
 /*	line-height: 0.9em;*/
 	font-weight: bold;
@@ -138,12 +150,12 @@
 
 #mbBottom a, #mbBottom a:link, #mbBottom a:visited {	/* Thanks to Danny Jung for feedback and corrections */
 	text-decoration: none;
-	color: #ddd;
+	color: #333;
 }
 
 #mbBottom a:hover, #mbBottom a:active {
 	text-decoration: underline;
-	color: #fff;
+	color: #000;
 }
 
 		/*	Error message styling	*/
