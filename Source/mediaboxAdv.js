@@ -83,7 +83,7 @@ var Mediabox;
 				buttonText: ['<big>&laquo;</big>','<big>&raquo;</big>','<big>&times;</big>'],		// Array defines "previous", "next", and "close" button content (HTML code should be written as entity codes or properly escaped)
 //				buttonText: ['<big>«</big>','<big>»</big>','<big>×</big>'],
 //				buttonText: ['<b>P</b>rev','<b>N</b>ext','<b>C</b>lose'],
-				counterText: '({x} of {y})',	// Counter text, {x} = current item number, {y} = total gallery length
+				counterText: '({x} / {y})',	// Counter text, {x} = current item number, {y} = total gallery length
 				linkText: '<a href="{x}" target="_new">{x}</a><br/>open in a new tab</div>',	// Text shown on iOS devices for non-image links
 				flashText: '<b>Error</b><br/>Adobe Flash is either not installed or not up to date, please visit <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" title="Get Flash" target="_new">Adobe.com</a> to download the free player.',	// Text shown if Flash is not installed.
 //			General overlay options
@@ -396,6 +396,21 @@ var Mediabox;
 				preload = new Image();
 				preload.onload = startEffect;
 				preload.src = URL;
+// HTML5 Video
+			} else if (URL.match(/\.mts|\.mp4|\.avi/i)) {
+				mediaType = 'video';
+				mediaWidth = mediaWidth || options.defaultWidth;
+				mediaHeight = mediaHeight || options.defaultHeight;
+				mediaId = "mediaId_"+new Date().getTime();	// Safari may not update iframe content with a static id.
+				preload = new Element('video', {
+					'src': URL,
+					'id': mediaId,
+					'width': mediaWidth,
+					'height': mediaHeight,
+					'frameborder': 0,
+					'controls': 1
+					});
+				startEffect();
 // FLV, MP4
 			} else if (URL.match(/\.flv|\.mp4/i) || mediaType == 'video') {
 				mediaType = 'obj';
@@ -853,6 +868,9 @@ var Mediabox;
 			media.setStyles({backgroundImage: "none", display: ""});
 			preload.inject(media);
 //			if (Browser.safari) options.resizeOpening = false;	// Prevents occasional blank video display errors in Safari, thanks to Kris Gale for the solution
+		} else if (mediaType == "video") {
+			media.setStyles({backgroundImage: "none", display: ""});
+			preload.inject(media);
 		} else if (mediaType == "obj") {
 			if (Browser.Plugins.Flash.version < "8") {
 				media.setStyles({backgroundImage: "none", display: ""});
