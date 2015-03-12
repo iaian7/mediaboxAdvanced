@@ -18,7 +18,7 @@
 		/*	Fixes for older or limited browsers	*/
 
 #mbOverlay.mbOverlayOpaque {
-	background: transparent url(80.png) repeat;
+	background: transparent url(../images/80.png) repeat;
 }
 
 #mbOverlay.mbOverlayAbsolute {
